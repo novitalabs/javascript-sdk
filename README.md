@@ -1,4 +1,4 @@
-# Novita Js SDK
+# Novita Javascript SDK
 
 this SDK is based on the official [API documentation](https://docs.novita.ai/)
 

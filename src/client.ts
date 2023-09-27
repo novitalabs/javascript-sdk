@@ -44,7 +44,7 @@ export function httpFetch({
   const headers = {
     "Content-Type": "application/json",
     "X-Novita-Source": "Novita",
-    ...(Novita_Config.key ? { "X-Novita-Key": Novita_Config.key } : {}),
+    ...(Novita_Config.key ? { "Authorization": Novita_Config.key } : {}),
   };
 
   return axios({

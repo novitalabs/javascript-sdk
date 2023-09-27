@@ -43,7 +43,7 @@ export class NovitaSDK {
     const headers = {
       "Content-Type": "application/json",
       "X-Novita-Source": "js-sdk",
-      ...(this.key ? { "X-Novita-Key": this.key } : {}),
+      ...(this.key ? { "Authorization": this.key } : {}),
     };
 
     return axios({

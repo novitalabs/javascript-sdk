@@ -14,6 +14,7 @@ import {
   UpscalseRequest,
 } from "./types";
 import { addLoraPrompt, generateLoraString, readImgtoBase64 } from "./util";
+import NovitaError from "./error";
 
 const Novita_Config: NovitaConfig = {
   BASE_URL: "https://api.novita.ai",
@@ -65,7 +66,7 @@ export function getModels() {
     url: "/v2/models",
   }).then((res: GetModelsResponse) => {
     if (res.code !== RequestCode.SUCCESS) {
-      throw new Error(res.msg);
+      throw new NovitaError(res.code, res.msg);
     }
     return res.data;
   });
@@ -81,7 +82,7 @@ export function txt2Img(params: Txt2ImgRequest) {
     },
   }).then((res: Txt2ImgResponse) => {
     if (res.code !== RequestCode.SUCCESS) {
-      throw new Error(res.msg);
+      throw new NovitaError(res.code, res.msg);
     }
     return res.data;
   });
@@ -97,7 +98,7 @@ export function img2img(params: Img2imgRequest) {
     },
   }).then((res: Txt2ImgResponse) => {
     if (res.code !== RequestCode.SUCCESS) {
-      throw new Error(res.msg);
+      throw new NovitaError(res.code, res.msg);
     }
     return res.data;
   });
@@ -114,7 +115,7 @@ export function upscale(params: UpscalseRequest) {
     },
   }).then((res: UpscaleResponse) => {
     if (res.code !== RequestCode.SUCCESS) {
-      throw new Error(res.msg);
+      throw new NovitaError(res.code, res.msg);
     }
     return res.data;
   });
@@ -129,7 +130,7 @@ export function progress(params: ProgressRequest) {
     },
   }).then((res: ProgressResponse) => {
     if (res.code !== RequestCode.SUCCESS) {
-      throw new Error(res.msg);
+      throw new NovitaError(res.code, res.msg);
     }
     return res.data;
   });
@@ -164,8 +165,10 @@ export function txt2ImgSync(
               ) {
                 clearInterval(timer);
                 reject(
-                  new Error(
-                    progressResult.failed_reason ?? ERROR_GENERATE_IMG_FAILED
+                  new NovitaError(
+                    0,
+                    progressResult.failed_reason ?? ERROR_GENERATE_IMG_FAILED,
+                    progressResult.status,
                   )
                 );
               }
@@ -175,7 +178,7 @@ export function txt2ImgSync(
             }
           }, config?.interval ?? 1000);
         } else {
-          reject(new Error("Failed to start the task."));
+          reject(new NovitaError(-1, "Failed to start the task."));
         }
       })
       .catch(reject);
@@ -211,8 +214,10 @@ export function img2imgSync(
               ) {
                 clearInterval(timer);
                 reject(
-                  new Error(
-                    progressResult.failed_reason ?? ERROR_GENERATE_IMG_FAILED
+                  new NovitaError(
+                    0,
+                    progressResult.failed_reason ?? ERROR_GENERATE_IMG_FAILED,
+                    progressResult.status,
                   )
                 );
               }
@@ -222,7 +227,7 @@ export function img2imgSync(
             }
           }, config?.interval ?? 1000);
         } else {
-          reject(new Error("Failed to start the task."));
+          reject(new NovitaError(-1, "Failed to start the task."));
         }
       })
       .catch(reject);
@@ -256,8 +261,10 @@ export function upscaleSync(params: UpscalseRequest, config?: SyncConfig) {
               ) {
                 clearInterval(timer);
                 reject(
-                  new Error(
-                    progressResult.failed_reason ?? ERROR_GENERATE_IMG_FAILED
+                  new NovitaError(
+                    0,
+                    progressResult.failed_reason ?? ERROR_GENERATE_IMG_FAILED,
+                    progressResult.status,
                   )
                 );
               }
@@ -267,7 +274,7 @@ export function upscaleSync(params: UpscalseRequest, config?: SyncConfig) {
             }
           }, config?.interval ?? 1000);
         } else {
-          reject(new Error("Failed to start the task."));
+          reject(new NovitaError(-1, "Failed to start the task."));
         }
       })
       .catch(reject);

@@ -13,6 +13,7 @@ import {
 } from "./types";
 import { addLoraPrompt, generateLoraString, readImgtoBase64 } from "./util";
 import { ERROR_GENERATE_IMG_FAILED } from "./enum";
+import NovitaError from "./error"
 
 export class NovitaSDK {
   protected key: string;
@@ -64,7 +65,7 @@ export class NovitaSDK {
       url: "/v2/models",
     }).then((res: GetModelsResponse) => {
       if (res.code !== RequestCode.SUCCESS) {
-        throw new Error(res.msg);
+        throw new NovitaError(res.code, res.msg);
       }
       return res.data;
     });
@@ -80,7 +81,7 @@ export class NovitaSDK {
       },
     }).then((res: Txt2ImgResponse) => {
       if (res.code !== RequestCode.SUCCESS) {
-        throw new Error(res.msg);
+        throw new NovitaError(res.code, res.msg);
       }
       return res.data;
     });
@@ -96,7 +97,7 @@ export class NovitaSDK {
       },
     }).then((res: Txt2ImgResponse) => {
       if (res.code !== RequestCode.SUCCESS) {
-        throw new Error(res.msg);
+        throw new NovitaError(res.code, res.msg);
       }
       return res.data;
     });
@@ -111,7 +112,7 @@ export class NovitaSDK {
       },
     }).then((res: ProgressResponse) => {
       if (res.code !== RequestCode.SUCCESS) {
-        throw new Error(res.msg);
+        throw new NovitaError(res.code, res.msg);
       }
       return res.data;
     });
@@ -145,8 +146,10 @@ export class NovitaSDK {
                 ) {
                   clearInterval(timer);
                   reject(
-                    new Error(
-                      progressResult.failed_reason ?? ERROR_GENERATE_IMG_FAILED
+                    new NovitaError(
+                      0,
+                      progressResult.failed_reason ?? ERROR_GENERATE_IMG_FAILED,
+                      progressResult.status,
                     )
                   );
                 }
@@ -156,7 +159,7 @@ export class NovitaSDK {
               }
             }, config?.interval ?? 1000);
           } else {
-            reject(new Error("Failed to start the task."));
+            reject(new NovitaError(-1, "Failed to start the task."));
           }
         })
         .catch(reject);
@@ -191,8 +194,10 @@ export class NovitaSDK {
                 ) {
                   clearInterval(timer);
                   reject(
-                    new Error(
-                      progressResult.failed_reason ?? ERROR_GENERATE_IMG_FAILED
+                    new NovitaError(
+                      0,
+                      progressResult.failed_reason ?? ERROR_GENERATE_IMG_FAILED,
+                      progressResult.status,
                     )
                   );
                 }
@@ -202,7 +207,7 @@ export class NovitaSDK {
               }
             }, config?.interval ?? 1000);
           } else {
-            reject(new Error("Failed to start the task."));
+            reject(new NovitaError(-1, "Failed to start the task."));
           }
         })
         .catch(reject);
@@ -220,7 +225,7 @@ export class NovitaSDK {
       },
     }).then((res: UpscaleResponse) => {
       if (res.code !== RequestCode.SUCCESS) {
-        throw new Error(res.msg);
+        throw new NovitaError(res.code, res.msg);
       }
       return res.data;
     });
@@ -255,8 +260,10 @@ export class NovitaSDK {
                 ) {
                   clearInterval(timer);
                   reject(
-                    new Error(
-                      progressResult.failed_reason ?? ERROR_GENERATE_IMG_FAILED
+                    new NovitaError(
+                      0,
+                      progressResult.failed_reason ?? ERROR_GENERATE_IMG_FAILED,
+                      progressResult.status,
                     )
                   );
                 }
@@ -266,7 +273,7 @@ export class NovitaSDK {
               }
             }, config?.interval ?? 1000);
           } else {
-            reject(new Error("Failed to start the task."));
+            reject(new NovitaError(-1, "Failed to start the task."));
           }
         })
         .catch(reject);

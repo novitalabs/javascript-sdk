@@ -195,6 +195,23 @@ type ResizeMode0Attributes = UpscaleBaseAttributes & {
 
 export type UpscalseRequest = ResizeMode1Attributes | ResizeMode0Attributes;
 
+export type OutpaintingRequest = {
+  image_file: string;
+  width: number;
+  height: number;
+  center_x: number;
+  center_y: number;
+}
+
+export type OutpaintingResponse = {
+  code: RequestCode;
+  msg: string;
+  data: {
+    image_file: string;
+    image_type: string;
+  };
+}
+
 export type UpscaleResponse = {
   code: RequestCode;
   msg: string;

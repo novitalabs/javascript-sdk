@@ -12,6 +12,8 @@ import {
   Txt2ImgResponse,
   UpscaleResponse,
   UpscalseRequest,
+  OutpaintingRequest,
+  OutpaintingResponse,
 } from "./types";
 import { addLoraPrompt, generateLoraString, readImgtoBase64 } from "./util";
 import NovitaError from "./error";
@@ -114,6 +116,19 @@ export function upscale(params: UpscalseRequest) {
       upscaler_2: params.upscaler_2 ?? "R-ESRGAN 4x+",
     },
   }).then((res: UpscaleResponse) => {
+    if (res.code !== RequestCode.SUCCESS) {
+      throw new NovitaError(res.code, res.msg);
+    }
+    return res.data;
+  });
+}
+
+export function outpainting(params: OutpaintingRequest, opts) {
+  return httpFetch({
+    url: "/v3/outpainting",
+    method: "POST",
+    data: params,
+  }).then((res: OutpaintingResponse) => {
     if (res.code !== RequestCode.SUCCESS) {
       throw new NovitaError(res.code, res.msg);
     }

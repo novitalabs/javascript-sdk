@@ -20,6 +20,8 @@ export {
   SyncConfig,
   UpscaleResponse,
   UpscalseRequest,
+  OutpaintingRequest,
+  OutpaintingResponse,
 } from "./src/types";
 
 export { ControlNetPreprocessor, ControlNetMode, ModelType } from "./src/enum";

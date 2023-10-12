@@ -10,6 +10,8 @@ import {
   Txt2ImgResponse,
   UpscaleResponse,
   UpscalseRequest,
+  OutpaintingRequest,
+  OutpaintingResponse,
 } from "./types";
 import { addLoraPrompt, generateLoraString, readImgtoBase64 } from "./util";
 import { ERROR_GENERATE_IMG_FAILED } from "./enum";
@@ -96,6 +98,19 @@ export class NovitaSDK {
         prompt: addLoraPrompt(generateLoraString(params.lora), params.prompt),
       },
     }).then((res: Txt2ImgResponse) => {
+      if (res.code !== RequestCode.SUCCESS) {
+        throw new NovitaError(res.code, res.msg);
+      }
+      return res.data;
+    });
+  }
+
+  outpainting(params: OutpaintingRequest) {
+    return this.httpFetch({
+      url: "/v3/outpainting",
+      method: "POST",
+      data: params,
+    }).then((res: OutpaintingResponse) => {
       if (res.code !== RequestCode.SUCCESS) {
         throw new NovitaError(res.code, res.msg);
       }

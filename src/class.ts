@@ -24,6 +24,10 @@ export class NovitaSDK {
     this.BASE_URL = "https://api.novita.ai";
   }
 
+  setBaseUrl(url: string) {
+    this.BASE_URL = url
+  }
+
   httpFetch({
     url = "",
     method = "GET",

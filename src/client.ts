@@ -25,6 +25,10 @@ export function setNovitaKey(key: string) {
   Novita_Config.key = key;
 }
 
+export function setBaseUrl(url: string) {
+  Novita_Config.BASE_URL = url
+}
+
 export function httpFetch({
   url = "",
   method = "GET",

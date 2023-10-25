@@ -6,7 +6,7 @@ import {
   NovitaConfig,
   ProgressRequest,
   ProgressResponse,
-  RequestCode,
+  ResponseCodeV2,
   SyncConfig,
   Txt2ImgRequest,
   Txt2ImgResponse,
@@ -14,6 +14,19 @@ import {
   UpscalseRequest,
   OutpaintingRequest,
   OutpaintingResponse,
+  ResponseCodeV3,
+  RemoveBackgroundRequest,
+  RemoveBackgroundResponse,
+  ReplaceBackgroundRequest,
+  ReplaceBackgroundResponse,
+  CleanupRequest,
+  CleanupResponse,
+  MixPoseRequest,
+  MixPoseResponse,
+  DoodleRequest,
+  DoodleResponse,
+  lcmTxt2ImgRequest,
+  lcmTxt2ImgResponse,
 } from "./types";
 import { addLoraPrompt, generateLoraString, readImgtoBase64 } from "./util";
 import NovitaError from "./error";
@@ -25,6 +38,10 @@ const Novita_Config: NovitaConfig = {
 
 export function setNovitaKey(key: string) {
   Novita_Config.key = key;
+}
+
+export function setBaseUrl(url: string) {
+  Novita_Config.BASE_URL = url
 }
 
 export function httpFetch({
@@ -46,7 +63,7 @@ export function httpFetch({
 
   const headers = {
     "Content-Type": "application/json",
-    "X-Novita-Source": "Novita",
+    "X-Novita-Source": "js-sdk-novita",
     ...(Novita_Config.key ? { "Authorization": Novita_Config.key } : {}),
   };
 
@@ -63,11 +80,59 @@ export function httpFetch({
     });
 }
 
+export function httpFetchV3({
+  url,
+  method = "GET",
+  data = undefined,
+  query = undefined,
+}: {
+  url: string;
+  method?: string;
+  data?: any;
+  query?: any;
+  opts?: RequestInit;
+}) {
+  let fetchUrl = Novita_Config.BASE_URL + url;
+  if (query) {
+    fetchUrl += new URLSearchParams(query).toString();
+  }
+  const headers: HeadersInit = {
+    "Content-Type": "application/json",
+    "X-Novita-Source": "Novita",
+  }
+  if (Novita_Config.key) {
+    headers["Authorization"] = Novita_Config.key
+  } else {
+    headers["X-Novita-Auth-Type"] = "anon"
+  }
+
+  return axios({
+    url: fetchUrl,
+    method: method,
+    headers: headers,
+    data: data,
+    params: query,
+  })
+    .then((response) => {
+      if (response.status !== ResponseCodeV3.OK) {
+        throw new NovitaError(response.status, response.data.message, response.data.reason, undefined, response.data.metadata)
+      }
+      return response.data
+    })
+    .catch((error) => {
+      if (error instanceof NovitaError) {
+        throw error
+      }
+      const res = error.response
+      throw new NovitaError(res.status, res.data.message, res.data.reason, undefined, res.data.metadata)
+    });
+}
+
 export function getModels() {
   return httpFetch({
     url: "/v2/models",
   }).then((res: GetModelsResponse) => {
-    if (res.code !== RequestCode.SUCCESS) {
+    if (res.code !== ResponseCodeV2.OK) {
       throw new NovitaError(res.code, res.msg);
     }
     return res.data;
@@ -83,7 +148,7 @@ export function txt2Img(params: Txt2ImgRequest) {
       prompt: addLoraPrompt(generateLoraString(params.lora), params.prompt),
     },
   }).then((res: Txt2ImgResponse) => {
-    if (res.code !== RequestCode.SUCCESS) {
+    if (res.code !== ResponseCodeV2.OK) {
       throw new NovitaError(res.code, res.msg);
     }
     return res.data;
@@ -99,7 +164,7 @@ export function img2img(params: Img2imgRequest) {
       prompt: addLoraPrompt(generateLoraString(params.lora), params.prompt),
     },
   }).then((res: Txt2ImgResponse) => {
-    if (res.code !== RequestCode.SUCCESS) {
+    if (res.code !== ResponseCodeV2.OK) {
       throw new NovitaError(res.code, res.msg);
     }
     return res.data;
@@ -116,20 +181,7 @@ export function upscale(params: UpscalseRequest) {
       upscaler_2: params.upscaler_2 ?? "R-ESRGAN 4x+",
     },
   }).then((res: UpscaleResponse) => {
-    if (res.code !== RequestCode.SUCCESS) {
-      throw new NovitaError(res.code, res.msg);
-    }
-    return res.data;
-  });
-}
-
-export function outpainting(params: OutpaintingRequest, opts) {
-  return httpFetch({
-    url: "/v3/outpainting",
-    method: "POST",
-    data: params,
-  }).then((res: OutpaintingResponse) => {
-    if (res.code !== RequestCode.SUCCESS) {
+    if (res.code !== ResponseCodeV2.OK) {
       throw new NovitaError(res.code, res.msg);
     }
     return res.data;
@@ -144,7 +196,7 @@ export function progress(params: ProgressRequest) {
       ...params,
     },
   }).then((res: ProgressResponse) => {
-    if (res.code !== RequestCode.SUCCESS) {
+    if (res.code !== ResponseCodeV2.OK) {
       throw new NovitaError(res.code, res.msg);
     }
     return res.data;
@@ -183,6 +235,7 @@ export function txt2ImgSync(
                   new NovitaError(
                     0,
                     progressResult.failed_reason ?? ERROR_GENERATE_IMG_FAILED,
+                    '',
                     progressResult.status,
                   )
                 );
@@ -232,6 +285,7 @@ export function img2imgSync(
                   new NovitaError(
                     0,
                     progressResult.failed_reason ?? ERROR_GENERATE_IMG_FAILED,
+                    '',
                     progressResult.status,
                   )
                 );
@@ -279,6 +333,7 @@ export function upscaleSync(params: UpscalseRequest, config?: SyncConfig) {
                   new NovitaError(
                     0,
                     progressResult.failed_reason ?? ERROR_GENERATE_IMG_FAILED,
+                    '',
                     progressResult.status,
                   )
                 );
@@ -293,5 +348,96 @@ export function upscaleSync(params: UpscalseRequest, config?: SyncConfig) {
         }
       })
       .catch(reject);
+  });
+}
+
+export function cleanup(params: CleanupRequest) {
+  return httpFetchV3({
+    url: "/v3/cleanup",
+    method: "POST",
+    data: params,
+  }).then((res: CleanupResponse) => {
+    if (res.code && res.code !== ResponseCodeV3.OK) {
+      throw new NovitaError(res.code, res.message || '', res.reason, undefined, res.metadata);
+    }
+    return res;
+  });
+}
+
+export function outpainting(params: OutpaintingRequest) {
+  return httpFetchV3({
+    url: "/v3/outpainting",
+    method: "POST",
+    data: params,
+  }).then((res: OutpaintingResponse) => {
+    if (res.code && res.code !== ResponseCodeV3.OK) {
+      throw new NovitaError(res.code, res.message || '', res.reason, undefined, res.metadata);
+    }
+    return res;
+  });
+}
+
+export function removeBackground(params: RemoveBackgroundRequest) {
+  return httpFetchV3({
+    url: "/v3/remove-background",
+    method: "POST",
+    data: params,
+  }).then((res: RemoveBackgroundResponse) => {
+    if (res.code && res.code !== ResponseCodeV3.OK) {
+      throw new NovitaError(res.code, res.message || '', res.reason, undefined, res.metadata);
+    }
+    return res;
+  });
+}
+
+export function replaceBackground(params: ReplaceBackgroundRequest) {
+  return httpFetchV3({
+    url: "/v3/replace-background",
+    method: "POST",
+    data: params,
+  }).then((res: ReplaceBackgroundResponse) => {
+    if (res.code && res.code !== ResponseCodeV3.OK) {
+      throw new NovitaError(res.code, res.message || '', res.reason, undefined, res.metadata);
+    }
+    return res;
+  });
+}
+
+export function mixpose(params: MixPoseRequest) {
+  return httpFetchV3({
+    url: "/v3/mix-pose",
+    method: "POST",
+    data: params,
+  }).then((res: MixPoseResponse) => {
+    if (res.code && res.code !== ResponseCodeV3.OK) {
+      throw new NovitaError(res.code, res.message || '', res.reason, undefined, res.metadata);
+    }
+    return res;
+  });
+}
+
+export function doodle(params: DoodleRequest) {
+  return httpFetchV3({
+    url: "/v3/doodle",
+    method: "POST",
+    data: params,
+  }).then((res: DoodleResponse) => {
+    if (res.code && res.code !== ResponseCodeV3.OK) {
+      throw new NovitaError(res.code, res.message || '', res.reason, undefined, res.metadata);
+    }
+    return res;
+  });
+}
+
+export function lcmTxt2Img(params: lcmTxt2ImgRequest) {
+  return httpFetchV3({
+    url: "/v3/lcm-txt2img",
+    method: "POST",
+    data: params,
+  }).then((res: lcmTxt2ImgResponse) => {
+    if (res.code && res.code !== ResponseCodeV3.OK) {
+      throw new NovitaError(res.code, res.message || '', res.reason, undefined, res.metadata);
+    }
+    return res;
   });
 }

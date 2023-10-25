@@ -11,9 +11,31 @@ export interface NovitaConfig {
   key: NovitaKey;
 }
 
-// Request Code Enum
-export enum RequestCode {
-  SUCCESS = 0,
+// Response Code Enum for V2 API
+export enum ResponseCodeV2 {
+  OK = 0,
+  INTERNAL_ERROR = -1,
+  INVALID_JSON = 1,
+  MODEL_NOT_EXIST = 2,
+  TASK_ID_NOT_EXIST = 3,
+  INVALID_AUTH = 4,
+  HOST_UNAVAILABLE = 5,
+  PARAM_RANGE_OUT_OF_LIMIT = 6,
+  COST_BALANCE_FAILURE = 7,
+  SAMPLER_NOT_EXIST = 8,
+  TIMEOUT = 9,
+}
+
+// Response Code Enum for V3 API
+export enum ResponseCodeV3 {
+  OK = 200,
+  TOO_MANY_REQ = 429,
+  INTERNAL_ERR = 500,
+}
+
+export enum API_ERR_REASON_V3 {
+  ANON_LIMIT_EXCEEDED = 'ANONYMOUS_ACCESS_QUOTA_EXCEEDS',
+  BILL_FAILED = 'BILLING_FAILED',
 }
 
 // getModels dependency status
@@ -62,7 +84,7 @@ export type Model = {
 };
 
 export type GetModelsResponse = {
-  code: RequestCode;
+  code: ResponseCodeV2;
   msg: string;
   data: {
     models: Array<Model>;
@@ -118,7 +140,7 @@ export type Txt2ImgRequest = {
 };
 
 export type Txt2ImgResponse = {
-  code: RequestCode;
+  code: ResponseCodeV2;
   msg: string;
   data: {
     task_id: string;
@@ -162,7 +184,7 @@ export type Img2imgRequest = {
 };
 
 export type Img2imgResponse = {
-  code: RequestCode;
+  code: ResponseCodeV2;
   msg: string;
   data: {
     task_id: string;
@@ -195,25 +217,76 @@ type ResizeMode0Attributes = UpscaleBaseAttributes & {
 
 export type UpscalseRequest = ResizeMode1Attributes | ResizeMode0Attributes;
 
+type FailedV3Response = {
+  code?: ResponseCodeV3;
+  reason?: string;
+  message?: string;
+  metadata?: any;
+}
+type GenImgTypeRequest = {
+  extra?: {
+    response_image_type: "png" | "jpeg" | "webp"
+  }
+}
+type GenImgResponse = {
+  image_file: string;
+  image_type: string;
+}
+
+export type CleanupRequest = {
+  image_file: string;
+  mask_file: string;
+} & GenImgTypeRequest
+export type CleanupResponse = GenImgResponse & FailedV3Response
+
 export type OutpaintingRequest = {
   image_file: string;
   width: number;
   height: number;
   center_x: number;
   center_y: number;
-}
+} & GenImgTypeRequest
 
-export type OutpaintingResponse = {
-  code: RequestCode;
-  msg: string;
-  data: {
-    image_file: string;
-    image_type: string;
-  };
+export type OutpaintingResponse = GenImgResponse & FailedV3Response
+
+export type RemoveBackgroundRequest = {
+  image_file: string;
+} & GenImgTypeRequest
+export type RemoveBackgroundResponse = GenImgResponse & FailedV3Response
+
+export type ReplaceBackgroundRequest = {
+  image_file: string;
+  prompt: string;
+} & GenImgTypeRequest
+export type ReplaceBackgroundResponse = GenImgResponse & FailedV3Response
+
+export type MixPoseRequest = {
+  image_file: string
+  pose_image_file: string
+} & GenImgTypeRequest
+export type MixPoseResponse = GenImgResponse & FailedV3Response
+
+export type DoodleRequest = {
+  image_file: string;
+  prompt: string;
+  similarity: number;
+} & GenImgTypeRequest
+export type DoodleResponse = GenImgResponse & FailedV3Response
+
+export type lcmTxt2ImgRequest = {
+  prompt: string;
+  height: number;
+  width: number;
+  image_num: number;
+  steps: number;
+  guidance_scale: number;
 }
+export type lcmTxt2ImgResponse = {
+  images: GenImgResponse[]
+} & FailedV3Response
 
 export type UpscaleResponse = {
-  code: RequestCode;
+  code: ResponseCodeV2;
   msg: string;
   data: {
     task_id: string;
@@ -225,7 +298,7 @@ export type ProgressRequest = {
 };
 
 export type ProgressResponse = {
-  code: RequestCode;
+  code: ResponseCodeV2;
   msg: string;
   data: {
     status: number;

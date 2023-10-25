@@ -22,6 +22,16 @@ export {
   UpscalseRequest,
   OutpaintingRequest,
   OutpaintingResponse,
+  RemoveBackgroundRequest,
+  RemoveBackgroundResponse,
+  ReplaceBackgroundRequest,
+  ReplaceBackgroundResponse,
+  CleanupRequest,
+  CleanupResponse,
+  MixPoseRequest,
+  MixPoseResponse,
+  DoodleRequest,
+  DoodleResponse,
 } from "./src/types";
 
 export { ControlNetPreprocessor, ControlNetMode, ModelType } from "./src/enum";

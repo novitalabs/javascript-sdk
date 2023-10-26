@@ -1,5 +1,6 @@
 import axios from "axios";
 import {
+  RequestOpts,
   GetModelsResponse,
   Img2imgRequest,
   ProgressRequest,
@@ -28,7 +29,7 @@ import {
 } from "./types";
 import { addLoraPrompt, generateLoraString, readImgtoBase64 } from "./util";
 import { ERROR_GENERATE_IMG_FAILED } from "./enum";
-import NovitaError from "./error"
+import { NovitaError } from "./error"
 
 export class NovitaSDK {
   protected key: string;
@@ -51,11 +52,13 @@ export class NovitaSDK {
     method = "GET",
     data = undefined,
     query = undefined,
+    opts = undefined,
   }: {
     url: string;
     method?: string;
     data?: Record<string, any> | undefined;
     query?: Record<string, any> | undefined;
+    opts?: RequestOpts;
   }) {
     let fetchUrl = this.BASE_URL + url;
 
@@ -63,11 +66,15 @@ export class NovitaSDK {
       fetchUrl += "?" + new URLSearchParams(query).toString();
     }
 
-    const headers = {
+    const headers: HeadersInit = {
       "Content-Type": "application/json",
-      "X-Novita-Source": "js-sdk-novita",
-      ...(this.key ? { "Authorization": this.key } : {}),
-    };
+      "X-Novita-Source": opts?.source || `js-sdk-novita/${process.env.VERSION}`,
+    }
+    if (this.key) {
+      headers["Authorization"] = this.key
+    } else {
+      headers["X-Novita-Auth-Type"] = "anon"
+    }
 
     return axios({
       url: fetchUrl,
@@ -75,6 +82,7 @@ export class NovitaSDK {
       headers: headers,
       data: data,
       params: query,
+      signal: opts?.signal,
     })
       .then((response) => response.data)
       .catch((error) => {
@@ -87,12 +95,13 @@ export class NovitaSDK {
     method = "GET",
     data = undefined,
     query = undefined,
+    opts = undefined,
   }: {
     url: string;
     method?: string;
     data?: any;
     query?: any;
-    opts?: RequestInit;
+    opts?: RequestOpts;
   }) {
     let fetchUrl = this.BASE_URL + url;
     if (query) {
@@ -100,35 +109,53 @@ export class NovitaSDK {
     }
     const headers: HeadersInit = {
       "Content-Type": "application/json",
-      "X-Novita-Source": "Novita",
+      "X-Novita-Source": opts?.source || `js-sdk-novita/${process.env.VERSION}`,
     }
     if (this.key) {
       headers["Authorization"] = this.key
     } else {
       headers["X-Novita-Auth-Type"] = "anon"
     }
-  
     return axios({
       url: fetchUrl,
       method: method,
       headers: headers,
       data: data,
       params: query,
+      signal: opts?.signal,
     })
       .then((response) => {
         if (response.status !== ResponseCodeV3.OK) {
-          throw new NovitaError(response.status, response.data.message, response.data.reason, undefined, response.data.metadata)
+          throw new NovitaError(response.status, response.data.message, response.data.reason, response.data.metadata)
         }
         return response.data
       })
       .catch((error) => {
-        console.error('fetch v3 error!', error)
         if (error instanceof NovitaError) {
           throw error
         }
         const res = error.response
-        throw new NovitaError(res.status, res.data.message, res.data.reason, undefined, res.data.metadata)
+        if (res) {
+          throw new NovitaError(res.status, res.data.message, res.data.reason, res.data.metadata, error)
+        }
+        throw new NovitaError(-1, error.message, '', undefined, error)
       });
+  }
+
+  private _apiRequestV3<T, R>(url: string): (p: T, o?: RequestOpts) => Promise<R> {
+    return (params: T, opts?: any): Promise<R> => {
+      return this.httpFetchV3({
+        url: url,
+        method: "POST",
+        data: params,
+        opts,
+      }).then((res: any) => {
+        if (res.code && res.code !== ResponseCodeV3.OK) {
+          throw new NovitaError(res.code, res.message || '', res.reason, res.metadata);
+        }
+        return res;
+      });
+    }
   }
 
   getModels() {
@@ -221,7 +248,7 @@ export class NovitaSDK {
                       0,
                       progressResult.failed_reason ?? ERROR_GENERATE_IMG_FAILED,
                       '',
-                      progressResult.status,
+                      { task_status: progressResult.status },
                     )
                   );
                 }
@@ -270,7 +297,7 @@ export class NovitaSDK {
                       0,
                       progressResult.failed_reason ?? ERROR_GENERATE_IMG_FAILED,
                       '',
-                      progressResult.status,
+                      { task_status: progressResult.status },
                     )
                   );
                 }
@@ -337,7 +364,7 @@ export class NovitaSDK {
                       0,
                       progressResult.failed_reason ?? ERROR_GENERATE_IMG_FAILED,
                       '',
-                      progressResult.status,
+                      { task_status: progressResult.status },
                     )
                   );
                 }
@@ -354,94 +381,17 @@ export class NovitaSDK {
     });
   }
 
-  cleanup(params: CleanupRequest) {
-    return this.httpFetchV3({
-      url: "/v3/cleanup",
-      method: "POST",
-      data: params,
-    }).then((res: CleanupResponse) => {
-      if (res.code && res.code !== ResponseCodeV3.OK) {
-        throw new NovitaError(res.code, res.message || '', res.reason, undefined, res.metadata);
-      }
-      return res;
-    });
-  }
+  cleanup: (params: CleanupRequest, opts?: any) => Promise<CleanupResponse> = this._apiRequestV3<CleanupRequest, CleanupResponse>("/v3/cleanup")
 
-  outpainting(params: OutpaintingRequest) {
-    return this.httpFetchV3({
-      url: "/v3/outpainting",
-      method: "POST",
-      data: params,
-    }).then((res: OutpaintingResponse) => {
-      if (res.code && res.code !== ResponseCodeV3.OK) {
-        throw new NovitaError(res.code, res.message || '', res.reason, undefined, res.metadata);
-      }
-      return res;
-    });
-  }
+  outpainting: (params: OutpaintingRequest, opts?: any) => Promise<OutpaintingResponse> = this._apiRequestV3<OutpaintingRequest, OutpaintingResponse>("/v3/outpainting")
 
-  removeBackground(params: RemoveBackgroundRequest) {
-    return this.httpFetchV3({
-      url: "/v3/remove-background",
-      method: "POST",
-      data: params,
-    }).then((res: RemoveBackgroundResponse) => {
-      if (res.code && res.code !== ResponseCodeV3.OK) {
-        throw new NovitaError(res.code, res.message || '', res.reason, undefined, res.metadata);
-      }
-      return res;
-    });
-  }
+  removeBackground: (params: RemoveBackgroundRequest, opts?: any) => Promise<RemoveBackgroundResponse> = this._apiRequestV3<RemoveBackgroundRequest, RemoveBackgroundResponse>("/v3/remove-background")
 
-  replaceBackground(params: ReplaceBackgroundRequest) {
-    return this.httpFetchV3({
-      url: "/v3/replace-background",
-      method: "POST",
-      data: params,
-    }).then((res: ReplaceBackgroundResponse) => {
-      if (res.code && res.code !== ResponseCodeV3.OK) {
-        throw new NovitaError(res.code, res.message || '', res.reason, undefined, res.metadata);
-      }
-      return res;
-    });
-  }
+  replaceBackground: (params: ReplaceBackgroundRequest, opts?: any) => Promise<ReplaceBackgroundResponse> = this._apiRequestV3<ReplaceBackgroundRequest, ReplaceBackgroundResponse>("/v3/replace-background")
 
-  mixpose(params: MixPoseRequest) {
-    return this.httpFetchV3({
-      url: "/v3/mix-pose",
-      method: "POST",
-      data: params,
-    }).then((res: MixPoseResponse) => {
-      if (res.code && res.code !== ResponseCodeV3.OK) {
-        throw new NovitaError(res.code, res.message || '', res.reason, undefined, res.metadata);
-      }
-      return res;
-    });
-  }
+  mixpose: (p: MixPoseRequest, opts?: any) => Promise<MixPoseResponse> = this._apiRequestV3<MixPoseRequest, MixPoseResponse>("/v3/mix-pose")
 
-  doodle(params: DoodleRequest) {
-    return this.httpFetchV3({
-      url: "/v3/doodle",
-      method: "POST",
-      data: params,
-    }).then((res: DoodleResponse) => {
-      if (res.code && res.code !== ResponseCodeV3.OK) {
-        throw new NovitaError(res.code, res.message || '', res.reason, undefined, res.metadata);
-      }
-      return res;
-    });
-  }
+  doodle: (p: DoodleRequest, opts?: any) => Promise<DoodleResponse> = this._apiRequestV3<DoodleRequest, DoodleResponse>("/v3/doodle")
 
-  lcmTxt2Img(params: lcmTxt2ImgRequest) {
-    return this.httpFetchV3({
-      url: "/v3/lcm-txt2img",
-      method: "POST",
-      data: params,
-    }).then((res: lcmTxt2ImgResponse) => {
-      if (res.code && res.code !== ResponseCodeV3.OK) {
-        throw new NovitaError(res.code, res.message || '', res.reason, undefined, res.metadata);
-      }
-      return res;
-    });
-  }
+  lcmTxt2Img: (p: lcmTxt2ImgRequest, opts?: any) => Promise<lcmTxt2ImgResponse> = this._apiRequestV3<lcmTxt2ImgRequest, lcmTxt2ImgResponse>("/v3/lcm-txt2img")
 }

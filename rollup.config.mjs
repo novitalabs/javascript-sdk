@@ -4,6 +4,7 @@ import commonjs from "@rollup/plugin-commonjs";
 import typescript from "@rollup/plugin-typescript";
 import nodePolyfills from "rollup-plugin-polyfill-node";
 import json from "@rollup/plugin-json";
+import replace from "@rollup/plugin-replace"
 import pkg from "./package.json" assert { type: "json" };
 
 export default {
@@ -21,6 +22,9 @@ export default {
     json(),
     nodePolyfills(),
     babel({ babelHelpers: "bundled" }),
+    replace({
+      'process.env.VERSION': JSON.stringify(pkg.version),
+    }),
   ],
   external: ['axios']
 };

@@ -36,6 +36,8 @@
     "typescript": "^5.1.6"
   },
   "dependencies": {
+    "@rollup/plugin-replace": "^5.0.4",
+    "@types/node": "^20.8.9",
     "axios": "^1.4.0"
   }
 }

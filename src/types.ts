@@ -49,6 +49,11 @@ export enum ModelType {
   Lora = "lora",
 }
 
+export type RequestOpts = {
+  signal?: AbortSignal,
+  source?: string
+}
+
 export type Model = {
   name: string;
   hash: string;

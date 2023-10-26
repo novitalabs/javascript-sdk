@@ -1,6 +1,7 @@
 import axios from "axios";
 import { ERROR_GENERATE_IMG_FAILED } from "./enum";
 import {
+  RequestOpts,
   GetModelsResponse,
   Img2imgRequest,
   NovitaConfig,
@@ -29,7 +30,7 @@ import {
   lcmTxt2ImgResponse,
 } from "./types";
 import { addLoraPrompt, generateLoraString, readImgtoBase64 } from "./util";
-import NovitaError from "./error";
+import { NovitaError } from "./error";
 
 const Novita_Config: NovitaConfig = {
   BASE_URL: "https://api.novita.ai",
@@ -49,11 +50,13 @@ export function httpFetch({
   method = "GET",
   data = undefined,
   query = undefined,
+  opts = undefined,
 }: {
   url: string;
   method?: string;
   data?: Record<string, any> | undefined;
   query?: Record<string, any> | undefined;
+  opts?: RequestOpts
 }) {
   let fetchUrl = Novita_Config.BASE_URL + url;
 
@@ -61,11 +64,15 @@ export function httpFetch({
     fetchUrl += "?" + new URLSearchParams(query).toString();
   }
 
-  const headers = {
+  const headers: HeadersInit = {
     "Content-Type": "application/json",
-    "X-Novita-Source": "js-sdk-novita",
-    ...(Novita_Config.key ? { "Authorization": Novita_Config.key } : {}),
-  };
+    "X-Novita-Source": opts?.source || `js-sdk-novita/${process.env.VERSION}`,
+  }
+  if (Novita_Config.key) {
+    headers["Authorization"] = Novita_Config.key
+  } else {
+    headers["X-Novita-Auth-Type"] = "anon"
+  }
 
   return axios({
     url: fetchUrl,
@@ -73,6 +80,7 @@ export function httpFetch({
     headers: headers,
     data: data,
     params: query,
+    signal: opts?.signal
   })
     .then((response) => response.data)
     .catch((error) => {
@@ -85,12 +93,13 @@ export function httpFetchV3({
   method = "GET",
   data = undefined,
   query = undefined,
+  opts = undefined,
 }: {
   url: string;
   method?: string;
   data?: any;
   query?: any;
-  opts?: RequestInit;
+  opts?: RequestOpts;
 }) {
   let fetchUrl = Novita_Config.BASE_URL + url;
   if (query) {
@@ -98,7 +107,7 @@ export function httpFetchV3({
   }
   const headers: HeadersInit = {
     "Content-Type": "application/json",
-    "X-Novita-Source": "Novita",
+    "X-Novita-Source": opts?.source || `js-sdk-novita/${process.env.VERSION}`,
   }
   if (Novita_Config.key) {
     headers["Authorization"] = Novita_Config.key
@@ -115,7 +124,7 @@ export function httpFetchV3({
   })
     .then((response) => {
       if (response.status !== ResponseCodeV3.OK) {
-        throw new NovitaError(response.status, response.data.message, response.data.reason, undefined, response.data.metadata)
+        throw new NovitaError(response.status, response.data.message, response.data.reason, response.data.metadata)
       }
       return response.data
     })
@@ -124,7 +133,10 @@ export function httpFetchV3({
         throw error
       }
       const res = error.response
-      throw new NovitaError(res.status, res.data.message, res.data.reason, undefined, res.data.metadata)
+      if (res) {
+        throw new NovitaError(res.status, res.data.message, res.data.reason, res.data.metadata, error)
+      }
+      throw new NovitaError(-1, error.message, '', undefined, error)
     });
 }
 
@@ -139,7 +151,7 @@ export function getModels() {
   });
 }
 
-export function txt2Img(params: Txt2ImgRequest) {
+export function txt2Img(params: Txt2ImgRequest, opts?: RequestOpts) {
   return httpFetch({
     url: "/v2/txt2img",
     method: "POST",
@@ -147,6 +159,7 @@ export function txt2Img(params: Txt2ImgRequest) {
       ...params,
       prompt: addLoraPrompt(generateLoraString(params.lora), params.prompt),
     },
+    opts,
   }).then((res: Txt2ImgResponse) => {
     if (res.code !== ResponseCodeV2.OK) {
       throw new NovitaError(res.code, res.msg);
@@ -155,7 +168,7 @@ export function txt2Img(params: Txt2ImgRequest) {
   });
 }
 
-export function img2img(params: Img2imgRequest) {
+export function img2img(params: Img2imgRequest, opts?: RequestOpts) {
   return httpFetch({
     url: "/v2/img2img",
     method: "POST",
@@ -163,6 +176,7 @@ export function img2img(params: Img2imgRequest) {
       ...params,
       prompt: addLoraPrompt(generateLoraString(params.lora), params.prompt),
     },
+    opts,
   }).then((res: Txt2ImgResponse) => {
     if (res.code !== ResponseCodeV2.OK) {
       throw new NovitaError(res.code, res.msg);
@@ -171,7 +185,7 @@ export function img2img(params: Img2imgRequest) {
   });
 }
 
-export function upscale(params: UpscalseRequest) {
+export function upscale(params: UpscalseRequest, opts?: RequestOpts) {
   return httpFetch({
     url: "/v2/upscale",
     method: "POST",
@@ -180,6 +194,7 @@ export function upscale(params: UpscalseRequest) {
       upscaler_1: params.upscaler_1 ?? "R-ESRGAN 4x+",
       upscaler_2: params.upscaler_2 ?? "R-ESRGAN 4x+",
     },
+    opts,
   }).then((res: UpscaleResponse) => {
     if (res.code !== ResponseCodeV2.OK) {
       throw new NovitaError(res.code, res.msg);
@@ -188,13 +203,14 @@ export function upscale(params: UpscalseRequest) {
   });
 }
 
-export function progress(params: ProgressRequest) {
+export function progress(params: ProgressRequest, opts?: RequestOpts) {
   return httpFetch({
     url: "/v2/progress",
     method: "GET",
     query: {
       ...params,
     },
+    opts,
   }).then((res: ProgressResponse) => {
     if (res.code !== ResponseCodeV2.OK) {
       throw new NovitaError(res.code, res.msg);
@@ -205,18 +221,20 @@ export function progress(params: ProgressRequest) {
 
 export function txt2ImgSync(
   params: Txt2ImgRequest,
-  config?: SyncConfig
+  config?: SyncConfig,
+  opts?: RequestOpts,
 ): Promise<any> {
   return new Promise((resolve, reject) => {
     txt2Img({
       ...params,
       prompt: addLoraPrompt(generateLoraString(params.lora), params.prompt),
+      opts,
     })
       .then((res) => {
         if (res && res.task_id) {
           const timer = setInterval(async () => {
             try {
-              const progressResult = await progress({ task_id: res.task_id });
+              const progressResult = await progress({ task_id: res.task_id }, opts);
               if (progressResult && progressResult.status === 2) {
                 clearInterval(timer);
                 let imgs = progressResult.imgs;
@@ -236,7 +254,7 @@ export function txt2ImgSync(
                     0,
                     progressResult.failed_reason ?? ERROR_GENERATE_IMG_FAILED,
                     '',
-                    progressResult.status,
+                    { task_status: progressResult.status },
                   )
                 );
               }
@@ -255,18 +273,19 @@ export function txt2ImgSync(
 
 export function img2imgSync(
   params: Img2imgRequest,
-  config?: SyncConfig
+  config?: SyncConfig,
+  opts?: RequestOpts,
 ): Promise<any> {
   return new Promise((resolve, reject) => {
     img2img({
       ...params,
       prompt: addLoraPrompt(generateLoraString(params.lora), params.prompt),
-    })
+    }, opts)
       .then((res) => {
         if (res && res.task_id) {
           const timer = setInterval(async () => {
             try {
-              const progressResult = await progress({ task_id: res.task_id });
+              const progressResult = await progress({ task_id: res.task_id }, opts);
               if (progressResult && progressResult.status === 2) {
                 clearInterval(timer);
                 let imgs = progressResult.imgs;
@@ -286,7 +305,7 @@ export function img2imgSync(
                     0,
                     progressResult.failed_reason ?? ERROR_GENERATE_IMG_FAILED,
                     '',
-                    progressResult.status,
+                    { task_status: progressResult.status },
                   )
                 );
               }
@@ -303,18 +322,18 @@ export function img2imgSync(
   });
 }
 
-export function upscaleSync(params: UpscalseRequest, config?: SyncConfig) {
+export function upscaleSync(params: UpscalseRequest, config?: SyncConfig, opts?: RequestOpts) {
   return new Promise((resolve, reject) => {
     upscale({
       ...params,
       upscaler_1: params.upscaler_1 ?? "R-ESRGAN 4x+",
       upscaler_2: params.upscaler_2 ?? "R-ESRGAN 4x+",
-    })
+    }, opts)
       .then((res) => {
         if (res && res.task_id) {
           const timer = setInterval(async () => {
             try {
-              const progressResult = await progress({ task_id: res.task_id });
+              const progressResult = await progress({ task_id: res.task_id }, opts);
               if (progressResult && progressResult.status === 2) {
                 clearInterval(timer);
                 let imgs = progressResult.imgs;
@@ -334,7 +353,7 @@ export function upscaleSync(params: UpscalseRequest, config?: SyncConfig) {
                     0,
                     progressResult.failed_reason ?? ERROR_GENERATE_IMG_FAILED,
                     '',
-                    progressResult.status,
+                    { task_status: progressResult.status },
                   )
                 );
               }
@@ -351,93 +370,39 @@ export function upscaleSync(params: UpscalseRequest, config?: SyncConfig) {
   });
 }
 
-export function cleanup(params: CleanupRequest) {
-  return httpFetchV3({
-    url: "/v3/cleanup",
-    method: "POST",
-    data: params,
-  }).then((res: CleanupResponse) => {
-    if (res.code && res.code !== ResponseCodeV3.OK) {
-      throw new NovitaError(res.code, res.message || '', res.reason, undefined, res.metadata);
-    }
-    return res;
-  });
+function apiRequestV3<T, R>(url: string): (p: T, o?: RequestOpts) => Promise<R> {
+  return (params: T, opts?: any): Promise<R> => {
+    return httpFetchV3({
+      url: url,
+      method: "POST",
+      data: params,
+      opts,
+    }).then((res: any) => {
+      if (res.code && res.code !== ResponseCodeV3.OK) {
+        throw new NovitaError(res.code, res.message || '', res.reason, res.metadata);
+      }
+      return res;
+    });
+  }
 }
 
-export function outpainting(params: OutpaintingRequest) {
-  return httpFetchV3({
-    url: "/v3/outpainting",
-    method: "POST",
-    data: params,
-  }).then((res: OutpaintingResponse) => {
-    if (res.code && res.code !== ResponseCodeV3.OK) {
-      throw new NovitaError(res.code, res.message || '', res.reason, undefined, res.metadata);
-    }
-    return res;
-  });
-}
+export const cleanup: (p: CleanupRequest, opts?: any) => Promise<CleanupResponse> =
+  apiRequestV3<CleanupRequest, CleanupResponse>("/v3/cleanup")
 
-export function removeBackground(params: RemoveBackgroundRequest) {
-  return httpFetchV3({
-    url: "/v3/remove-background",
-    method: "POST",
-    data: params,
-  }).then((res: RemoveBackgroundResponse) => {
-    if (res.code && res.code !== ResponseCodeV3.OK) {
-      throw new NovitaError(res.code, res.message || '', res.reason, undefined, res.metadata);
-    }
-    return res;
-  });
-}
+export const outpainting: (p: OutpaintingRequest, opts?: any) => Promise<OutpaintingResponse> =
+  apiRequestV3<OutpaintingRequest, OutpaintingResponse>("/v3/outpainting")
 
-export function replaceBackground(params: ReplaceBackgroundRequest) {
-  return httpFetchV3({
-    url: "/v3/replace-background",
-    method: "POST",
-    data: params,
-  }).then((res: ReplaceBackgroundResponse) => {
-    if (res.code && res.code !== ResponseCodeV3.OK) {
-      throw new NovitaError(res.code, res.message || '', res.reason, undefined, res.metadata);
-    }
-    return res;
-  });
-}
+export const removeBackground: (p: RemoveBackgroundRequest, opts?: any) => Promise<RemoveBackgroundResponse> =
+  apiRequestV3<RemoveBackgroundRequest, RemoveBackgroundResponse>("/v3/remove-background")
 
-export function mixpose(params: MixPoseRequest) {
-  return httpFetchV3({
-    url: "/v3/mix-pose",
-    method: "POST",
-    data: params,
-  }).then((res: MixPoseResponse) => {
-    if (res.code && res.code !== ResponseCodeV3.OK) {
-      throw new NovitaError(res.code, res.message || '', res.reason, undefined, res.metadata);
-    }
-    return res;
-  });
-}
+export const replaceBackground: (p: ReplaceBackgroundRequest, opts?: any) => Promise<ReplaceBackgroundResponse> =
+  apiRequestV3<ReplaceBackgroundRequest, ReplaceBackgroundResponse>("/v3/replace-background")
 
-export function doodle(params: DoodleRequest) {
-  return httpFetchV3({
-    url: "/v3/doodle",
-    method: "POST",
-    data: params,
-  }).then((res: DoodleResponse) => {
-    if (res.code && res.code !== ResponseCodeV3.OK) {
-      throw new NovitaError(res.code, res.message || '', res.reason, undefined, res.metadata);
-    }
-    return res;
-  });
-}
+export const mixpose: (p: MixPoseRequest, opts?: any) => Promise<MixPoseResponse> =
+  apiRequestV3<MixPoseRequest, MixPoseResponse>("/v3/mix-pose")
 
-export function lcmTxt2Img(params: lcmTxt2ImgRequest) {
-  return httpFetchV3({
-    url: "/v3/lcm-txt2img",
-    method: "POST",
-    data: params,
-  }).then((res: lcmTxt2ImgResponse) => {
-    if (res.code && res.code !== ResponseCodeV3.OK) {
-      throw new NovitaError(res.code, res.message || '', res.reason, undefined, res.metadata);
-    }
-    return res;
-  });
-}
+export const doodle: (p: DoodleRequest, opts?: any) => Promise<DoodleResponse> =
+  apiRequestV3<DoodleRequest, DoodleResponse>("/v3/doodle")
+
+export const lcmTxt2Img: (p: lcmTxt2ImgRequest, opts?: any) => Promise<lcmTxt2ImgResponse> =
+  apiRequestV3<lcmTxt2ImgRequest, lcmTxt2ImgResponse>("/v3/lcm-txt2img")

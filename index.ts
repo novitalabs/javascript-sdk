@@ -1,5 +1,3 @@
-// import NovitaError from "./src/error";
-
 export {
   setNovitaKey,
   getModels,
@@ -16,6 +14,9 @@ export { NovitaSDK } from "./src/class";
 export { NovitaError } from "./src/error";
 
 export {
+  ResponseCodeV2,
+  ResponseCodeV3,
+  APIErrReasonV3,
   Txt2ImgRequest,
   Txt2ImgResponse,
   Img2imgRequest,

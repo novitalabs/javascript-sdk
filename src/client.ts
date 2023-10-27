@@ -70,8 +70,6 @@ export function httpFetch({
   }
   if (Novita_Config.key) {
     headers["Authorization"] = Novita_Config.key
-  } else {
-    headers["X-Novita-Auth-Type"] = "anon"
   }
 
   return axios({

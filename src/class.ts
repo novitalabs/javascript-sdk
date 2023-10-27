@@ -72,8 +72,6 @@ export class NovitaSDK {
     }
     if (this.key) {
       headers["Authorization"] = this.key
-    } else {
-      headers["X-Novita-Auth-Type"] = "anon"
     }
 
     return axios({

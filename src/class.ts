@@ -167,7 +167,7 @@ export class NovitaSDK {
     });
   }
 
-  txt2Img(params: Txt2ImgRequest) {
+  txt2Img(params: Txt2ImgRequest, opts?: any) {
     return this.httpFetch({
       url: "/v2/txt2img",
       method: "POST",
@@ -175,6 +175,7 @@ export class NovitaSDK {
         ...params,
         prompt: addLoraPrompt(generateLoraString(params.lora), params.prompt),
       },
+      opts,
     }).then((res: Txt2ImgResponse) => {
       if (res.code !== ResponseCodeV2.OK) {
         throw new NovitaError(res.code, res.msg);
@@ -183,7 +184,7 @@ export class NovitaSDK {
     });
   }
 
-  img2img(params: Img2imgRequest) {
+  img2img(params: Img2imgRequest, opts?: any) {
     return this.httpFetch({
       url: "/v2/img2img",
       method: "POST",
@@ -191,6 +192,7 @@ export class NovitaSDK {
         ...params,
         prompt: addLoraPrompt(generateLoraString(params.lora), params.prompt),
       },
+      opts,
     }).then((res: Txt2ImgResponse) => {
       if (res.code !== ResponseCodeV2.OK) {
         throw new NovitaError(res.code, res.msg);
@@ -199,13 +201,14 @@ export class NovitaSDK {
     });
   }
 
-  progress(params: ProgressRequest) {
+  progress(params: ProgressRequest, opts?: any) {
     return this.httpFetch({
       url: "/v2/progress",
       method: "GET",
       query: {
         ...params,
       },
+      opts,
     }).then((res: ProgressResponse) => {
       if (res.code !== ResponseCodeV2.OK) {
         throw new NovitaError(res.code, res.msg);
@@ -214,19 +217,19 @@ export class NovitaSDK {
     });
   }
 
-  txt2ImgSync(params: Txt2ImgRequest, config?: SyncConfig): Promise<any> {
+  txt2ImgSync(params: Txt2ImgRequest, config?: SyncConfig, opts?: any): Promise<any> {
     return new Promise((resolve, reject) => {
       this.txt2Img({
         ...params,
         prompt: addLoraPrompt(generateLoraString(params.lora), params.prompt),
-      })
+      }, opts)
         .then((res) => {
           if (res && res.task_id) {
             const timer = setInterval(async () => {
               try {
                 const progressResult = await this.progress({
                   task_id: res.task_id,
-                });
+                }, opts);
                 if (progressResult && progressResult.status === 2) {
                   clearInterval(timer);
                   let imgs = progressResult.imgs;
@@ -263,19 +266,19 @@ export class NovitaSDK {
     });
   }
 
-  img2imgSync(params: Img2imgRequest, config?: SyncConfig): Promise<any> {
+  img2imgSync(params: Img2imgRequest, config?: SyncConfig, opts?: any): Promise<any> {
     return new Promise((resolve, reject) => {
       this.img2img({
         ...params,
         prompt: addLoraPrompt(generateLoraString(params.lora), params.prompt),
-      })
+      }, opts)
         .then((res) => {
           if (res && res.task_id) {
             const timer = setInterval(async () => {
               try {
                 const progressResult = await this.progress({
                   task_id: res.task_id,
-                });
+                }, opts);
                 if (progressResult && progressResult.status === 2) {
                   clearInterval(timer);
                   let imgs = progressResult.imgs;
@@ -312,7 +315,7 @@ export class NovitaSDK {
     });
   }
 
-  upscale(params: UpscalseRequest) {
+  upscale(params: UpscalseRequest, opts?: any) {
     return this.httpFetch({
       url: "/v2/upscale",
       method: "POST",
@@ -321,6 +324,7 @@ export class NovitaSDK {
         upscaler_1: params.upscaler_1 ?? "R-ESRGAN 4x+",
         upscaler_2: params.upscaler_2 ?? "R-ESRGAN 4x+",
       },
+      opts,
     }).then((res: UpscaleResponse) => {
       if (res.code !== ResponseCodeV2.OK) {
         throw new NovitaError(res.code, res.msg);
@@ -329,20 +333,20 @@ export class NovitaSDK {
     });
   }
 
-  upscaleSync(params: UpscalseRequest, config?: SyncConfig) {
+  upscaleSync(params: UpscalseRequest, config?: SyncConfig, opts?: any) {
     return new Promise((resolve, reject) => {
       this.upscale({
         ...params,
         upscaler_1: params.upscaler_1 ?? "R-ESRGAN 4x+",
         upscaler_2: params.upscaler_2 ?? "R-ESRGAN 4x+",
-      })
+      }, opts)
         .then((res) => {
           if (res && res.task_id) {
             const timer = setInterval(async () => {
               try {
                 const progressResult = await this.progress({
                   task_id: res.task_id,
-                });
+                }, opts);
                 if (progressResult && progressResult.status === 2) {
                   clearInterval(timer);
                   let imgs = progressResult.imgs;

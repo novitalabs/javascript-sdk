@@ -5,6 +5,7 @@ import {
   Img2imgRequest,
   ProgressRequest,
   ProgressResponse,
+  ProgressV3Response,
   ResponseCodeV2,
   SyncConfig,
   Txt2ImgRequest,
@@ -24,8 +25,13 @@ import {
   MixPoseResponse,
   DoodleRequest,
   DoodleResponse,
-  lcmTxt2ImgRequest,
-  lcmTxt2ImgResponse,
+  LcmTxt2ImgRequest,
+  LcmTxt2ImgResponse,
+  ReplaceSkyRequest,
+  ReplaceSkyResponse,
+  ReplaceObjectRequest,
+  ReplaceObjectResponse,
+  TaskStatus,
 } from "./types";
 import { addLoraPrompt, generateLoraString, readImgtoBase64 } from "./util";
 import { ERROR_GENERATE_IMG_FAILED } from "./enum";
@@ -61,10 +67,6 @@ export class NovitaSDK {
     opts?: RequestOpts;
   }) {
     let fetchUrl = this.BASE_URL + url;
-
-    if (query) {
-      fetchUrl += "?" + new URLSearchParams(query).toString();
-    }
 
     const headers: HeadersInit = {
       "Content-Type": "application/json",
@@ -102,9 +104,6 @@ export class NovitaSDK {
     opts?: RequestOpts;
   }) {
     let fetchUrl = this.BASE_URL + url;
-    if (query) {
-      fetchUrl += new URLSearchParams(query).toString();
-    }
     const headers: HeadersInit = {
       "Content-Type": "application/json",
       "X-Novita-Source": opts?.source || `js-sdk-novita/${process.env.VERSION}`,
@@ -383,17 +382,93 @@ export class NovitaSDK {
     });
   }
 
-  cleanup: (params: CleanupRequest, opts?: any) => Promise<CleanupResponse> = this._apiRequestV3<CleanupRequest, CleanupResponse>("/v3/cleanup")
+  progressV3(params: ProgressRequest, opts?: RequestOpts) {
+    console.log('progress V3', params, opts)
+    return this.httpFetchV3({
+      url: "/v3/async/task-result",
+      method: "GET",
+      query: params,
+      opts,
+    }).then((res: ProgressV3Response) => {
+      if (res.code && res.code !== ResponseCodeV3.OK) {
+        throw new NovitaError(res.code, res.message || '', res.reason, res.metadata);
+      }
+      return res;
+    });
+  }
 
-  outpainting: (params: OutpaintingRequest, opts?: any) => Promise<OutpaintingResponse> = this._apiRequestV3<OutpaintingRequest, OutpaintingResponse>("/v3/outpainting")
+  cleanup: (params: CleanupRequest, opts?: any) => Promise<CleanupResponse> =
+    this._apiRequestV3<CleanupRequest, CleanupResponse>("/v3/cleanup")
 
-  removeBackground: (params: RemoveBackgroundRequest, opts?: any) => Promise<RemoveBackgroundResponse> = this._apiRequestV3<RemoveBackgroundRequest, RemoveBackgroundResponse>("/v3/remove-background")
+  outpainting: (params: OutpaintingRequest, opts?: any) => Promise<OutpaintingResponse> =
+    this._apiRequestV3<OutpaintingRequest, OutpaintingResponse>("/v3/outpainting")
 
-  replaceBackground: (params: ReplaceBackgroundRequest, opts?: any) => Promise<ReplaceBackgroundResponse> = this._apiRequestV3<ReplaceBackgroundRequest, ReplaceBackgroundResponse>("/v3/replace-background")
+  removeBackground: (params: RemoveBackgroundRequest, opts?: any) => Promise<RemoveBackgroundResponse> =
+    this._apiRequestV3<RemoveBackgroundRequest, RemoveBackgroundResponse>("/v3/remove-background")
 
-  mixpose: (p: MixPoseRequest, opts?: any) => Promise<MixPoseResponse> = this._apiRequestV3<MixPoseRequest, MixPoseResponse>("/v3/mix-pose")
+  replaceBackground: (params: ReplaceBackgroundRequest, opts?: any) => Promise<ReplaceBackgroundResponse> =
+    this._apiRequestV3<ReplaceBackgroundRequest, ReplaceBackgroundResponse>("/v3/replace-background")
 
-  doodle: (p: DoodleRequest, opts?: any) => Promise<DoodleResponse> = this._apiRequestV3<DoodleRequest, DoodleResponse>("/v3/doodle")
+  mixpose: (p: MixPoseRequest, opts?: any) => Promise<MixPoseResponse> =
+    this._apiRequestV3<MixPoseRequest, MixPoseResponse>("/v3/mix-pose")
 
-  lcmTxt2Img: (p: lcmTxt2ImgRequest, opts?: any) => Promise<lcmTxt2ImgResponse> = this._apiRequestV3<lcmTxt2ImgRequest, lcmTxt2ImgResponse>("/v3/lcm-txt2img")
+  doodle: (p: DoodleRequest, opts?: any) => Promise<DoodleResponse> =
+    this._apiRequestV3<DoodleRequest, DoodleResponse>("/v3/doodle")
+
+  lcmTxt2Img: (p: LcmTxt2ImgRequest, opts?: any) => Promise<LcmTxt2ImgResponse> =
+    this._apiRequestV3<LcmTxt2ImgRequest, LcmTxt2ImgResponse>("/v3/lcm-txt2img")
+
+  replaceSky: (p: ReplaceSkyRequest, opts?: any) => Promise<ReplaceSkyResponse> =
+    this._apiRequestV3<ReplaceSkyRequest, ReplaceSkyResponse>("/v3/replace-sky")
+
+  replaceObject: (p: ReplaceObjectRequest, opts?: any) => Promise<ReplaceObjectResponse> =
+    this._apiRequestV3<ReplaceObjectRequest, ReplaceObjectResponse>("/v3/async/replace-object")
+
+  replaceObjectSync(params: ReplaceObjectRequest, config?: SyncConfig, opts?: any): Promise<string[]> {
+    return new Promise((resolve, reject) => {
+      this.replaceObject(params, opts)
+        .then((res) => {
+          if (res && res.task_id) {
+            const timer = setInterval(async () => {
+              try {
+                const progressResult = await this.progressV3({
+                  task_id: res.task_id,
+                }, opts);
+                if (progressResult && progressResult.task.status === TaskStatus.SUCCEED) {
+                  clearInterval(timer);
+                  let imgsBase64: string[] = [];
+                  if (config?.img_type === "base64") {
+                    imgsBase64 = await Promise.all(
+                      progressResult.images.map((img) => readImgtoBase64(img.image_url))
+                    );
+                  } else {
+                    imgsBase64 = progressResult.images.map((img) => img.image_url);
+                  }
+                  resolve(imgsBase64);
+                } else if (
+                  progressResult &&
+                  (progressResult.task.status === TaskStatus.FAILED)
+                ) {
+                  clearInterval(timer);
+                  reject(
+                    new NovitaError(
+                      0,
+                      progressResult.task.reason ?? ERROR_GENERATE_IMG_FAILED,
+                      '',
+                      { task_status: progressResult.task.status },
+                    )
+                  );
+                }
+              } catch (error) {
+                clearInterval(timer);
+                reject(error);
+              }
+            }, config?.interval ?? 1000);
+          } else {
+            reject(new NovitaError(-1, "Failed to start the task."));
+          }
+        })
+        .catch(reject);
+    });
+  }
 }

@@ -224,6 +224,32 @@ type ResizeMode0Attributes = UpscaleBaseAttributes & {
 
 export type UpscalseRequest = ResizeMode1Attributes | ResizeMode0Attributes;
 
+export type UpscaleResponse = {
+  code: ResponseCodeV2;
+  msg: string;
+  data: {
+    task_id: string;
+  };
+};
+
+export type ProgressRequest = {
+  task_id: string;
+};
+
+export type ProgressResponse = {
+  code: ResponseCodeV2;
+  msg: string;
+  data: {
+    status: number;
+    progress: number;
+    eta_relative: number;
+    imgs: Array<string>;
+    info: string | undefined;
+    failed_reason: string | undefined;
+    current_images?: string | undefined | null | Array<string>;
+  };
+};
+
 type FailedV3Response = {
   code?: ResponseCodeV3;
   reason?: string;
@@ -239,6 +265,30 @@ type GenImgResponse = {
   image_file: string;
   image_type: string;
 }
+type AsyncV3Response = {
+  task_id: string
+} & FailedV3Response
+
+
+export enum TaskStatus {
+  SUCCEED = "TASK_STATUS_SUCCEED",
+  FAILED = "TASK_STATUS_FAILED",
+  QUEUED = "TASK_STATUS_QUEUED",
+}
+type Task = {
+  task_id: string,
+  status: TaskStatus
+  reason?: string
+}
+
+export type ProgressV3Response = {
+  task: Task,
+  images: {
+    image_url: string,
+    image_type: string,
+    image_url_ttl: number,
+  }[],
+} & FailedV3Response
 
 export type CleanupRequest = {
   image_file: string;
@@ -280,7 +330,7 @@ export type DoodleRequest = {
 } & GenImgTypeRequest
 export type DoodleResponse = GenImgResponse & FailedV3Response
 
-export type lcmTxt2ImgRequest = {
+export type LcmTxt2ImgRequest = {
   prompt: string;
   height: number;
   width: number;
@@ -288,32 +338,27 @@ export type lcmTxt2ImgRequest = {
   steps: number;
   guidance_scale: number;
 }
-export type lcmTxt2ImgResponse = {
+export type LcmTxt2ImgResponse = {
   images: GenImgResponse[]
 } & FailedV3Response
 
-export type UpscaleResponse = {
-  code: ResponseCodeV2;
-  msg: string;
-  data: {
-    task_id: string;
-  };
-};
+export enum SkyType {
+  bluesky = "bluesky",
+  sunset = "sunset",
+  sunrise = "sunrise",
+  galaxy = "galaxy",
+}
+export type ReplaceSkyRequest = {
+  image_file: string,
+  sky: SkyType
+} & GenImgTypeRequest
+export type ReplaceSkyResponse = GenImgResponse & FailedV3Response
 
-export type ProgressRequest = {
-  task_id: string;
-};
+export type ReplaceObjectRequest = {
+  image_file: string,
+  prompt: string,
+  negative_prompt: string,
+  object_prompt: string,
+} & GenImgTypeRequest
+export type ReplaceObjectResponse = AsyncV3Response
 
-export type ProgressResponse = {
-  code: ResponseCodeV2;
-  msg: string;
-  data: {
-    status: number;
-    progress: number;
-    eta_relative: number;
-    imgs: Array<string>;
-    info: string | undefined;
-    failed_reason: string | undefined;
-    current_images?: string | undefined | null | Array<string>;
-  };
-};

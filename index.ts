@@ -16,6 +16,9 @@ export { NovitaError } from "./src/error";
 export {
   ResponseCodeV2,
   ResponseCodeV3,
+  ProgressResponse,
+  ProgressV3Response,
+  TaskStatus,
   APIErrReasonV3,
   Txt2ImgRequest,
   Txt2ImgResponse,
@@ -37,6 +40,13 @@ export {
   MixPoseResponse,
   DoodleRequest,
   DoodleResponse,
+  LcmTxt2ImgRequest,
+  LcmTxt2ImgResponse,
+  SkyType,
+  ReplaceSkyRequest,
+  ReplaceSkyResponse,
+  ReplaceObjectRequest,
+  ReplaceObjectResponse,
 } from "./src/types";
 
 export { ControlNetPreprocessor, ControlNetMode, ModelType } from "./src/enum";

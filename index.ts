@@ -47,6 +47,14 @@ export {
   ReplaceSkyResponse,
   ReplaceObjectRequest,
   ReplaceObjectResponse,
+  MergeFaceRequest,
+  MergeFaceResponse,
+  RemoveTextRequest,
+  RemoveTextResponse,
+  RestoreFaceRequest,
+  RestoreFaceResponse,
+  ReimagineRequest,
+  ReimagineResponse,
 } from "./src/types";
 
 export { ControlNetPreprocessor, ControlNetMode, ModelType } from "./src/enum";

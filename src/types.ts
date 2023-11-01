@@ -362,3 +362,24 @@ export type ReplaceObjectRequest = {
 } & GenImgTypeRequest
 export type ReplaceObjectResponse = AsyncV3Response
 
+export type MergeFaceRequest = {
+  face_image_file: string,
+  image_file: string,
+} & GenImgTypeRequest
+export type MergeFaceResponse = GenImgResponse & FailedV3Response
+
+export type RemoveTextRequest = {
+  image_file: string
+} & GenImgTypeRequest
+export type RemoveTextResponse = GenImgResponse & FailedV3Response
+
+export type RestoreFaceRequest = {
+  image_file: string,
+  fidelity: number,
+} & GenImgTypeRequest
+export type RestoreFaceResponse = GenImgResponse & FailedV3Response
+
+export type ReimagineRequest = {
+  image_file: string,
+} & GenImgTypeRequest
+export type ReimagineResponse = GenImgResponse & FailedV3Response

@@ -34,6 +34,14 @@ import {
   ReplaceSkyResponse,
   ReplaceObjectRequest,
   ReplaceObjectResponse,
+  MergeFaceRequest,
+  MergeFaceResponse,
+  RemoveTextRequest,
+  RemoveTextResponse,
+  RestoreFaceRequest,
+  RestoreFaceResponse,
+  ReimagineRequest,
+  ReimagineResponse,
 } from "./types";
 import { addLoraPrompt, generateLoraString, readImgtoBase64 } from "./util";
 import { NovitaError } from "./error";
@@ -473,3 +481,14 @@ export const replaceObjectSync: (params: ReplaceObjectRequest, config?: SyncConf
     });
   }
 
+export const mergeFace: (p: MergeFaceRequest, opts?: any) => Promise<MergeFaceResponse> =
+  apiRequestV3<MergeFaceRequest, MergeFaceResponse>("/v3/merge-face")
+
+export const removeText: (p: RemoveTextRequest, opts?: any) => Promise<RemoveTextResponse> =
+  apiRequestV3<RemoveTextRequest, RemoveTextResponse>("/v3/remove-text")
+
+export const restoreFace: (p: RestoreFaceRequest, opts?: any) => Promise<RestoreFaceResponse> =
+  apiRequestV3<RestoreFaceRequest, RestoreFaceResponse>("/v3/restore-face")
+
+export const reimagine: (p: ReimagineRequest, opts?: any) => Promise<ReimagineResponse> =
+  apiRequestV3<ReimagineRequest, ReimagineResponse>("/v3/reimagine")

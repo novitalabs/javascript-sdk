@@ -32,6 +32,14 @@ import {
   ReplaceObjectRequest,
   ReplaceObjectResponse,
   TaskStatus,
+  MergeFaceRequest,
+  MergeFaceResponse,
+  RemoveTextRequest,
+  RemoveTextResponse,
+  RestoreFaceRequest,
+  RestoreFaceResponse,
+  ReimagineRequest,
+  ReimagineResponse,
 } from "./types";
 import { addLoraPrompt, generateLoraString, readImgtoBase64 } from "./util";
 import { ERROR_GENERATE_IMG_FAILED } from "./enum";
@@ -471,4 +479,16 @@ export class NovitaSDK {
         .catch(reject);
     });
   }
+
+  mergeFace: (p: MergeFaceRequest, opts?: any) => Promise<MergeFaceResponse> =
+    this._apiRequestV3<MergeFaceRequest, MergeFaceResponse>("/v3/merge-face")
+  
+  removeText: (p: RemoveTextRequest, opts?: any) => Promise<RemoveTextResponse> =
+    this._apiRequestV3<RemoveTextRequest, RemoveTextResponse>("/v3/remove-text")
+
+  restoreFace: (p: RestoreFaceRequest, opts?: any) => Promise<RestoreFaceResponse> =
+    this._apiRequestV3<RestoreFaceRequest, RestoreFaceResponse>("/v3/restore-face")
+
+  reimagine: (p: ReimagineRequest, opts?: any) => Promise<ReimagineResponse> =
+    this._apiRequestV3<ReimagineRequest, ReimagineResponse>("/v3/reimagine")
 }

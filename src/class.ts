@@ -40,6 +40,8 @@ import {
   RestoreFaceResponse,
   ReimagineRequest,
   ReimagineResponse,
+  CreateTileRequest,
+  CreateTileResponse,
 } from "./types";
 import { addLoraPrompt, generateLoraString, readImgtoBase64 } from "./util";
 import { ERROR_GENERATE_IMG_FAILED } from "./enum";
@@ -491,4 +493,7 @@ export class NovitaSDK {
 
   reimagine: (p: ReimagineRequest, opts?: any) => Promise<ReimagineResponse> =
     this._apiRequestV3<ReimagineRequest, ReimagineResponse>("/v3/reimagine")
+
+  createTile: (p: CreateTileRequest, opts?: any) => Promise<CreateTileResponse> =
+    this._apiRequestV3<CreateTileRequest, CreateTileResponse>("/v3/create-tile")
 }

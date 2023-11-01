@@ -55,6 +55,8 @@ export {
   RestoreFaceResponse,
   ReimagineRequest,
   ReimagineResponse,
+  CreateTileRequest,
+  CreateTileResponse,
 } from "./src/types";
 
 export { ControlNetPreprocessor, ControlNetMode, ModelType } from "./src/enum";

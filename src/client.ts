@@ -42,6 +42,8 @@ import {
   RestoreFaceResponse,
   ReimagineRequest,
   ReimagineResponse,
+  CreateTileRequest,
+  CreateTileResponse,
 } from "./types";
 import { addLoraPrompt, generateLoraString, readImgtoBase64 } from "./util";
 import { NovitaError } from "./error";
@@ -492,3 +494,6 @@ export const restoreFace: (p: RestoreFaceRequest, opts?: any) => Promise<Restore
 
 export const reimagine: (p: ReimagineRequest, opts?: any) => Promise<ReimagineResponse> =
   apiRequestV3<ReimagineRequest, ReimagineResponse>("/v3/reimagine")
+
+export const createTile: (p: CreateTileRequest, opts?: any) => Promise<CreateTileResponse> =
+  apiRequestV3<CreateTileRequest, CreateTileResponse>("/v3/create-tile")

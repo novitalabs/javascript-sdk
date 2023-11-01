@@ -383,3 +383,11 @@ export type ReimagineRequest = {
   image_file: string,
 } & GenImgTypeRequest
 export type ReimagineResponse = GenImgResponse & FailedV3Response
+
+export type CreateTileRequest = {
+  prompt: string,
+  negative_prompt: string,
+  width: number,
+  height: number,
+} & GenImgTypeRequest
+export type CreateTileResponse = GenImgResponse & FailedV3Response

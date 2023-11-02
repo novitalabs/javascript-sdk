@@ -44,6 +44,7 @@ import {
   ReimagineResponse,
   CreateTileRequest,
   CreateTileResponse,
+  Upscalers,
 } from "./types";
 import { addLoraPrompt, generateLoraString, readImgtoBase64 } from "./util";
 import { NovitaError } from "./error";
@@ -198,8 +199,8 @@ export function upscale(params: UpscaleRequest, opts?: RequestOpts) {
     method: "POST",
     data: {
       ...params,
-      upscaler_1: params.upscaler_1 ?? "R-ESRGAN 4x+",
-      upscaler_2: params.upscaler_2 ?? "R-ESRGAN 4x+",
+      upscaler_1: params.upscaler_1 ?? Upscalers.R_ESRGAN_4x_plus,
+      upscaler_2: params.upscaler_2 ?? Upscalers.R_ESRGAN_4x_plus,
     },
     opts,
   }).then((res: UpscaleResponse) => {
@@ -333,8 +334,8 @@ export function upscaleSync(params: UpscaleRequest, config?: SyncConfig, opts?: 
   return new Promise((resolve, reject) => {
     upscale({
       ...params,
-      upscaler_1: params.upscaler_1 ?? "R-ESRGAN 4x+",
-      upscaler_2: params.upscaler_2 ?? "R-ESRGAN 4x+",
+      upscaler_1: params.upscaler_1 ?? Upscalers.R_ESRGAN_4x_plus,
+      upscaler_2: params.upscaler_2 ?? Upscalers.R_ESRGAN_4x_plus,
     }, opts)
       .then((res) => {
         if (res && res.task_id) {

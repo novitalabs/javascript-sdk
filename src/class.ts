@@ -42,6 +42,7 @@ import {
   ReimagineResponse,
   CreateTileRequest,
   CreateTileResponse,
+  Upscalers,
 } from "./types";
 import { addLoraPrompt, generateLoraString, readImgtoBase64 } from "./util";
 import { ERROR_GENERATE_IMG_FAILED } from "./enum";
@@ -330,8 +331,8 @@ export class NovitaSDK {
       method: "POST",
       data: {
         ...params,
-        upscaler_1: params.upscaler_1 ?? "R-ESRGAN 4x+",
-        upscaler_2: params.upscaler_2 ?? "R-ESRGAN 4x+",
+        upscaler_1: params.upscaler_1 ?? Upscalers.R_ESRGAN_4x_plus,
+        upscaler_2: params.upscaler_2 ?? Upscalers.R_ESRGAN_4x_plus,
       },
       opts,
     }).then((res: UpscaleResponse) => {
@@ -346,8 +347,8 @@ export class NovitaSDK {
     return new Promise((resolve, reject) => {
       this.upscale({
         ...params,
-        upscaler_1: params.upscaler_1 ?? "R-ESRGAN 4x+",
-        upscaler_2: params.upscaler_2 ?? "R-ESRGAN 4x+",
+        upscaler_1: params.upscaler_1 ?? Upscalers.R_ESRGAN_4x_plus,
+        upscaler_2: params.upscaler_2 ?? Upscalers.R_ESRGAN_4x_plus,
       }, opts)
         .then((res) => {
           if (res && res.task_id) {

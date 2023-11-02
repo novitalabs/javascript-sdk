@@ -222,7 +222,23 @@ type ResizeMode0Attributes = UpscaleBaseAttributes & {
   upscaling_resize: number;
 };
 
-export type UpscalseRequest = ResizeMode1Attributes | ResizeMode0Attributes;
+export enum Upscalers {
+  ESRGAN_4x = "ESRGAN_4x",
+  R_ESRGAN_4x_plus = "R-ESRGAN 4x+",
+  R_ESRGAN_4x_plus_Anime6B = "R-ESRGAN 4x+ Anime6B",
+}
+
+export type UpscaleRequest = (ResizeMode1Attributes | ResizeMode0Attributes) & {
+  image: string,
+  upscaling_crop?: boolean,
+  upscaler_1?: Upscalers,
+  upscaler_2?: Upscalers,
+  extras_upscaler_2_visibility?: number,
+  gfpgan_visibility?: number,
+  codeformer_visibility?: number,
+  codeformer_weight?: number,
+  img_expire_ttl?: number
+}
 
 export type UpscaleResponse = {
   code: ResponseCodeV2;

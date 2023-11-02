@@ -14,6 +14,9 @@ export default {
     file: pkg.browser,
     format: "umd",
     sourcemap: true,
+    globals: {
+      axios: "axios"
+    },
   },
   plugins: [
     resolve(),

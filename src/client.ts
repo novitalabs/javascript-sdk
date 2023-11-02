@@ -14,7 +14,7 @@ import {
   Txt2ImgRequest,
   Txt2ImgResponse,
   UpscaleResponse,
-  UpscalseRequest,
+  UpscaleRequest,
   OutpaintingRequest,
   OutpaintingResponse,
   ResponseCodeV3,
@@ -192,7 +192,7 @@ export function img2img(params: Img2imgRequest, opts?: RequestOpts) {
   });
 }
 
-export function upscale(params: UpscalseRequest, opts?: RequestOpts) {
+export function upscale(params: UpscaleRequest, opts?: RequestOpts) {
   return httpFetch({
     url: "/v2/upscale",
     method: "POST",
@@ -329,7 +329,7 @@ export function img2imgSync(
   });
 }
 
-export function upscaleSync(params: UpscalseRequest, config?: SyncConfig, opts?: RequestOpts) {
+export function upscaleSync(params: UpscaleRequest, config?: SyncConfig, opts?: RequestOpts) {
   return new Promise((resolve, reject) => {
     upscale({
       ...params,

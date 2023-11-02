@@ -11,7 +11,7 @@ import {
   Txt2ImgRequest,
   Txt2ImgResponse,
   UpscaleResponse,
-  UpscalseRequest,
+  UpscaleRequest,
   OutpaintingRequest,
   OutpaintingResponse,
   ResponseCodeV3,
@@ -324,7 +324,7 @@ export class NovitaSDK {
     });
   }
 
-  upscale(params: UpscalseRequest, opts?: any) {
+  upscale(params: UpscaleRequest, opts?: any) {
     return this.httpFetch({
       url: "/v2/upscale",
       method: "POST",
@@ -342,7 +342,7 @@ export class NovitaSDK {
     });
   }
 
-  upscaleSync(params: UpscalseRequest, config?: SyncConfig, opts?: any) {
+  upscaleSync(params: UpscaleRequest, config?: SyncConfig, opts?: any) {
     return new Promise((resolve, reject) => {
       this.upscale({
         ...params,

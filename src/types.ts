@@ -198,9 +198,17 @@ export type Img2imgResponse = {
   };
 };
 
-export type UpscaleBaseAttributes = {
+export enum Upscalers {
+  ESRGAN_4x = "ESRGAN_4x",
+  R_ESRGAN_4x_plus = "R-ESRGAN 4x+",
+  R_ESRGAN_4x_plus_Anime6B = "R-ESRGAN 4x+ Anime6B",
+}
+export type UpscaleRequest = {
   image: string,
   resize_mode?: 0 | 1,
+  upscaling_resize_w?: number;
+  upscaling_resize_h?: number;
+  upscaling_resize?: number;
   upscaling_crop?: boolean,
   upscaler_1?: Upscalers,
   upscaler_2?: Upscalers,
@@ -211,25 +219,6 @@ export type UpscaleBaseAttributes = {
   img_expire_ttl?: number
   [key: string]: number | string | undefined | boolean;
 };
-
-type ResizeMode1Attributes = UpscaleBaseAttributes & {
-  resize_mode: 1;
-  upscaling_resize_w: number;
-  upscaling_resize_h: number;
-};
-
-type ResizeMode0Attributes = UpscaleBaseAttributes & {
-  resize_mode: 0;
-  upscaling_resize: number;
-};
-
-export enum Upscalers {
-  ESRGAN_4x = "ESRGAN_4x",
-  R_ESRGAN_4x_plus = "R-ESRGAN 4x+",
-  R_ESRGAN_4x_plus_Anime6B = "R-ESRGAN 4x+ Anime6B",
-}
-
-export type UpscaleRequest = (ResizeMode1Attributes | ResizeMode0Attributes)
 
 export type UpscaleResponse = {
   code: ResponseCodeV2;

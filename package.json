@@ -1,7 +1,7 @@
 {
   "name": "novita-sdk",
   "browser": "dist/index.js",
-  "version": "1.0.19",
+  "version": "1.0.20",
   "keywords": [
     "novita",
     "novita.ai",

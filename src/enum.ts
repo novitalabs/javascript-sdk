@@ -56,7 +56,7 @@ export const ControlNetPreprocessor = {
   INPAINT_ONLY_PLUS_LAMA: "inpaint_only+lama",
   TILE_COLORFIX: "tile_colorfix",
   TILE_COLORFIX_PLUS_SHARP: "tile_colorfix+sharp",
-};
+} as const;
 
 export const ControlNetMode = {
   BALANCED: 0,

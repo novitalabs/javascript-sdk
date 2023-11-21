@@ -120,7 +120,7 @@ export function httpFetchV3({
   if (Novita_Config.key) {
     headers["Authorization"] = Novita_Config.key
   } else {
-    headers["X-Novita-Auth-Type"] = "anon"
+    return Promise.reject(new NovitaError(-1, 'Novita API key is required'))
   }
 
   return axios({

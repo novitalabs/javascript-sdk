@@ -4,7 +4,7 @@ this SDK is based on the official [API documentation](https://docs.novita.ai/)
 
 **join our discord server for help**
 
-[![](https://dcbadge.vercel.app/api/server/2SFYcfajN7)](https://discord.gg/2SFYcfajN7)
+[![](https://dcbadge.vercel.app/api/server/2SFYcfajN7)](https://discord.gg/a3vd9r3uET)
 
 ## Installation, [via npm](https://www.npmjs.com/package/novita-sdk)
 

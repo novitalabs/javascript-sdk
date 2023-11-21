@@ -122,7 +122,7 @@ export class NovitaSDK {
     if (this.key) {
       headers["Authorization"] = this.key
     } else {
-      headers["X-Novita-Auth-Type"] = "anon"
+      return Promise.reject(new NovitaError(-1, 'Novita API key is required'))
     }
     return axios({
       url: fetchUrl,
@@ -394,7 +394,6 @@ export class NovitaSDK {
   }
 
   progressV3(params: ProgressRequest, opts?: RequestOpts) {
-    console.log('progress V3', params, opts)
     return this.httpFetchV3({
       url: "/v3/async/task-result",
       method: "GET",

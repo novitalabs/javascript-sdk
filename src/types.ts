@@ -4,6 +4,8 @@
  * Typescript type definitions for Novita
  */
 
+import { ControlNetPreprocessor } from "./enum";
+
 export type NovitaKey = string | undefined;
 
 export interface NovitaConfig {
@@ -35,9 +37,9 @@ export enum ResponseCodeV3 {
 }
 
 export enum APIErrReasonV3 {
-  ANONYMOUS_ACCESS_QUOTA_EXCEEDS = 'ANONYMOUS_ACCESS_QUOTA_EXCEEDS',
-  BILL_FAILED = 'BILLING_FAILED',
-  INVALID_REQUEST_BODY = 'INVALID_REQUEST_BODY',
+  ANONYMOUS_ACCESS_QUOTA_EXCEEDS = "ANONYMOUS_ACCESS_QUOTA_EXCEEDS",
+  BILL_FAILED = "BILLING_FAILED",
+  INVALID_REQUEST_BODY = "INVALID_REQUEST_BODY",
 }
 
 // getModels dependency status
@@ -52,9 +54,9 @@ export enum ModelType {
 }
 
 export type RequestOpts = {
-  signal?: AbortSignal,
-  source?: string
-}
+  signal?: AbortSignal;
+  source?: string;
+};
 
 export type Model = {
   name: string;
@@ -103,11 +105,14 @@ export type Lora = {
   weight: number;
 };
 
+type ControlNetPreprocessorValues =
+  (typeof ControlNetPreprocessor)[keyof typeof ControlNetPreprocessor];
+
 export type ControlnetUnit = {
   model: string;
   weight: number | undefined;
   control_mode: 0 | 1 | 2;
-  module: string;
+  module: ControlNetPreprocessorValues;
   input_image: string;
   mask?: string | undefined;
   resize_mode?: number | undefined;
@@ -178,7 +183,7 @@ export type Img2imgRequest = {
   init_images: Array<string>;
   sd_vae?: string | undefined;
   clip_skip?: number | undefined;
-  mask?:  string | undefined;
+  mask?: string | undefined;
   resize_mode?: number | undefined;
   image_cfg_scale?: number | undefined;
   mask_blur?: number | undefined;
@@ -188,6 +193,7 @@ export type Img2imgRequest = {
   inpainting_mask_invert?: number | undefined;
   initial_noise_multiplier?: number | undefined;
   lora?: Array<Lora> | undefined;
+  controlnet_units?: Array<ControlnetUnit> | undefined;
 };
 
 export type Img2imgResponse = {
@@ -204,19 +210,19 @@ export enum Upscalers {
   R_ESRGAN_4x_plus_Anime6B = "R-ESRGAN 4x+ Anime6B",
 }
 export type UpscaleRequest = {
-  image: string,
-  resize_mode?: 0 | 1,
+  image: string;
+  resize_mode?: 0 | 1;
   upscaling_resize_w?: number;
   upscaling_resize_h?: number;
   upscaling_resize?: number;
-  upscaling_crop?: boolean,
-  upscaler_1?: Upscalers,
-  upscaler_2?: Upscalers,
-  extras_upscaler_2_visibility?: number,
-  gfpgan_visibility?: number,
-  codeformer_visibility?: number,
-  codeformer_weight?: number,
-  img_expire_ttl?: number
+  upscaling_crop?: boolean;
+  upscaler_1?: Upscalers;
+  upscaler_2?: Upscalers;
+  extras_upscaler_2_visibility?: number;
+  gfpgan_visibility?: number;
+  codeformer_visibility?: number;
+  codeformer_weight?: number;
+  img_expire_ttl?: number;
   [key: string]: number | string | undefined | boolean;
 };
 
@@ -251,20 +257,19 @@ type FailedV3Response = {
   reason?: string;
   message?: string;
   metadata?: any;
-}
+};
 type GenImgTypeRequest = {
   extra?: {
-    response_image_type: "png" | "jpeg" | "webp"
-  }
-}
+    response_image_type: "png" | "jpeg" | "webp";
+  };
+};
 type GenImgResponse = {
   image_file: string;
   image_type: string;
-}
+};
 type AsyncV3Response = {
-  task_id: string
-} & FailedV3Response
-
+  task_id: string;
+} & FailedV3Response;
 
 export enum TaskStatus {
   SUCCEED = "TASK_STATUS_SUCCEED",
@@ -272,25 +277,25 @@ export enum TaskStatus {
   QUEUED = "TASK_STATUS_QUEUED",
 }
 type Task = {
-  task_id: string,
-  status: TaskStatus
-  reason?: string
-}
+  task_id: string;
+  status: TaskStatus;
+  reason?: string;
+};
 
 export type ProgressV3Response = {
-  task: Task,
+  task: Task;
   images: {
-    image_url: string,
-    image_type: string,
-    image_url_ttl: number,
-  }[],
-} & FailedV3Response
+    image_url: string;
+    image_type: string;
+    image_url_ttl: number;
+  }[];
+} & FailedV3Response;
 
 export type CleanupRequest = {
   image_file: string;
   mask_file: string;
-} & GenImgTypeRequest
-export type CleanupResponse = GenImgResponse & FailedV3Response
+} & GenImgTypeRequest;
+export type CleanupResponse = GenImgResponse & FailedV3Response;
 
 export type OutpaintingRequest = {
   image_file: string;
@@ -298,33 +303,33 @@ export type OutpaintingRequest = {
   height: number;
   center_x: number;
   center_y: number;
-} & GenImgTypeRequest
+} & GenImgTypeRequest;
 
-export type OutpaintingResponse = GenImgResponse & FailedV3Response
+export type OutpaintingResponse = GenImgResponse & FailedV3Response;
 
 export type RemoveBackgroundRequest = {
   image_file: string;
-} & GenImgTypeRequest
-export type RemoveBackgroundResponse = GenImgResponse & FailedV3Response
+} & GenImgTypeRequest;
+export type RemoveBackgroundResponse = GenImgResponse & FailedV3Response;
 
 export type ReplaceBackgroundRequest = {
   image_file: string;
   prompt: string;
-} & GenImgTypeRequest
-export type ReplaceBackgroundResponse = GenImgResponse & FailedV3Response
+} & GenImgTypeRequest;
+export type ReplaceBackgroundResponse = GenImgResponse & FailedV3Response;
 
 export type MixPoseRequest = {
-  image_file: string
-  pose_image_file: string
-} & GenImgTypeRequest
-export type MixPoseResponse = GenImgResponse & FailedV3Response
+  image_file: string;
+  pose_image_file: string;
+} & GenImgTypeRequest;
+export type MixPoseResponse = GenImgResponse & FailedV3Response;
 
 export type DoodleRequest = {
   image_file: string;
   prompt: string;
   similarity: number;
-} & GenImgTypeRequest
-export type DoodleResponse = GenImgResponse & FailedV3Response
+} & GenImgTypeRequest;
+export type DoodleResponse = GenImgResponse & FailedV3Response;
 
 export type LcmTxt2ImgRequest = {
   prompt: string;
@@ -333,10 +338,10 @@ export type LcmTxt2ImgRequest = {
   image_num: number;
   steps: number;
   guidance_scale: number;
-}
+};
 export type LcmTxt2ImgResponse = {
-  images: GenImgResponse[]
-} & FailedV3Response
+  images: GenImgResponse[];
+} & FailedV3Response;
 
 export enum SkyType {
   bluesky = "bluesky",
@@ -345,45 +350,45 @@ export enum SkyType {
   galaxy = "galaxy",
 }
 export type ReplaceSkyRequest = {
-  image_file: string,
-  sky: SkyType
-} & GenImgTypeRequest
-export type ReplaceSkyResponse = GenImgResponse & FailedV3Response
+  image_file: string;
+  sky: SkyType;
+} & GenImgTypeRequest;
+export type ReplaceSkyResponse = GenImgResponse & FailedV3Response;
 
 export type ReplaceObjectRequest = {
-  image_file: string,
-  prompt: string,
-  negative_prompt: string,
-  object_prompt: string,
-} & GenImgTypeRequest
-export type ReplaceObjectResponse = AsyncV3Response
+  image_file: string;
+  prompt: string;
+  negative_prompt: string;
+  object_prompt: string;
+} & GenImgTypeRequest;
+export type ReplaceObjectResponse = AsyncV3Response;
 
 export type MergeFaceRequest = {
-  face_image_file: string,
-  image_file: string,
-} & GenImgTypeRequest
-export type MergeFaceResponse = GenImgResponse & FailedV3Response
+  face_image_file: string;
+  image_file: string;
+} & GenImgTypeRequest;
+export type MergeFaceResponse = GenImgResponse & FailedV3Response;
 
 export type RemoveTextRequest = {
-  image_file: string
-} & GenImgTypeRequest
-export type RemoveTextResponse = GenImgResponse & FailedV3Response
+  image_file: string;
+} & GenImgTypeRequest;
+export type RemoveTextResponse = GenImgResponse & FailedV3Response;
 
 export type RestoreFaceRequest = {
-  image_file: string,
-  fidelity: number,
-} & GenImgTypeRequest
-export type RestoreFaceResponse = GenImgResponse & FailedV3Response
+  image_file: string;
+  fidelity: number;
+} & GenImgTypeRequest;
+export type RestoreFaceResponse = GenImgResponse & FailedV3Response;
 
 export type ReimagineRequest = {
-  image_file: string,
-} & GenImgTypeRequest
-export type ReimagineResponse = GenImgResponse & FailedV3Response
+  image_file: string;
+} & GenImgTypeRequest;
+export type ReimagineResponse = GenImgResponse & FailedV3Response;
 
 export type CreateTileRequest = {
-  prompt: string,
-  negative_prompt: string,
-  width: number,
-  height: number,
-} & GenImgTypeRequest
-export type CreateTileResponse = GenImgResponse & FailedV3Response
+  prompt: string;
+  negative_prompt: string;
+  width: number;
+  height: number;
+} & GenImgTypeRequest;
+export type CreateTileResponse = GenImgResponse & FailedV3Response;

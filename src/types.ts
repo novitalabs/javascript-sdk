@@ -4,7 +4,7 @@
  * Typescript type definitions for Novita
  */
 
-import { ControlNetPreprocessor } from "./enum";
+import { ControlNetPreprocessor } from './enum';
 
 export type NovitaKey = string | undefined;
 
@@ -37,9 +37,9 @@ export enum ResponseCodeV3 {
 }
 
 export enum APIErrReasonV3 {
-  ANONYMOUS_ACCESS_QUOTA_EXCEEDS = "ANONYMOUS_ACCESS_QUOTA_EXCEEDS",
-  BILL_FAILED = "BILLING_FAILED",
-  INVALID_REQUEST_BODY = "INVALID_REQUEST_BODY",
+  ANONYMOUS_ACCESS_QUOTA_EXCEEDS = 'ANONYMOUS_ACCESS_QUOTA_EXCEEDS',
+  BILL_FAILED = 'BILLING_FAILED',
+  INVALID_REQUEST_BODY = 'INVALID_REQUEST_BODY',
 }
 
 // getModels dependency status
@@ -49,8 +49,8 @@ export enum ModelStatus {
 }
 
 export enum ModelType {
-  Checkpoint = "checkpoint",
-  Lora = "lora",
+  Checkpoint = 'checkpoint',
+  Lora = 'lora',
 }
 
 export type RequestOpts = {
@@ -163,7 +163,7 @@ export type SyncConfig = {
   // wait time between each request, default 1000ms
   interval?: number;
   // img result, base64 or url, default base64
-  img_type?: "base64" | "url";
+  img_type?: 'base64' | 'url';
 };
 
 export type Img2imgRequest = {
@@ -205,9 +205,9 @@ export type Img2imgResponse = {
 };
 
 export enum Upscalers {
-  ESRGAN_4x = "ESRGAN_4x",
-  R_ESRGAN_4x_plus = "R-ESRGAN 4x+",
-  R_ESRGAN_4x_plus_Anime6B = "R-ESRGAN 4x+ Anime6B",
+  ESRGAN_4x = 'ESRGAN_4x',
+  R_ESRGAN_4x_plus = 'R-ESRGAN 4x+',
+  R_ESRGAN_4x_plus_Anime6B = 'R-ESRGAN 4x+ Anime6B',
 }
 export type UpscaleRequest = {
   image: string;
@@ -260,7 +260,7 @@ type FailedV3Response = {
 };
 type GenImgTypeRequest = {
   extra?: {
-    response_image_type: "png" | "jpeg" | "webp";
+    response_image_type: 'png' | 'jpeg' | 'webp';
   };
 };
 type GenImgResponse = {
@@ -272,9 +272,9 @@ type AsyncV3Response = {
 } & FailedV3Response;
 
 export enum TaskStatus {
-  SUCCEED = "TASK_STATUS_SUCCEED",
-  FAILED = "TASK_STATUS_FAILED",
-  QUEUED = "TASK_STATUS_QUEUED",
+  SUCCEED = 'TASK_STATUS_SUCCEED',
+  FAILED = 'TASK_STATUS_FAILED',
+  QUEUED = 'TASK_STATUS_QUEUED',
 }
 type Task = {
   task_id: string;
@@ -344,10 +344,10 @@ export type LcmTxt2ImgResponse = {
 } & FailedV3Response;
 
 export enum SkyType {
-  bluesky = "bluesky",
-  sunset = "sunset",
-  sunrise = "sunrise",
-  galaxy = "galaxy",
+  bluesky = 'bluesky',
+  sunset = 'sunset',
+  sunrise = 'sunrise',
+  galaxy = 'galaxy',
 }
 export type ReplaceSkyRequest = {
   image_file: string;

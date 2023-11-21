@@ -157,12 +157,7 @@ export class NovitaSDK {
         method: "POST",
         data: params,
         opts,
-      }).then((res: any) => {
-        if (res.code && res.code !== ResponseCodeV3.OK) {
-          throw new NovitaError(res.code, res.message || '', res.reason, res.metadata);
-        }
-        return res;
-      });
+      })
     }
   }
 
@@ -221,7 +216,7 @@ export class NovitaSDK {
       opts,
     }).then((res: ProgressResponse) => {
       if (res.code !== ResponseCodeV2.OK) {
-        throw new NovitaError(res.code, res.msg);
+        throw new NovitaError(res.code, res.msg, "", { ...res.data, task_id: params.task_id });
       }
       return res.data;
     });
@@ -259,7 +254,7 @@ export class NovitaSDK {
                       0,
                       progressResult.failed_reason ?? ERROR_GENERATE_IMG_FAILED,
                       '',
-                      { task_status: progressResult.status },
+                      { task_id: res.task_id, task_status: progressResult.status },
                     )
                   );
                 }
@@ -308,7 +303,7 @@ export class NovitaSDK {
                       0,
                       progressResult.failed_reason ?? ERROR_GENERATE_IMG_FAILED,
                       '',
-                      { task_status: progressResult.status },
+                      { task_id: res.task_id, task_status: progressResult.status },
                     )
                   );
                 }
@@ -376,7 +371,7 @@ export class NovitaSDK {
                       0,
                       progressResult.failed_reason ?? ERROR_GENERATE_IMG_FAILED,
                       '',
-                      { task_status: progressResult.status },
+                      { task_id: res.task_id, task_status: progressResult.status },
                     )
                   );
                 }
@@ -393,18 +388,20 @@ export class NovitaSDK {
     });
   }
 
-  progressV3(params: ProgressRequest, opts?: RequestOpts) {
+  progressV3(params: ProgressRequest, opts?: RequestOpts): Promise<ProgressV3Response> {
     return this.httpFetchV3({
       url: "/v3/async/task-result",
       method: "GET",
       query: params,
       opts,
-    }).then((res: ProgressV3Response) => {
-      if (res.code && res.code !== ResponseCodeV3.OK) {
-        throw new NovitaError(res.code, res.message || '', res.reason, res.metadata);
+    }).catch((error) => {
+      if (error.metadata) {
+        error.metadata.task_id = params.task_id
+      } else {
+        error.metadata = { task_id: params.task_id }
       }
-      return res;
-    });
+      throw error
+    })
   }
 
   cleanup: (params: CleanupRequest, opts?: any) => Promise<CleanupResponse> =
@@ -444,7 +441,7 @@ export class NovitaSDK {
                 const progressResult = await this.progressV3({
                   task_id: res.task_id,
                 }, opts);
-                if (progressResult && progressResult.task.status === TaskStatus.SUCCEED) {
+                if (progressResult.task.status === TaskStatus.SUCCEED && progressResult.images) {
                   clearInterval(timer);
                   let imgsBase64: string[] = [];
                   if (config?.img_type === "base64") {
@@ -455,17 +452,24 @@ export class NovitaSDK {
                     imgsBase64 = progressResult.images.map((img) => img.image_url);
                   }
                   resolve(imgsBase64);
-                } else if (
-                  progressResult &&
-                  (progressResult.task.status === TaskStatus.FAILED)
-                ) {
+                } else if (progressResult.task.status === TaskStatus.FAILED) {
                   clearInterval(timer);
                   reject(
                     new NovitaError(
                       0,
                       progressResult.task.reason ?? ERROR_GENERATE_IMG_FAILED,
                       '',
-                      { task_status: progressResult.task.status },
+                      { task_id: progressResult.task.task_id, task_status: progressResult.task.status },
+                    )
+                  );
+                } else if (progressResult.task.status !== TaskStatus.QUEUED) {
+                  clearInterval(timer);
+                  reject(
+                    new NovitaError(
+                      0,
+                      progressResult.task.reason ?? ERROR_GENERATE_IMG_FAILED,
+                      '',
+                      { task_id: progressResult.task.task_id, task_status: progressResult.task.status },
                     )
                   );
                 }

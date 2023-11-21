@@ -284,12 +284,12 @@ type Task = {
 
 export type ProgressV3Response = {
   task: Task;
-  images: {
+  images?: {
     image_url: string;
     image_type: string;
     image_url_ttl: number;
   }[];
-} & FailedV3Response;
+};
 
 export type CleanupRequest = {
   image_file: string;

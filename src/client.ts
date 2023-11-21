@@ -221,7 +221,7 @@ export function progress(params: ProgressRequest, opts?: RequestOpts) {
     opts,
   }).then((res: ProgressResponse) => {
     if (res.code !== ResponseCodeV2.OK) {
-      throw new NovitaError(res.code, res.msg);
+      throw new NovitaError(res.code, res.msg, '', { ...res.data, task_id: params.task_id });
     }
     return res.data;
   });
@@ -262,7 +262,7 @@ export function txt2ImgSync(
                     0,
                     progressResult.failed_reason ?? ERROR_GENERATE_IMG_FAILED,
                     '',
-                    { task_status: progressResult.status },
+                    { task_id: res.task_id, task_status: progressResult.status },
                   )
                 );
               }
@@ -313,7 +313,7 @@ export function img2imgSync(
                     0,
                     progressResult.failed_reason ?? ERROR_GENERATE_IMG_FAILED,
                     '',
-                    { task_status: progressResult.status },
+                    { task_id: res.task_id, task_status: progressResult.status },
                   )
                 );
               }
@@ -361,7 +361,7 @@ export function upscaleSync(params: UpscaleRequest, config?: SyncConfig, opts?: 
                     0,
                     progressResult.failed_reason ?? ERROR_GENERATE_IMG_FAILED,
                     '',
-                    { task_status: progressResult.status },
+                    { task_id: res.task_id, task_status: progressResult.status },
                   )
                 );
               }
@@ -385,27 +385,17 @@ function apiRequestV3<T, R>(url: string): (p: T, o?: RequestOpts) => Promise<R> 
       method: "POST",
       data: params,
       opts,
-    }).then((res: any) => {
-      if (res.code && res.code !== ResponseCodeV3.OK) {
-        throw new NovitaError(res.code, res.message || '', res.reason, res.metadata);
-      }
-      return res;
-    });
+    })
   }
 }
 
-export function progressV3(params: ProgressRequest, opts?: RequestOpts) {
+export function progressV3(params: ProgressRequest, opts?: RequestOpts): Promise<ProgressV3Response> {
   return httpFetchV3({
     url: "/v3/async/task-result",
     method: "GET",
     query: params,
     opts,
-  }).then((res: ProgressV3Response) => {
-    if (res.code && res.code !== ResponseCodeV3.OK) {
-      throw new NovitaError(res.code, res.message || '', res.reason, res.metadata);
-    }
-    return res;
-  });
+  })
 }
 
 export const cleanup: (p: CleanupRequest, opts?: any) => Promise<CleanupResponse> =
@@ -446,7 +436,7 @@ export const replaceObjectSync: (params: ReplaceObjectRequest, config?: SyncConf
                 const progressResult = await progressV3({
                   task_id: res.task_id,
                 }, opts);
-                if (progressResult && progressResult.task.status === TaskStatus.SUCCEED) {
+                if (progressResult.task.status === TaskStatus.SUCCEED && progressResult.images) {
                   clearInterval(timer);
                   let imgsBase64: string[] = [];
                   if (config?.img_type === "base64") {
@@ -457,17 +447,24 @@ export const replaceObjectSync: (params: ReplaceObjectRequest, config?: SyncConf
                     imgsBase64 = progressResult.images.map((img) => img.image_url);
                   }
                   resolve(imgsBase64);
-                } else if (
-                  progressResult &&
-                  (progressResult.task.status === TaskStatus.FAILED)
-                ) {
+                } else if (progressResult.task.status === TaskStatus.FAILED) {
                   clearInterval(timer);
                   reject(
                     new NovitaError(
                       0,
                       progressResult.task.reason ?? ERROR_GENERATE_IMG_FAILED,
                       '',
-                      { task_status: progressResult.task.status },
+                      { task_id: progressResult.task.task_id, task_status: progressResult.task.status },
+                    )
+                  );
+                } else if (progressResult.task.status !== TaskStatus.QUEUED) {
+                  clearInterval(timer);
+                  reject(
+                    new NovitaError(
+                      0,
+                      progressResult.task.reason ?? ERROR_GENERATE_IMG_FAILED,
+                      '',
+                      { task_id: progressResult.task.task_id, task_status: progressResult.task.status },
                     )
                   );
                 }

@@ -1,3 +1,5 @@
+/** @format */
+
 import axios from "axios";
 import { Lora } from "./types";
 
@@ -30,17 +32,10 @@ export function readImgtoBase64(url: string): Promise<string> {
   return axios.get(url, { responseType: "arraybuffer" }).then((response) => {
     if (isNodeEnvironment()) {
       const buffer = Buffer.from(response.data);
-      return `data:${response.headers["content-type"]};base64,${buffer.toString(
-        "base64"
-      )}`;
+      return `data:${response.headers["content-type"]};base64,${buffer.toString("base64")}`;
     } else {
       // For browsers
-      const base64 = btoa(
-        new Uint8Array(response.data).reduce(
-          (data, byte) => data + String.fromCharCode(byte),
-          ""
-        )
-      );
+      const base64 = btoa(new Uint8Array(response.data).reduce((data, byte) => data + String.fromCharCode(byte), ""));
       return `data:${response.headers["content-type"]};base64,${base64}`;
     }
   });

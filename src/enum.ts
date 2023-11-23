@@ -1,5 +1,7 @@
 /**
  * Copyright (c) Novita
+ *
+ * @format
  */
 
 export const ERROR_BAD_REQUEST = "Bad Request";

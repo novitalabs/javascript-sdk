@@ -1,3 +1,5 @@
+/** @format */
+
 import axios from "axios";
 import {
   RequestOpts,
@@ -46,7 +48,7 @@ import {
 } from "./types";
 import { addLoraPrompt, generateLoraString, readImgtoBase64 } from "./util";
 import { ERROR_GENERATE_IMG_FAILED } from "./enum";
-import { NovitaError } from "./error"
+import { NovitaError } from "./error";
 
 export class NovitaSDK {
   protected key: string;
@@ -58,7 +60,7 @@ export class NovitaSDK {
   }
 
   setBaseUrl(url: string) {
-    this.BASE_URL = url
+    this.BASE_URL = url;
   }
   setNovitaKey(key: string) {
     this.key = key;
@@ -77,14 +79,14 @@ export class NovitaSDK {
     query?: Record<string, any> | undefined;
     opts?: RequestOpts;
   }) {
-    let fetchUrl = this.BASE_URL + url;
+    const fetchUrl = this.BASE_URL + url;
 
     const headers: HeadersInit = {
       "Content-Type": "application/json",
       "X-Novita-Source": opts?.source || `js-sdk-novita/${process.env.VERSION}`,
-    }
+    };
     if (this.key) {
-      headers["Authorization"] = this.key
+      headers["Authorization"] = this.key;
     }
 
     return axios({
@@ -114,15 +116,15 @@ export class NovitaSDK {
     query?: any;
     opts?: RequestOpts;
   }) {
-    let fetchUrl = this.BASE_URL + url;
+    const fetchUrl = this.BASE_URL + url;
     const headers: HeadersInit = {
       "Content-Type": "application/json",
       "X-Novita-Source": opts?.source || `js-sdk-novita/${process.env.VERSION}`,
-    }
+    };
     if (this.key) {
-      headers["Authorization"] = this.key
+      headers["Authorization"] = this.key;
     } else {
-      return Promise.reject(new NovitaError(-1, 'Novita API key is required'))
+      return Promise.reject(new NovitaError(-1, "Novita API key is required"));
     }
     return axios({
       url: fetchUrl,
@@ -134,19 +136,19 @@ export class NovitaSDK {
     })
       .then((response) => {
         if (response.status !== ResponseCodeV3.OK) {
-          throw new NovitaError(response.status, response.data.message, response.data.reason, response.data.metadata)
+          throw new NovitaError(response.status, response.data.message, response.data.reason, response.data.metadata);
         }
-        return response.data
+        return response.data;
       })
       .catch((error) => {
         if (error instanceof NovitaError) {
-          throw error
+          throw error;
         }
-        const res = error.response
+        const res = error.response;
         if (res) {
-          throw new NovitaError(res.status, res.data.message, res.data.reason, res.data.metadata, error)
+          throw new NovitaError(res.status, res.data.message, res.data.reason, res.data.metadata, error);
         }
-        throw new NovitaError(-1, error.message, '', undefined, error)
+        throw new NovitaError(-1, error.message, "", undefined, error);
       });
   }
 
@@ -157,8 +159,8 @@ export class NovitaSDK {
         method: "POST",
         data: params,
         opts,
-      })
-    }
+      });
+    };
   }
 
   getModels() {
@@ -230,39 +232,38 @@ export class NovitaSDK {
       this.txt2Img(params, opts)
         .then((res) => {
           if (res && res.task_id) {
-            const timer = setInterval(async () => {
-              try {
-                const progressResult = await this.progress({
-                  task_id: res.task_id,
-                }, opts);
-                if (progressResult && progressResult.status === 2) {
-                  clearInterval(timer);
-                  let imgs = progressResult.imgs;
-                  if (config?.img_type === "base64") {
-                    imgs = await Promise.all(
-                      progressResult.imgs.map((url) => readImgtoBase64(url))
+            const timer = setInterval(
+              async () => {
+                try {
+                  const progressResult = await this.progress(
+                    {
+                      task_id: res.task_id,
+                    },
+                    opts,
+                  );
+                  if (progressResult && progressResult.status === 2) {
+                    clearInterval(timer);
+                    let imgs = progressResult.imgs;
+                    if (config?.img_type === "base64") {
+                      imgs = await Promise.all(progressResult.imgs.map((url) => readImgtoBase64(url)));
+                    }
+                    resolve(imgs);
+                  } else if (progressResult && (progressResult.status === 3 || progressResult.status === 4)) {
+                    clearInterval(timer);
+                    reject(
+                      new NovitaError(0, progressResult.failed_reason ?? ERROR_GENERATE_IMG_FAILED, "", {
+                        task_id: res.task_id,
+                        task_status: progressResult.status,
+                      }),
                     );
                   }
-                  resolve(imgs);
-                } else if (
-                  progressResult &&
-                  (progressResult.status === 3 || progressResult.status === 4)
-                ) {
+                } catch (error) {
                   clearInterval(timer);
-                  reject(
-                    new NovitaError(
-                      0,
-                      progressResult.failed_reason ?? ERROR_GENERATE_IMG_FAILED,
-                      '',
-                      { task_id: res.task_id, task_status: progressResult.status },
-                    )
-                  );
+                  reject(error);
                 }
-              } catch (error) {
-                clearInterval(timer);
-                reject(error);
-              }
-            }, config?.interval ?? 1000);
+              },
+              config?.interval ?? 1000,
+            );
           } else {
             reject(new NovitaError(-1, "Failed to start the task."));
           }
@@ -279,39 +280,38 @@ export class NovitaSDK {
       this.img2img(params, opts)
         .then((res) => {
           if (res && res.task_id) {
-            const timer = setInterval(async () => {
-              try {
-                const progressResult = await this.progress({
-                  task_id: res.task_id,
-                }, opts);
-                if (progressResult && progressResult.status === 2) {
-                  clearInterval(timer);
-                  let imgs = progressResult.imgs;
-                  if (config?.img_type === "base64") {
-                    imgs = await Promise.all(
-                      progressResult.imgs.map((url) => readImgtoBase64(url))
+            const timer = setInterval(
+              async () => {
+                try {
+                  const progressResult = await this.progress(
+                    {
+                      task_id: res.task_id,
+                    },
+                    opts,
+                  );
+                  if (progressResult && progressResult.status === 2) {
+                    clearInterval(timer);
+                    let imgs = progressResult.imgs;
+                    if (config?.img_type === "base64") {
+                      imgs = await Promise.all(progressResult.imgs.map((url) => readImgtoBase64(url)));
+                    }
+                    resolve(imgs);
+                  } else if (progressResult && (progressResult.status === 3 || progressResult.status === 4)) {
+                    clearInterval(timer);
+                    reject(
+                      new NovitaError(0, progressResult.failed_reason ?? ERROR_GENERATE_IMG_FAILED, "", {
+                        task_id: res.task_id,
+                        task_status: progressResult.status,
+                      }),
                     );
                   }
-                  resolve(imgs);
-                } else if (
-                  progressResult &&
-                  (progressResult.status === 3 || progressResult.status === 4)
-                ) {
+                } catch (error) {
                   clearInterval(timer);
-                  reject(
-                    new NovitaError(
-                      0,
-                      progressResult.failed_reason ?? ERROR_GENERATE_IMG_FAILED,
-                      '',
-                      { task_id: res.task_id, task_status: progressResult.status },
-                    )
-                  );
+                  reject(error);
                 }
-              } catch (error) {
-                clearInterval(timer);
-                reject(error);
-              }
-            }, config?.interval ?? 1000);
+              },
+              config?.interval ?? 1000,
+            );
           } else {
             reject(new NovitaError(-1, "Failed to start the task."));
           }
@@ -340,46 +340,48 @@ export class NovitaSDK {
 
   upscaleSync(params: UpscaleRequest, config?: SyncConfig, opts?: any) {
     return new Promise((resolve, reject) => {
-      this.upscale({
-        ...params,
-        upscaler_1: params.upscaler_1 ?? Upscalers.R_ESRGAN_4x_plus,
-        upscaler_2: params.upscaler_2 ?? Upscalers.R_ESRGAN_4x_plus,
-      }, opts)
+      this.upscale(
+        {
+          ...params,
+          upscaler_1: params.upscaler_1 ?? Upscalers.R_ESRGAN_4x_plus,
+          upscaler_2: params.upscaler_2 ?? Upscalers.R_ESRGAN_4x_plus,
+        },
+        opts,
+      )
         .then((res) => {
           if (res && res.task_id) {
-            const timer = setInterval(async () => {
-              try {
-                const progressResult = await this.progress({
-                  task_id: res.task_id,
-                }, opts);
-                if (progressResult && progressResult.status === 2) {
-                  clearInterval(timer);
-                  let imgs = progressResult.imgs;
-                  if (config?.img_type === "base64") {
-                    imgs = await Promise.all(
-                      progressResult.imgs.map((url) => readImgtoBase64(url))
+            const timer = setInterval(
+              async () => {
+                try {
+                  const progressResult = await this.progress(
+                    {
+                      task_id: res.task_id,
+                    },
+                    opts,
+                  );
+                  if (progressResult && progressResult.status === 2) {
+                    clearInterval(timer);
+                    let imgs = progressResult.imgs;
+                    if (config?.img_type === "base64") {
+                      imgs = await Promise.all(progressResult.imgs.map((url) => readImgtoBase64(url)));
+                    }
+                    resolve(imgs);
+                  } else if (progressResult && (progressResult.status === 3 || progressResult.status === 4)) {
+                    clearInterval(timer);
+                    reject(
+                      new NovitaError(0, progressResult.failed_reason ?? ERROR_GENERATE_IMG_FAILED, "", {
+                        task_id: res.task_id,
+                        task_status: progressResult.status,
+                      }),
                     );
                   }
-                  resolve(imgs);
-                } else if (
-                  progressResult &&
-                  (progressResult.status === 3 || progressResult.status === 4)
-                ) {
+                } catch (error) {
                   clearInterval(timer);
-                  reject(
-                    new NovitaError(
-                      0,
-                      progressResult.failed_reason ?? ERROR_GENERATE_IMG_FAILED,
-                      '',
-                      { task_id: res.task_id, task_status: progressResult.status },
-                    )
-                  );
+                  reject(error);
                 }
-              } catch (error) {
-                clearInterval(timer);
-                reject(error);
-              }
-            }, config?.interval ?? 1000);
+              },
+              config?.interval ?? 1000,
+            );
           } else {
             reject(new NovitaError(-1, "Failed to start the task."));
           }
@@ -396,88 +398,103 @@ export class NovitaSDK {
       opts,
     }).catch((error) => {
       if (error.metadata) {
-        error.metadata.task_id = params.task_id
+        error.metadata.task_id = params.task_id;
       } else {
-        error.metadata = { task_id: params.task_id }
+        error.metadata = { task_id: params.task_id };
       }
-      throw error
-    })
+      throw error;
+    });
   }
 
-  cleanup: (params: CleanupRequest, opts?: any) => Promise<CleanupResponse> =
-    this._apiRequestV3<CleanupRequest, CleanupResponse>("/v3/cleanup")
+  cleanup: (params: CleanupRequest, opts?: any) => Promise<CleanupResponse> = this._apiRequestV3<
+    CleanupRequest,
+    CleanupResponse
+  >("/v3/cleanup");
 
-  outpainting: (params: OutpaintingRequest, opts?: any) => Promise<OutpaintingResponse> =
-    this._apiRequestV3<OutpaintingRequest, OutpaintingResponse>("/v3/outpainting")
+  outpainting: (params: OutpaintingRequest, opts?: any) => Promise<OutpaintingResponse> = this._apiRequestV3<
+    OutpaintingRequest,
+    OutpaintingResponse
+  >("/v3/outpainting");
 
   removeBackground: (params: RemoveBackgroundRequest, opts?: any) => Promise<RemoveBackgroundResponse> =
-    this._apiRequestV3<RemoveBackgroundRequest, RemoveBackgroundResponse>("/v3/remove-background")
+    this._apiRequestV3<RemoveBackgroundRequest, RemoveBackgroundResponse>("/v3/remove-background");
 
   replaceBackground: (params: ReplaceBackgroundRequest, opts?: any) => Promise<ReplaceBackgroundResponse> =
-    this._apiRequestV3<ReplaceBackgroundRequest, ReplaceBackgroundResponse>("/v3/replace-background")
+    this._apiRequestV3<ReplaceBackgroundRequest, ReplaceBackgroundResponse>("/v3/replace-background");
 
-  mixpose: (p: MixPoseRequest, opts?: any) => Promise<MixPoseResponse> =
-    this._apiRequestV3<MixPoseRequest, MixPoseResponse>("/v3/mix-pose")
+  mixpose: (p: MixPoseRequest, opts?: any) => Promise<MixPoseResponse> = this._apiRequestV3<
+    MixPoseRequest,
+    MixPoseResponse
+  >("/v3/mix-pose");
 
-  doodle: (p: DoodleRequest, opts?: any) => Promise<DoodleResponse> =
-    this._apiRequestV3<DoodleRequest, DoodleResponse>("/v3/doodle")
+  doodle: (p: DoodleRequest, opts?: any) => Promise<DoodleResponse> = this._apiRequestV3<DoodleRequest, DoodleResponse>(
+    "/v3/doodle",
+  );
 
-  lcmTxt2Img: (p: LcmTxt2ImgRequest, opts?: any) => Promise<LcmTxt2ImgResponse> =
-    this._apiRequestV3<LcmTxt2ImgRequest, LcmTxt2ImgResponse>("/v3/lcm-txt2img")
+  lcmTxt2Img: (p: LcmTxt2ImgRequest, opts?: any) => Promise<LcmTxt2ImgResponse> = this._apiRequestV3<
+    LcmTxt2ImgRequest,
+    LcmTxt2ImgResponse
+  >("/v3/lcm-txt2img");
 
-  replaceSky: (p: ReplaceSkyRequest, opts?: any) => Promise<ReplaceSkyResponse> =
-    this._apiRequestV3<ReplaceSkyRequest, ReplaceSkyResponse>("/v3/replace-sky")
+  replaceSky: (p: ReplaceSkyRequest, opts?: any) => Promise<ReplaceSkyResponse> = this._apiRequestV3<
+    ReplaceSkyRequest,
+    ReplaceSkyResponse
+  >("/v3/replace-sky");
 
-  replaceObject: (p: ReplaceObjectRequest, opts?: any) => Promise<ReplaceObjectResponse> =
-    this._apiRequestV3<ReplaceObjectRequest, ReplaceObjectResponse>("/v3/async/replace-object")
+  replaceObject: (p: ReplaceObjectRequest, opts?: any) => Promise<ReplaceObjectResponse> = this._apiRequestV3<
+    ReplaceObjectRequest,
+    ReplaceObjectResponse
+  >("/v3/async/replace-object");
 
   replaceObjectSync(params: ReplaceObjectRequest, config?: SyncConfig, opts?: any): Promise<string[]> {
     return new Promise((resolve, reject) => {
       this.replaceObject(params, opts)
         .then((res) => {
           if (res && res.task_id) {
-            const timer = setInterval(async () => {
-              try {
-                const progressResult = await this.progressV3({
-                  task_id: res.task_id,
-                }, opts);
-                if (progressResult.task.status === TaskStatus.SUCCEED && progressResult.images) {
-                  clearInterval(timer);
-                  let imgsBase64: string[] = [];
-                  if (config?.img_type === "base64") {
-                    imgsBase64 = await Promise.all(
-                      progressResult.images.map((img) => readImgtoBase64(img.image_url))
+            const timer = setInterval(
+              async () => {
+                try {
+                  const progressResult = await this.progressV3(
+                    {
+                      task_id: res.task_id,
+                    },
+                    opts,
+                  );
+                  if (progressResult.task.status === TaskStatus.SUCCEED && progressResult.images) {
+                    clearInterval(timer);
+                    let imgsBase64: string[] = [];
+                    if (config?.img_type === "base64") {
+                      imgsBase64 = await Promise.all(
+                        progressResult.images.map((img) => readImgtoBase64(img.image_url)),
+                      );
+                    } else {
+                      imgsBase64 = progressResult.images.map((img) => img.image_url);
+                    }
+                    resolve(imgsBase64);
+                  } else if (progressResult.task.status === TaskStatus.FAILED) {
+                    clearInterval(timer);
+                    reject(
+                      new NovitaError(0, progressResult.task.reason ?? ERROR_GENERATE_IMG_FAILED, "", {
+                        task_id: progressResult.task.task_id,
+                        task_status: progressResult.task.status,
+                      }),
                     );
-                  } else {
-                    imgsBase64 = progressResult.images.map((img) => img.image_url);
+                  } else if (progressResult.task.status !== TaskStatus.QUEUED) {
+                    clearInterval(timer);
+                    reject(
+                      new NovitaError(0, progressResult.task.reason ?? ERROR_GENERATE_IMG_FAILED, "", {
+                        task_id: progressResult.task.task_id,
+                        task_status: progressResult.task.status,
+                      }),
+                    );
                   }
-                  resolve(imgsBase64);
-                } else if (progressResult.task.status === TaskStatus.FAILED) {
+                } catch (error) {
                   clearInterval(timer);
-                  reject(
-                    new NovitaError(
-                      0,
-                      progressResult.task.reason ?? ERROR_GENERATE_IMG_FAILED,
-                      '',
-                      { task_id: progressResult.task.task_id, task_status: progressResult.task.status },
-                    )
-                  );
-                } else if (progressResult.task.status !== TaskStatus.QUEUED) {
-                  clearInterval(timer);
-                  reject(
-                    new NovitaError(
-                      0,
-                      progressResult.task.reason ?? ERROR_GENERATE_IMG_FAILED,
-                      '',
-                      { task_id: progressResult.task.task_id, task_status: progressResult.task.status },
-                    )
-                  );
+                  reject(error);
                 }
-              } catch (error) {
-                clearInterval(timer);
-                reject(error);
-              }
-            }, config?.interval ?? 1000);
+              },
+              config?.interval ?? 1000,
+            );
           } else {
             reject(new NovitaError(-1, "Failed to start the task."));
           }
@@ -486,18 +503,28 @@ export class NovitaSDK {
     });
   }
 
-  mergeFace: (p: MergeFaceRequest, opts?: any) => Promise<MergeFaceResponse> =
-    this._apiRequestV3<MergeFaceRequest, MergeFaceResponse>("/v3/merge-face")
-  
-  removeText: (p: RemoveTextRequest, opts?: any) => Promise<RemoveTextResponse> =
-    this._apiRequestV3<RemoveTextRequest, RemoveTextResponse>("/v3/remove-text")
+  mergeFace: (p: MergeFaceRequest, opts?: any) => Promise<MergeFaceResponse> = this._apiRequestV3<
+    MergeFaceRequest,
+    MergeFaceResponse
+  >("/v3/merge-face");
 
-  restoreFace: (p: RestoreFaceRequest, opts?: any) => Promise<RestoreFaceResponse> =
-    this._apiRequestV3<RestoreFaceRequest, RestoreFaceResponse>("/v3/restore-face")
+  removeText: (p: RemoveTextRequest, opts?: any) => Promise<RemoveTextResponse> = this._apiRequestV3<
+    RemoveTextRequest,
+    RemoveTextResponse
+  >("/v3/remove-text");
 
-  reimagine: (p: ReimagineRequest, opts?: any) => Promise<ReimagineResponse> =
-    this._apiRequestV3<ReimagineRequest, ReimagineResponse>("/v3/reimagine")
+  restoreFace: (p: RestoreFaceRequest, opts?: any) => Promise<RestoreFaceResponse> = this._apiRequestV3<
+    RestoreFaceRequest,
+    RestoreFaceResponse
+  >("/v3/restore-face");
 
-  createTile: (p: CreateTileRequest, opts?: any) => Promise<CreateTileResponse> =
-    this._apiRequestV3<CreateTileRequest, CreateTileResponse>("/v3/create-tile")
+  reimagine: (p: ReimagineRequest, opts?: any) => Promise<ReimagineResponse> = this._apiRequestV3<
+    ReimagineRequest,
+    ReimagineResponse
+  >("/v3/reimagine");
+
+  createTile: (p: CreateTileRequest, opts?: any) => Promise<CreateTileResponse> = this._apiRequestV3<
+    CreateTileRequest,
+    CreateTileResponse
+  >("/v3/create-tile");
 }

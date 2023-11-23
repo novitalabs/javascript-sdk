@@ -2,6 +2,8 @@
  * Copyright (c) Novita
  *
  * Typescript type definitions for Novita
+ *
+ * @format
  */
 
 import { ControlNetPreprocessor } from "./enum";
@@ -105,8 +107,7 @@ export type Lora = {
   weight: number;
 };
 
-type ControlNetPreprocessorValues =
-  (typeof ControlNetPreprocessor)[keyof typeof ControlNetPreprocessor];
+type ControlNetPreprocessorValues = (typeof ControlNetPreprocessor)[keyof typeof ControlNetPreprocessor];
 
 export type ControlnetUnit = {
   model: string;
@@ -148,7 +149,6 @@ export type Txt2ImgRequest = {
   hr_resize_y?: number | undefined;
   restore_faces?: boolean | undefined;
   enable_hr?: boolean | undefined;
-  [key: string]: any;
 };
 
 export type Txt2ImgResponse = {
@@ -256,7 +256,7 @@ type FailedV3Response = {
   code?: ResponseCodeV3;
   reason?: string;
   message?: string;
-  metadata?: any;
+  metadata?: { [key: string]: string };
 };
 type GenImgTypeRequest = {
   extra?: {

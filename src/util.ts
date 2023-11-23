@@ -20,7 +20,7 @@ export function addLoraPrompt(array: string[], prompt: string) {
   }
   array.forEach((str) => {
     if (!prompt.includes(str)) {
-      prompt = prompt + str;
+      prompt = prompt + `, ${str}`;
     }
   });
   return prompt;

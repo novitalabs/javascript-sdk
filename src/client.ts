@@ -160,13 +160,13 @@ export function getModels() {
 }
 
 export function txt2Img(params: Txt2ImgRequest, opts?: RequestOpts) {
+  const prompt = addLoraPrompt(generateLoraString(params.lora), params.prompt);
+  params.prompt = prompt;
+  delete params.lora;
   return httpFetch({
     url: "/v2/txt2img",
     method: "POST",
-    data: {
-      ...params,
-      prompt: addLoraPrompt(generateLoraString(params.lora), params.prompt),
-    },
+    data: params,
     opts,
   }).then((res: Txt2ImgResponse) => {
     if (res.code !== ResponseCodeV2.OK) {
@@ -177,13 +177,13 @@ export function txt2Img(params: Txt2ImgRequest, opts?: RequestOpts) {
 }
 
 export function img2img(params: Img2imgRequest, opts?: RequestOpts) {
+  const prompt = addLoraPrompt(generateLoraString(params.lora), params.prompt);
+  params.prompt = prompt;
+  delete params.lora;
   return httpFetch({
     url: "/v2/img2img",
     method: "POST",
-    data: {
-      ...params,
-      prompt: addLoraPrompt(generateLoraString(params.lora), params.prompt),
-    },
+    data: params,
     opts,
   }).then((res: Txt2ImgResponse) => {
     if (res.code !== ResponseCodeV2.OK) {
@@ -232,10 +232,12 @@ export function txt2ImgSync(
   config?: SyncConfig,
   opts?: RequestOpts,
 ): Promise<any> {
+  const prompt = addLoraPrompt(generateLoraString(params.lora), params.prompt);
+  params.prompt = prompt;
+  delete params.lora;
   return new Promise((resolve, reject) => {
     txt2Img({
       ...params,
-      prompt: addLoraPrompt(generateLoraString(params.lora), params.prompt),
       opts,
     })
       .then((res) => {
@@ -284,11 +286,11 @@ export function img2imgSync(
   config?: SyncConfig,
   opts?: RequestOpts,
 ): Promise<any> {
+  const prompt = addLoraPrompt(generateLoraString(params.lora), params.prompt);
+  params.prompt = prompt;
+  delete params.lora;
   return new Promise((resolve, reject) => {
-    img2img({
-      ...params,
-      prompt: addLoraPrompt(generateLoraString(params.lora), params.prompt),
-    }, opts)
+    img2img(params, opts)
       .then((res) => {
         if (res && res.task_id) {
           const timer = setInterval(async () => {

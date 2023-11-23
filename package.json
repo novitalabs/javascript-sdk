@@ -2,6 +2,8 @@
   "name": "novita-sdk",
   "browser": "dist/index.js",
   "version": "1.0.23",
+  "author": "",
+  "license": "ISC",
   "keywords": [
     "novita",
     "novita.ai",
@@ -17,13 +19,21 @@
     "dist"
   ],
   "scripts": {
-    "build": "rollup --config"
+    "build": "rollup --config",
+    "prepare": "husky install",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
+    "prettier": "prettier --write ."
   },
-  "author": "",
-  "license": "ISC",
+  "lint-staged": {
+    "*": "npm run prettier",
+    "*.{js,ts}": "npm run lint:fix"
+  },
   "devDependencies": {
     "@babel/core": "^7.22.9",
     "@babel/preset-env": "^7.22.9",
+    "@commitlint/cli": "^18.4.3",
+    "@commitlint/config-conventional": "^18.4.3",
     "@rollup/plugin-babel": "^6.0.3",
     "@rollup/plugin-commonjs": "^25.0.3",
     "@rollup/plugin-json": "^6.0.0",
@@ -31,7 +41,18 @@
     "@rollup/plugin-replace": "^5.0.4",
     "@rollup/plugin-typescript": "^11.1.2",
     "@types/node": "^20.8.9",
+    "@typescript-eslint/eslint-plugin": "^6.12.0",
+    "@typescript-eslint/parser": "^6.12.0",
     "eslint": "^8.46.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-config-standard-with-typescript": "^40.0.0",
+    "eslint-plugin-import": "^2.29.0",
+    "eslint-plugin-n": "^16.3.1",
+    "eslint-plugin-prettier": "^5.0.1",
+    "eslint-plugin-promise": "^6.1.1",
+    "husky": "^8.0.0",
+    "lint-staged": "^15.1.0",
+    "prettier": "^3.1.0",
     "rollup": "^3.27.1",
     "rollup-plugin-polyfill-node": "^0.12.0",
     "tslib": "^2.6.2",

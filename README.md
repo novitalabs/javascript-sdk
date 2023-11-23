@@ -1,3 +1,5 @@
+<!-- @format -->
+
 # Novita Javascript SDK
 
 this SDK is based on the official [API documentation](https://docs.novita.ai/)
@@ -158,8 +160,7 @@ txt2ImgSync({
 
 ```javascript
 txt2ImgSync({
-  prompt:
-    "a beautify butterfly in the colorful flowers, best quality, best details, masterpiece",
+  prompt: "a beautify butterfly in the colorful flowers, best quality, best details, masterpiece",
   model_name: "",
   steps: 30,
   controlnet_units: [

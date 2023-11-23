@@ -173,13 +173,13 @@ export class NovitaSDK {
   }
 
   txt2Img(params: Txt2ImgRequest, opts?: any) {
+    const prompt = addLoraPrompt(generateLoraString(params.lora), params.prompt);
+    params.prompt = prompt;
+    delete params.lora;
     return this.httpFetch({
       url: "/v2/txt2img",
       method: "POST",
-      data: {
-        ...params,
-        prompt: addLoraPrompt(generateLoraString(params.lora), params.prompt),
-      },
+      data: params,
       opts,
     }).then((res: Txt2ImgResponse) => {
       if (res.code !== ResponseCodeV2.OK) {
@@ -190,13 +190,13 @@ export class NovitaSDK {
   }
 
   img2img(params: Img2imgRequest, opts?: any) {
+    const prompt = addLoraPrompt(generateLoraString(params.lora), params.prompt);
+    params.prompt = prompt;
+    delete params.lora;
     return this.httpFetch({
       url: "/v2/img2img",
       method: "POST",
-      data: {
-        ...params,
-        prompt: addLoraPrompt(generateLoraString(params.lora), params.prompt),
-      },
+      data: params,
       opts,
     }).then((res: Txt2ImgResponse) => {
       if (res.code !== ResponseCodeV2.OK) {
@@ -223,11 +223,11 @@ export class NovitaSDK {
   }
 
   txt2ImgSync(params: Txt2ImgRequest, config?: SyncConfig, opts?: any): Promise<any> {
+    const prompt = addLoraPrompt(generateLoraString(params.lora), params.prompt);
+    params.prompt = prompt;
+    delete params.lora;
     return new Promise((resolve, reject) => {
-      this.txt2Img({
-        ...params,
-        prompt: addLoraPrompt(generateLoraString(params.lora), params.prompt),
-      }, opts)
+      this.txt2Img(params, opts)
         .then((res) => {
           if (res && res.task_id) {
             const timer = setInterval(async () => {
@@ -272,11 +272,11 @@ export class NovitaSDK {
   }
 
   img2imgSync(params: Img2imgRequest, config?: SyncConfig, opts?: any): Promise<any> {
+    const prompt = addLoraPrompt(generateLoraString(params.lora), params.prompt);
+    params.prompt = prompt;
+    delete params.lora;
     return new Promise((resolve, reject) => {
-      this.img2img({
-        ...params,
-        prompt: addLoraPrompt(generateLoraString(params.lora), params.prompt),
-      }, opts)
+      this.img2img(params, opts)
         .then((res) => {
           if (res && res.task_id) {
             const timer = setInterval(async () => {

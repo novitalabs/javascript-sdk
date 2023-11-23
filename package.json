@@ -25,21 +25,11 @@
     "lint:fix": "eslint --fix .",
     "prettier": "prettier --write ."
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged",
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
-    }
-  },
-  "lint-staged": {
-    "*.{js,ts}": [
-      "yarn lint",
-      "git add"
-    ]
-  },
   "devDependencies": {
     "@babel/core": "^7.22.9",
     "@babel/preset-env": "^7.22.9",
+    "@commitlint/cli": "^18.4.3",
+    "@commitlint/config-conventional": "^18.4.3",
     "@rollup/plugin-babel": "^6.0.3",
     "@rollup/plugin-commonjs": "^25.0.3",
     "@rollup/plugin-json": "^6.0.0",
@@ -57,7 +47,6 @@
     "eslint-plugin-prettier": "^5.0.1",
     "eslint-plugin-promise": "^6.1.1",
     "husky": "^8.0.0",
-    "lint-staged": "^15.1.0",
     "prettier": "^3.1.0",
     "rollup": "^3.27.1",
     "rollup-plugin-polyfill-node": "^0.12.0",

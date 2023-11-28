@@ -11,6 +11,7 @@ export const ERROR_NOT_FOUND = "Not Found";
 export const ERROR_METHOD_NOT_ALLOWED = "Method Not Allowed";
 export const ERROR_SERVER_ERROR = "Internal Server Error";
 export const ERROR_GENERATE_IMG_FAILED = "Generate Image Failed";
+export const ERROR_GENERATE_VIDEO_FAILED = "Generate Video Failed";
 
 export const ControlNetPreprocessor = {
   NULL: "none",

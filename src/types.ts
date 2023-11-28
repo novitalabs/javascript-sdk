@@ -289,6 +289,11 @@ export type ProgressV3Response = {
     image_type: string;
     image_url_ttl: number;
   }[];
+  videos?: {
+    video_url: string;
+    video_url_ttl: string;
+    video_type: string;
+  }[];
 };
 
 export type CleanupRequest = {
@@ -392,3 +397,24 @@ export type CreateTileRequest = {
   height: number;
 } & GenImgTypeRequest;
 export type CreateTileResponse = GenImgResponse & FailedV3Response;
+
+export enum Img2VideoResizeMode {
+  ORIGINAL_RESOLUTION = "ORIGINAL_RESOLUTION",
+  CROP_TO_ASPECT_RATIO = "CROP_TO_ASPECT_RATIO",
+}
+export enum Img2VideoModel {
+  SVD_XT = "SVD-XT",
+  SVD = "SVD",
+}
+export type Img2VideoRequest = {
+  model_name: Img2VideoModel;
+  image_file: string;
+  frames_num: number;
+  frames_per_second: number;
+  seed: number;
+  image_file_resize_mode: Img2VideoResizeMode;
+  steps: number;
+  motion_bucket_id?: number; // 1~255
+  cond_aug?: number; // 0~1
+} & GenImgTypeRequest;
+export type Img2VideoResponse = AsyncV3Response;

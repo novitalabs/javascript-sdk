@@ -82,6 +82,7 @@ novitaClient
 - [createTile](./examples/createtile.js)
 - [LoRA](./examples/lora.js)
 - [controlNet](./examples/controlnet.js)
+- [img2video](./examples/controlnet.js)
 
 ## Type Definitions
 

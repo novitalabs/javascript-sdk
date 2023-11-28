@@ -2,3 +2,4 @@ test/**
 lib/**
 types/**
 dist/**
+examples/**

@@ -1,26 +1,26 @@
 <!-- @format -->
 
-# Novita Javascript SDK
+# Novita.ai Javascript SDK
 
-this SDK is based on the official [API documentation](https://docs.novita.ai/)
+This SDK is based on the official [novita.ai API reference](https://docs.novita.ai/)
 
-**join our discord server for help**
+**Join our discord server for help:**
 
 [![](https://dcbadge.vercel.app/api/server/2SFYcfajN7)](https://discord.gg/a3vd9r3uET)
 
-## Installation, [via npm](https://www.npmjs.com/package/novita-sdk)
+## Quick start
+
+1. Sign up on [novita.ai](https://novita.ai) and get an API key. Please follow the instructions at [https://novita.ai/get-started](https://novita.ai/get-started/)
+
+2. Install the [npm package](https://www.npmjs.com/package/novita-sdk) in your project.
 
 ```bash
 npm i novita-sdk
 ```
 
-## Quick Start
+## Usage
 
-**Get api key refer to [https://docs.novita.ai/get-started](https://docs.novita.ai/get-started/)**
-
-**We offer two ways to use the sdk**
-
-### 1.Called as a function
+#### 1. Functional usage
 
 ```javascript
 import { txt2ImgSync, setNovitaKey } from "novita-sdk";
@@ -28,170 +28,58 @@ import { txt2ImgSync, setNovitaKey } from "novita-sdk";
 setNovitaKey("your api key");
 
 txt2ImgSync({
-  model_name: "",
-  prompt: "a girl",
+  model_name: "sd_xl_base_1.0.safetensors",
+  prompt: "1 girl",
 })
   .then((res) => {
     console.log("imgs", res);
   })
   .catch((err) => {
-    console.log(err);
+    console.error(err);
   });
 ```
 
-### 2.Use by way of class
+#### 2. Class-based usage
 
 ```javascript
 import { NovitaSDK } from "novita-sdk";
 
-const sdk = new NovitaSDK("your api key");
+const novitaClient = new NovitaSDK("your api key");
 
-sdk
+novitaClient
   .txt2ImgSync(params)
   .then((res) => {
     console.log("imgs", res);
   })
   .catch((err) => {
-    alert(err);
+    console.error(err);
   });
 ```
 
-<!-- ## Examples [SDK Online DEMO](https://stackblitz.com/edit/stackblitz-starters-1pddy4?file=pages%2Findex.js) -->
+## API list and Sample codes
 
-### function list
+[txt2Img](./examples/txt2Img.js)
+[img2img](./examples/img2img.js)
+[upscale](./examples/upscale.js)
+[cleanup](./examples/cleanup.js)
+[outpainting](./examples/outpainting.js)
+[removeBackground](./examples/removeBackground.js)
+[replaceBackground](./examples/replaceBackground.js)
+[mixPose](./examples/mixpose.js)
+[doodle](./examples/doodle.js)
+[lcmTxt2Img](./examples/lcmTxt2Img.js)
+[replaceSky](./examples/replaceSky.js)
+[replaceObject](./examples/replaceObject.js)
+[mergeFace](./examples/mergeFace.js)
+[removeText](./examples/removeText.js)
+[restoreFace](./examples/restoreFace.js)
+[reimagine](./examples/reimagine.js)
+[createTile](./examples/createTile.js)
 
-- setNovitaKey
-- getModels
-- img2img
-- txt2Img
-- txt2ImgSync
-- img2imgSync
-- upscale
-- upscaleSync
+## Type Definitions
 
-### Usage in React
+For detailed information on the parameters and return types of each method, please refer to the [types.ts](./src/types.ts) file.
 
-```javascript
-import * as React from 'react';
-import { txt2ImgSync } from 'novita-sdk';
-import './style.css';
+## Playground
 
-const { useState, useCallback } = React;
-
-export default function App() {
-  const [imgs, setImgs] = useState<string[]>([]);
-  const [loading, setLoading] = useState(false);
-  const generateImg = useCallback(() => {
-    setLoading(true);
-    txt2ImgSync({
-      model_name: '',
-      prompt: 'a girl',
-    })
-      .then((res) => {
-        setImgs(res);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.log(err);
-        setLoading(false);
-      });
-  }, []);
-  return (
-    <div>
-      <h1>Text to image</h1>
-      <button onClick={generateImg} disabled={loading}>
-        {loading ? 'progressing' : 'click to generate image'}
-      </button>
-      <div
-        style={{
-          marginTop: '20px',
-        }}
-      >
-        {imgs.map((one) => (
-          <img
-            src={one}
-            crossOrigin="anonymous"
-            referrerPolicy="origin-when-cross-origin"
-            style={{
-              objectFit: 'cover',
-            }}
-          />
-        ))}
-      </div>
-    </div>
-  );
-}
-```
-
-### Model Search
-
-When you use this model interface, keep an eye on `dependency_status` and `download_status`, **which are only considered to be available if they are both 1**
-
-We recommend that you keep the interface data in memory, e.g. redux.
-
-```javascript
-getModels().then((res) => {
-  console.log(res.models.slice(0, 100));
-});
-```
-
-### Lora Usage
-
-```javascript
-txt2ImgSync({
-  model_name: "majicmixRealistic_v2.safetensors",
-  prompt:
-    "Best quality, masterpiece, ultra high res, (photorealistic:1.4), raw photo, 1girl, offshoulder, in the dark, deep shadow, low key, cold light",
-  negative_prompt:
-    "ng_deepnegative_v1_75t, badhandv4 (worst quality:2), (low quality:2), (normal quality:2), lowres, bad anatomy, bad hands, normal quality, ((monochrome)), ((grayscale))",
-  sampler_name: "DPM++ 2M Karras",
-  lora: [
-    {
-      sd_name: "film",
-      weight: 0.4,
-    },
-  ],
-}).then((res) => {
-  console.log(res);
-});
-```
-
-### ControlNet QRCode
-
-```javascript
-txt2ImgSync({
-  prompt: "a beautify butterfly in the colorful flowers, best quality, best details, masterpiece",
-  model_name: "",
-  steps: 30,
-  controlnet_units: [
-    {
-      input_image: imgbase64,
-      module: ControlNetPreprocessor.NULL,
-      control_mode: ControlNetMode.BALANCED,
-      model: "control_v1p_sd15_qrcode_monster_v2",
-      weight: 2.0,
-    },
-  ],
-}).then((res) => {
-  console.log(res);
-});
-```
-
-### Upscalse
-
-```javascript
-.upscaleSync({
-  image: base64String,
-  resize_mode: 0,
-  upscaling_resize: 2,
-})
-.then((res) => {
-  if (res) {
-    setImg(res[0]);
-  }
-  setLoading(false);
-})
-.catch((err) => {
-  alert(err);
-});
-```
+You can try all demos at [https://novita.ai/playground](https://novita.ai/playground)

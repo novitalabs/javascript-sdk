@@ -27,10 +27,11 @@ import { txt2ImgSync, setNovitaKey } from "novita-sdk";
 
 setNovitaKey("your api key");
 
-txt2ImgSync({
+const params = {
   model_name: "sd_xl_base_1.0.safetensors",
   prompt: "1 girl",
-})
+};
+txt2ImgSync(params)
   .then((res) => {
     console.log("imgs", res);
   })
@@ -46,6 +47,10 @@ import { NovitaSDK } from "novita-sdk";
 
 const novitaClient = new NovitaSDK("your api key");
 
+const params = {
+  model_name: "sd_xl_base_1.0.safetensors",
+  prompt: "1 girl",
+};
 novitaClient
   .txt2ImgSync(params)
   .then((res) => {
@@ -58,23 +63,25 @@ novitaClient
 
 ## API list and Sample codes
 
-[txt2Img](./examples/txt2Img.js)
-[img2img](./examples/img2img.js)
-[upscale](./examples/upscale.js)
-[cleanup](./examples/cleanup.js)
-[outpainting](./examples/outpainting.js)
-[removeBackground](./examples/removeBackground.js)
-[replaceBackground](./examples/replaceBackground.js)
-[mixPose](./examples/mixpose.js)
-[doodle](./examples/doodle.js)
-[lcmTxt2Img](./examples/lcmTxt2Img.js)
-[replaceSky](./examples/replaceSky.js)
-[replaceObject](./examples/replaceObject.js)
-[mergeFace](./examples/mergeFace.js)
-[removeText](./examples/removeText.js)
-[restoreFace](./examples/restoreFace.js)
-[reimagine](./examples/reimagine.js)
-[createTile](./examples/createTile.js)
+- [txt2Img](./examples/txt2img.js)
+- [img2img](./examples/img2img.js)
+- [upscale](./examples/upscale.js)
+- [cleanup](./examples/cleanup.js)
+- [outpainting](./examples/outpainting.js)
+- [removeBackground](./examples/removebg.js)
+- [replaceBackground](./examples/replacebg.js)
+- [mixPose](./examples/mixpose.js)
+- [doodle](./examples/doodle.js)
+- [lcmTxt2Img](./examples/lcm_txt2img.js)
+- [replaceSky](./examples/replace_sky.js)
+- [replaceObject](./examples/replace_object.js)
+- [mergeFace](./examples/merge_face.js)
+- [removeText](./examples/removetxt.js)
+- [restoreFace](./examples/restore_face.js)
+- [reimagine](./examples/reimagine.js)
+- [createTile](./examples/createtile.js)
+- [LoRA](./examples/lora.js)
+- [controlNet](./examples/controlnet.js)
 
 ## Type Definitions
 

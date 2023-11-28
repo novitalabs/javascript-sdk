@@ -45,9 +45,11 @@ import {
   CreateTileRequest,
   CreateTileResponse,
   Upscalers,
+  Img2VideoRequest,
+  Img2VideoResponse,
 } from "./types";
 import { addLoraPrompt, generateLoraString, readImgtoBase64 } from "./util";
-import { ERROR_GENERATE_IMG_FAILED } from "./enum";
+import { ERROR_GENERATE_IMG_FAILED, ERROR_GENERATE_VIDEO_FAILED } from "./enum";
 import { NovitaError } from "./error";
 
 export class NovitaSDK {
@@ -527,4 +529,64 @@ export class NovitaSDK {
     CreateTileRequest,
     CreateTileResponse
   >("/v3/create-tile");
+
+  img2Video: (p: Img2VideoRequest, opts?: any) => Promise<Img2VideoResponse> = this._apiRequestV3<
+    Img2VideoRequest,
+    Img2VideoResponse
+  >("/v3/async/img2video");
+
+  img2VideoSync: (params: Img2VideoRequest, config?: SyncConfig, opts?: any) => Promise<string[]> = (
+    params: Img2VideoRequest,
+    config?: SyncConfig,
+    opts?: any,
+  ) => {
+    return new Promise((resolve, reject) => {
+      this.img2Video(params, opts)
+        .then((res) => {
+          if (res && res.task_id) {
+            const timer = setInterval(
+              async () => {
+                try {
+                  const progressResult = await this.progressV3(
+                    {
+                      task_id: res.task_id,
+                    },
+                    opts,
+                  );
+                  if (progressResult.task.status === TaskStatus.SUCCEED && progressResult.videos) {
+                    clearInterval(timer);
+                    let videos: string[] = [];
+                    videos = progressResult.videos.map((v) => v.video_url);
+                    resolve(videos);
+                  } else if (progressResult.task.status === TaskStatus.FAILED) {
+                    clearInterval(timer);
+                    reject(
+                      new NovitaError(0, progressResult.task.reason ?? ERROR_GENERATE_VIDEO_FAILED, "", {
+                        task_id: progressResult.task.task_id,
+                        task_status: progressResult.task.status,
+                      }),
+                    );
+                  } else if (progressResult.task.status !== TaskStatus.QUEUED) {
+                    clearInterval(timer);
+                    reject(
+                      new NovitaError(0, progressResult.task.reason ?? ERROR_GENERATE_VIDEO_FAILED, "", {
+                        task_id: progressResult.task.task_id,
+                        task_status: progressResult.task.status,
+                      }),
+                    );
+                  }
+                } catch (error) {
+                  clearInterval(timer);
+                  reject(error);
+                }
+              },
+              config?.interval ?? 1000,
+            );
+          } else {
+            reject(new NovitaError(-1, "Failed to start the task."));
+          }
+        })
+        .catch(reject);
+    });
+  };
 }

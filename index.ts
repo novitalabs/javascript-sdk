@@ -60,6 +60,10 @@ export {
   ReimagineResponse,
   CreateTileRequest,
   CreateTileResponse,
+  Img2VideoResizeMode,
+  Img2VideoModel,
+  Img2VideoRequest,
+  Img2VideoResponse,
 } from "./src/types";
 
 export { ControlNetPreprocessor, ControlNetMode, ModelType } from "./src/enum";

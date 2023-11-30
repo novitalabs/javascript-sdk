@@ -348,6 +348,11 @@ export type LcmTxt2ImgResponse = {
   images: GenImgResponse[];
 } & FailedV3Response;
 
+export type LcmImg2ImgRequest = LcmTxt2ImgRequest & {
+  init_images: Array<string>;
+};
+export type LcmImg2ImgResponse = LcmTxt2ImgResponse;
+
 export enum SkyType {
   bluesky = "bluesky",
   sunset = "sunset",

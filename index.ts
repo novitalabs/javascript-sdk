@@ -45,6 +45,8 @@ export {
   DoodleResponse,
   LcmTxt2ImgRequest,
   LcmTxt2ImgResponse,
+  LcmImg2ImgRequest,
+  LcmImg2ImgResponse,
   SkyType,
   ReplaceSkyRequest,
   ReplaceSkyResponse,

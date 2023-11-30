@@ -47,6 +47,8 @@ import {
   Upscalers,
   Img2VideoRequest,
   Img2VideoResponse,
+  LcmImg2ImgRequest,
+  LcmImg2ImgResponse,
 } from "./types";
 import { addLoraPrompt, generateLoraString, readImgtoBase64 } from "./util";
 import { ERROR_GENERATE_IMG_FAILED, ERROR_GENERATE_VIDEO_FAILED } from "./enum";
@@ -437,6 +439,11 @@ export class NovitaSDK {
     LcmTxt2ImgRequest,
     LcmTxt2ImgResponse
   >("/v3/lcm-txt2img");
+
+  lcmImg2Img: (p: LcmImg2ImgRequest, opts?: any) => Promise<LcmImg2ImgResponse> = this._apiRequestV3<
+    LcmImg2ImgRequest,
+    LcmImg2ImgResponse
+  >("/v3/lcm-img2img");
 
   replaceSky: (p: ReplaceSkyRequest, opts?: any) => Promise<ReplaceSkyResponse> = this._apiRequestV3<
     ReplaceSkyRequest,

@@ -64,6 +64,8 @@ export {
   Img2VideoModel,
   Img2VideoRequest,
   Img2VideoResponse,
+  RemoveWatermarkRequest,
+  RemoveWatermarkResponse,
 } from "./src/types";
 
 export { ControlNetPreprocessor, ControlNetMode, ModelType } from "./src/enum";

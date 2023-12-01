@@ -24,6 +24,7 @@ export {
   APIErrReasonV3,
   Txt2ImgRequest,
   Txt2ImgResponse,
+  ControlnetUnit,
   Img2imgRequest,
   Img2imgResponse,
   GetModelsResponse,

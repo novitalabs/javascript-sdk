@@ -1,7 +1,7 @@
 {
   "name": "novita-sdk",
   "browser": "dist/index.js",
-  "version": "1.0.24",
+  "version": "1.0.26",
   "author": "",
   "license": "ISC",
   "keywords": [

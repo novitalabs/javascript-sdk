@@ -51,6 +51,8 @@ import {
   Img2VideoResponse,
   LcmImg2ImgRequest,
   LcmImg2ImgResponse,
+  RemoveWatermarkRequest,
+  RemoveWatermarkResponse,
 } from "./types";
 import { addLoraPrompt, generateLoraString, readImgtoBase64 } from "./util";
 import { NovitaError } from "./error";
@@ -507,6 +509,9 @@ export const removeText: (p: RemoveTextRequest, opts?: any) => Promise<RemoveTex
   RemoveTextRequest,
   RemoveTextResponse
 >("/v3/remove-text");
+
+export const removeWatermark: (p: RemoveWatermarkRequest, opts?: any) => Promise<RemoveWatermarkResponse> =
+  apiRequestV3<RemoveWatermarkRequest, RemoveWatermarkResponse>("/v3/remove-watermark");
 
 export const restoreFace: (p: RestoreFaceRequest, opts?: any) => Promise<RestoreFaceResponse> = apiRequestV3<
   RestoreFaceRequest,

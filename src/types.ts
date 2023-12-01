@@ -484,3 +484,8 @@ export type Img2VideoRequest = {
   cond_aug?: number; // 0~1
 } & GenImgTypeRequest;
 export type Img2VideoResponse = AsyncV3Response;
+
+export type RemoveWatermarkRequest = {
+  image_file: string;
+} & GenImgTypeRequest;
+export type RemoveWatermarkResponse = GenImgResponse & FailedV3Response;

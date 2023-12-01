@@ -49,6 +49,8 @@ import {
   Img2VideoResponse,
   LcmImg2ImgRequest,
   LcmImg2ImgResponse,
+  RemoveWatermarkRequest,
+  RemoveWatermarkResponse,
 } from "./types";
 import { addLoraPrompt, generateLoraString, readImgtoBase64 } from "./util";
 import { ERROR_GENERATE_IMG_FAILED, ERROR_GENERATE_VIDEO_FAILED } from "./enum";
@@ -521,6 +523,11 @@ export class NovitaSDK {
     RemoveTextRequest,
     RemoveTextResponse
   >("/v3/remove-text");
+
+  removeWatermark: (p: RemoveWatermarkRequest, opts?: any) => Promise<RemoveWatermarkResponse> = this._apiRequestV3<
+    RemoveWatermarkRequest,
+    RemoveWatermarkResponse
+  >("/v3/remove-watermark");
 
   restoreFace: (p: RestoreFaceRequest, opts?: any) => Promise<RestoreFaceResponse> = this._apiRequestV3<
     RestoreFaceRequest,

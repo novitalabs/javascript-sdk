@@ -124,7 +124,6 @@ export type ControlnetUnit = {
   guidance_start?: number | undefined;
   guidance_end?: number | undefined;
   pixel_perfect?: boolean | undefined;
-  [key: string]: string | number | undefined | boolean;
 };
 
 export type Txt2ImgRequest = {
@@ -267,6 +266,11 @@ type GenImgResponse = {
   image_file: string;
   image_type: string;
 };
+type GenImgResponseUrl = {
+  image_url: string;
+  image_url_ttl: string;
+  image_type: string;
+};
 type AsyncV3Response = {
   task_id: string;
 } & FailedV3Response;
@@ -346,6 +350,68 @@ export type LcmTxt2ImgRequest = {
 };
 export type LcmTxt2ImgResponse = {
   images: GenImgResponse[];
+} & FailedV3Response;
+
+export type LcmImg2ImgRequest = {
+  /**
+   * clip skip, must above 0
+   */
+  clip_skip?: number;
+  /**
+   * Textual Inversion options.
+   */
+  embeddings?: { model_name: string }[];
+  /**
+   * This setting says how close the model will listen to your prompt. Range: [2.0, 14.0]
+   */
+  guidance_scale: number;
+  /**
+   * Image numbers. Range: [1, 16]
+   */
+  image_num: number;
+  /**
+   * The base64 of input image, with a maximum resolution of 2048 * 2048 and a max file size
+   * of 30 Mb, the returned image will be the same with size of input images.
+   */
+  input_image: string;
+  /**
+   * Info of lora, 3 loras supported at most.
+   */
+  loras?: { model_name: string; strenth: string }[];
+  /**
+   * The results you will get using a prompt might different for different models of Stable
+   * Diffusion. You can call the https://docs.novita.ai/models-api/query-model endpoint to
+   * retrieve the `sd_name_in_api` field as the `model_name`.
+   */
+  model_name: string;
+  /**
+   * Negtive prompt word, divided by ',', you can also add embedding (textual inversion)
+   * models like `badhandv4_16755`.
+   */
+  negative_prompt: string;
+  /**
+   * Positive prompt word for the doodle, divided by ",",. Range: [1, 1024]
+   */
+  prompt: string;
+  /**
+   * VAE(Variational Auto Encoder)，sd_vae can be access in endpoint
+   * https://docs.novita.ai/models-api/query-model with query params 'filter.types=vae', like
+   * 'sd_name': 'customVAE.safetensors'
+   */
+  sd_vae: string;
+  /**
+   * seed of request.
+   */
+  seed: number;
+  /**
+   * Iterations of the image creation process. Range: [1, 8]
+   */
+  steps: number;
+  strength?: number;
+};
+
+export type LcmImg2ImgResponse = {
+  images: GenImgResponseUrl[];
 } & FailedV3Response;
 
 export enum SkyType {

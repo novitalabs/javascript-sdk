@@ -49,6 +49,8 @@ import {
   Upscalers,
   Img2VideoRequest,
   Img2VideoResponse,
+  LcmImg2ImgRequest,
+  LcmImg2ImgResponse,
   RemoveWatermarkRequest,
   RemoveWatermarkResponse,
 } from "./types";
@@ -423,6 +425,11 @@ export const lcmTxt2Img: (p: LcmTxt2ImgRequest, opts?: any) => Promise<LcmTxt2Im
   LcmTxt2ImgRequest,
   LcmTxt2ImgResponse
 >("/v3/lcm-txt2img");
+
+export const lcmImg2Img: (p: LcmImg2ImgRequest, opts?: any) => Promise<LcmImg2ImgResponse> = apiRequestV3<
+  LcmImg2ImgRequest,
+  LcmImg2ImgResponse
+>("/v3/lcm-img2img");
 
 export const replaceSky: (p: ReplaceSkyRequest, opts?: any) => Promise<ReplaceSkyResponse> = apiRequestV3<
   ReplaceSkyRequest,

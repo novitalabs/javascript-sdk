@@ -6,7 +6,7 @@ This SDK is based on the official [novita.ai API reference](https://docs.novita.
 
 **Join our discord server for help:**
 
-[![](https://dcbadge.vercel.app/api/server/2SFYcfajN7)](https://discord.gg/a3vd9r3uET)
+[![](https://camo.githubusercontent.com/9e84c06fb8b42a41d2b23950ca281a931934134b217fd2334bfa5eb257d96c23/68747470733a2f2f646362616467652e76657263656c2e6170702f6170692f7365727665722f4d7178376e57597a4446)](https://discord.com/invite/Fn3peMYMQf)
 
 ## Quick start
 
@@ -63,30 +63,30 @@ novitaClient
 
 ## API list and Sample codes
 
-- [txt2Img](./examples/txt2img.js)
-- [img2img](./examples/img2img.js)
-- [upscale](./examples/upscale.js)
-- [cleanup](./examples/cleanup.js)
-- [outpainting](./examples/outpainting.js)
-- [removeBackground](./examples/removebg.js)
-- [replaceBackground](./examples/replacebg.js)
-- [mixPose](./examples/mixpose.js)
-- [doodle](./examples/doodle.js)
-- [lcmTxt2Img](./examples/lcm_txt2img.js)
-- [replaceSky](./examples/replace_sky.js)
-- [replaceObject](./examples/replace_object.js)
-- [mergeFace](./examples/merge_face.js)
-- [removeText](./examples/removetxt.js)
-- [restoreFace](./examples/restore_face.js)
-- [reimagine](./examples/reimagine.js)
-- [createTile](./examples/createtile.js)
-- [LoRA](./examples/lora.js)
-- [controlNet](./examples/controlnet.js)
-- [img2video](./examples/controlnet.js)
+- [txt2Img](https://github.com/novitalabs/javascript-sdk/blob/main/examples/txt2img.js)
+- [img2img](https://github.com/novitalabs/javascript-sdk/blob/main/examples/img2img.js)
+- [upscale](https://github.com/novitalabs/javascript-sdk/blob/main/examples/upscale.js)
+- [cleanup](https://github.com/novitalabs/javascript-sdk/blob/main/examples/cleanup.js)
+- [outpainting](https://github.com/novitalabs/javascript-sdk/blob/main/examples/outpainting.js)
+- [removeBackground](https://github.com/novitalabs/javascript-sdk/blob/main/examples/removebg.js)
+- [replaceBackground](https://github.com/novitalabs/javascript-sdk/blob/main/examples/replacebg.js)
+- [mixPose](https://github.com/novitalabs/javascript-sdk/blob/main/examples/mixpose.js)
+- [doodle](https://github.com/novitalabs/javascript-sdk/blob/main/examples/doodle.js)
+- [lcmTxt2Img](https://github.com/novitalabs/javascript-sdk/blob/main/examples/lcm_txt2img.js)
+- [replaceSky](https://github.com/novitalabs/javascript-sdk/blob/main/examples/replace_sky.js)
+- [replaceObject](https://github.com/novitalabs/javascript-sdk/blob/main/examples/replace_object.js)
+- [mergeFace](https://github.com/novitalabs/javascript-sdk/blob/main/examples/merge_face.js)
+- [removeText](https://github.com/novitalabs/javascript-sdk/blob/main/examples/removetxt.js)
+- [restoreFace](https://github.com/novitalabs/javascript-sdk/blob/main/examples/restore_face.js)
+- [reimagine](https://github.com/novitalabs/javascript-sdk/blob/main/examples/reimagine.js)
+- [createTile](https://github.com/novitalabs/javascript-sdk/blob/main/examples/createtile.js)
+- [LoRA](https://github.com/novitalabs/javascript-sdk/blob/main/examples/lora.js)
+- [controlNet](https://github.com/novitalabs/javascript-sdk/blob/main/examples/controlnet.js)
+- [img2video](https://github.com/novitalabs/javascript-sdk/blob/main/examples/controlnet.js)
 
 ## Type Definitions
 
-For detailed information on the parameters and return types of each method, please refer to the [types.ts](./src/types.ts) file.
+For detailed information on the parameters and return types of each method, please refer to the [types.ts](https://github.com/novitalabs/javascript-sdk/blob/main/src/types.ts) file.
 
 ## Playground
 

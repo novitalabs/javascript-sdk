@@ -107,6 +107,11 @@ export type Lora = {
   weight: number;
 };
 
+export type Refiner = {
+  checkpoint: string;
+  switch_at: number;
+};
+
 type ControlNetPreprocessorValues = (typeof ControlNetPreprocessor)[keyof typeof ControlNetPreprocessor];
 
 export type ControlnetUnit = {
@@ -115,39 +120,40 @@ export type ControlnetUnit = {
   control_mode: 0 | 1 | 2;
   module: ControlNetPreprocessorValues;
   input_image: string;
-  mask?: string | undefined;
-  resize_mode?: number | undefined;
-  lowvram?: boolean | undefined;
-  processor_res?: number | undefined;
-  threshold_a?: number | undefined;
-  threshold_b?: number | undefined;
-  guidance_start?: number | undefined;
-  guidance_end?: number | undefined;
-  pixel_perfect?: boolean | undefined;
+  mask?: string;
+  resize_mode?: number;
+  lowvram?: boolean;
+  processor_res?: number;
+  threshold_a?: number;
+  threshold_b?: number;
+  guidance_start?: number;
+  guidance_end?: number;
+  pixel_perfect?: boolean;
 };
 
 export type Txt2ImgRequest = {
   model_name: string;
   prompt: string;
-  negative_prompt?: string | undefined;
-  sampler_name?: string | undefined;
-  steps?: number | undefined;
-  cfg_scale?: number | undefined;
-  seed?: number | undefined;
-  width?: number | undefined;
-  height?: number | undefined;
-  n_iter?: number | undefined;
-  batch_size?: number | undefined;
-  lora?: Array<Lora> | undefined;
-  controlnet_units?: Array<ControlnetUnit> | undefined;
-  sd_vae?: string | undefined;
-  clip_skip?: number | undefined;
-  hr_upscaler?: string | undefined;
-  hr_scale?: number | undefined;
-  hr_resize_x?: number | undefined;
-  hr_resize_y?: number | undefined;
-  restore_faces?: boolean | undefined;
-  enable_hr?: boolean | undefined;
+  negative_prompt?: string;
+  sampler_name?: string;
+  steps?: number;
+  cfg_scale?: number;
+  seed?: number;
+  width?: number;
+  height?: number;
+  n_iter?: number;
+  batch_size?: number;
+  lora?: Array<Lora>;
+  sd_refiner?: Refiner;
+  controlnet_units?: Array<ControlnetUnit>;
+  sd_vae?: string;
+  clip_skip?: number;
+  hr_upscaler?: string;
+  hr_scale?: number;
+  hr_resize_x?: number;
+  hr_resize_y?: number;
+  restore_faces?: boolean;
+  enable_hr?: boolean;
 };
 
 export type Txt2ImgResponse = {
@@ -168,31 +174,32 @@ export type SyncConfig = {
 export type Img2imgRequest = {
   model_name: string;
   prompt: string;
-  negative_prompt?: string | undefined;
-  sampler_name?: string | undefined;
-  steps?: number | undefined;
-  cfg_scale?: number | undefined;
-  seed?: number | undefined;
-  width?: number | undefined;
-  height?: number | undefined;
-  n_iter?: number | undefined;
-  batch_size?: number | undefined;
-  restore_faces?: boolean | undefined;
-  denoising_strength?: number | undefined;
+  negative_prompt?: string;
+  sampler_name?: string;
+  steps?: number;
+  cfg_scale?: number;
+  seed?: number;
+  width?: number;
+  height?: number;
+  n_iter?: number;
+  batch_size?: number;
+  restore_faces?: boolean;
+  denoising_strength?: number;
   init_images: Array<string>;
-  sd_vae?: string | undefined;
-  clip_skip?: number | undefined;
-  mask?: string | undefined;
-  resize_mode?: number | undefined;
-  image_cfg_scale?: number | undefined;
-  mask_blur?: number | undefined;
-  inpainting_fill?: number | undefined;
-  inpaint_full_res?: number | undefined;
-  inpaint_full_res_padding?: number | undefined;
-  inpainting_mask_invert?: number | undefined;
-  initial_noise_multiplier?: number | undefined;
-  lora?: Array<Lora> | undefined;
-  controlnet_units?: Array<ControlnetUnit> | undefined;
+  sd_vae?: string;
+  clip_skip?: number;
+  mask?: string;
+  resize_mode?: number;
+  image_cfg_scale?: number;
+  mask_blur?: number;
+  inpainting_fill?: number;
+  inpaint_full_res?: number;
+  inpaint_full_res_padding?: number;
+  inpainting_mask_invert?: number;
+  initial_noise_multiplier?: number;
+  lora?: Array<Lora>;
+  sd_refiner?: Refiner;
+  controlnet_units?: Array<ControlnetUnit>;
 };
 
 export type Img2imgResponse = {

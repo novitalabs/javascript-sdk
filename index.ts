@@ -20,7 +20,7 @@ export {
   ResponseCodeV3,
   ProgressResponse,
   ProgressV3Response,
-  TaskStatus,
+  V3TaskStatus as TaskStatus,
   APIErrReasonV3,
   Txt2ImgRequest,
   Txt2ImgResponse,
@@ -69,6 +69,8 @@ export {
   Img2VideoResponse,
   RemoveWatermarkRequest,
   RemoveWatermarkResponse,
+  Img2VideoMotionRequest,
+  Img2VideoMotionResponse,
 } from "./src/types";
 
 export { ControlNetPreprocessor, ControlNetMode, ModelType } from "./src/enum";

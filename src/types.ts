@@ -282,19 +282,21 @@ type AsyncV3Response = {
   task_id: string;
 } & FailedV3Response;
 
-export enum TaskStatus {
-  SUCCEED = "TASK_STATUS_SUCCEED",
-  FAILED = "TASK_STATUS_FAILED",
-  QUEUED = "TASK_STATUS_QUEUED",
+export enum V3TaskStatus {
+  UNKNOWN = "TASK_STATUS_UNKNOWN",
+  QUEUED = "TASK_STATUS_QUEUED", // 排队
+  SUCCEED = "TASK_STATUS_SUCCEED", // 成功
+  FAILED = "TASK_STATUS_FAILED", // 失败
+  PROCESSING = "TASK_STATUS_PROCESSING", // 处理中
 }
-type Task = {
+type V3Task = {
   task_id: string;
-  status: TaskStatus;
+  status: V3TaskStatus;
   reason?: string;
 };
 
 export type ProgressV3Response = {
-  task: Task;
+  task: V3Task;
   images?: {
     image_url: string;
     image_type: string;
@@ -496,3 +498,18 @@ export type RemoveWatermarkRequest = {
   image_file: string;
 } & GenImgTypeRequest;
 export type RemoveWatermarkResponse = GenImgResponse & FailedV3Response;
+
+export type Img2VideoMotionRequest = {
+  image_assets_id: string;
+  motion_video_assets_id: string;
+  seed: number;
+};
+export type Img2VideoMotionResponse = AsyncV3Response;
+
+export type UploadRequest = {
+  type: "image" | "video";
+  data: Blob;
+};
+export type UploadResponse = {
+  assets_id: string;
+};

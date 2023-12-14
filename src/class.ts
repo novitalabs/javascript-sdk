@@ -33,7 +33,7 @@ import {
   ReplaceSkyResponse,
   ReplaceObjectRequest,
   ReplaceObjectResponse,
-  TaskStatus,
+  V3TaskStatus,
   MergeFaceRequest,
   MergeFaceResponse,
   RemoveTextRequest,
@@ -51,9 +51,13 @@ import {
   LcmImg2ImgResponse,
   RemoveWatermarkRequest,
   RemoveWatermarkResponse,
+  Img2VideoMotionRequest,
+  Img2VideoMotionResponse,
+  UploadRequest,
+  UploadResponse,
 } from "./types";
 import { addLoraPrompt, generateLoraString, readImgtoBase64 } from "./util";
-import { ERROR_GENERATE_IMG_FAILED, ERROR_GENERATE_VIDEO_FAILED } from "./enum";
+import { ERROR_GENERATE_IMG_FAILED, ERROR_GENERATE_VIDEO_FAILED, UPLOAD_URL } from "./enum";
 import { NovitaError } from "./error";
 
 export class NovitaSDK {
@@ -471,7 +475,7 @@ export class NovitaSDK {
                     },
                     opts,
                   );
-                  if (progressResult.task.status === TaskStatus.SUCCEED && progressResult.images) {
+                  if (progressResult.task.status === V3TaskStatus.SUCCEED && progressResult.images) {
                     clearInterval(timer);
                     let imgsBase64: string[] = [];
                     if (config?.img_type === "base64") {
@@ -482,7 +486,7 @@ export class NovitaSDK {
                       imgsBase64 = progressResult.images.map((img) => img.image_url);
                     }
                     resolve(imgsBase64);
-                  } else if (progressResult.task.status === TaskStatus.FAILED) {
+                  } else if (progressResult.task.status === V3TaskStatus.FAILED) {
                     clearInterval(timer);
                     reject(
                       new NovitaError(0, progressResult.task.reason ?? ERROR_GENERATE_IMG_FAILED, "", {
@@ -490,7 +494,10 @@ export class NovitaSDK {
                         task_status: progressResult.task.status,
                       }),
                     );
-                  } else if (progressResult.task.status !== TaskStatus.QUEUED) {
+                  } else if (
+                    progressResult.task.status !== V3TaskStatus.QUEUED &&
+                    progressResult.task.status !== V3TaskStatus.PROCESSING
+                  ) {
                     clearInterval(timer);
                     reject(
                       new NovitaError(0, progressResult.task.reason ?? ERROR_GENERATE_IMG_FAILED, "", {
@@ -567,12 +574,12 @@ export class NovitaSDK {
                     },
                     opts,
                   );
-                  if (progressResult.task.status === TaskStatus.SUCCEED && progressResult.videos) {
+                  if (progressResult.task.status === V3TaskStatus.SUCCEED && progressResult.videos) {
                     clearInterval(timer);
                     let videos: string[] = [];
                     videos = progressResult.videos.map((v) => v.video_url);
                     resolve(videos);
-                  } else if (progressResult.task.status === TaskStatus.FAILED) {
+                  } else if (progressResult.task.status === V3TaskStatus.FAILED) {
                     clearInterval(timer);
                     reject(
                       new NovitaError(0, progressResult.task.reason ?? ERROR_GENERATE_VIDEO_FAILED, "", {
@@ -580,7 +587,10 @@ export class NovitaSDK {
                         task_status: progressResult.task.status,
                       }),
                     );
-                  } else if (progressResult.task.status !== TaskStatus.QUEUED) {
+                  } else if (
+                    progressResult.task.status !== V3TaskStatus.QUEUED &&
+                    progressResult.task.status !== V3TaskStatus.PROCESSING
+                  ) {
                     clearInterval(timer);
                     reject(
                       new NovitaError(0, progressResult.task.reason ?? ERROR_GENERATE_VIDEO_FAILED, "", {
@@ -602,5 +612,96 @@ export class NovitaSDK {
         })
         .catch(reject);
     });
+  };
+
+  img2VideoMotion: (p: Img2VideoMotionRequest, opts?: any) => Promise<Img2VideoMotionResponse> = this._apiRequestV3<
+    Img2VideoMotionRequest,
+    Img2VideoMotionResponse
+  >("/v3/async/img2video-motion");
+
+  img2VideoMotionSync: (p: Img2VideoMotionRequest, opts?: any) => Promise<string[]> = (
+    params: Img2VideoMotionRequest,
+    config?: SyncConfig,
+    opts?: any,
+  ) => {
+    return new Promise((resolve, reject) => {
+      this.img2VideoMotion(params, opts)
+        .then((res) => {
+          if (res && res.task_id) {
+            const timer = setInterval(
+              async () => {
+                try {
+                  const progressResult = await this.progressV3(
+                    {
+                      task_id: res.task_id,
+                    },
+                    opts,
+                  );
+                  if (progressResult.task.status === V3TaskStatus.SUCCEED && progressResult.videos) {
+                    clearInterval(timer);
+                    let videos: string[] = [];
+                    videos = progressResult.videos.map((v) => v.video_url);
+                    resolve(videos);
+                  } else if (progressResult.task.status === V3TaskStatus.FAILED) {
+                    clearInterval(timer);
+                    reject(
+                      new NovitaError(0, progressResult.task.reason ?? ERROR_GENERATE_VIDEO_FAILED, "", {
+                        task_id: progressResult.task.task_id,
+                        task_status: progressResult.task.status,
+                      }),
+                    );
+                  } else if (
+                    progressResult.task.status !== V3TaskStatus.QUEUED &&
+                    progressResult.task.status !== V3TaskStatus.PROCESSING
+                  ) {
+                    clearInterval(timer);
+                    reject(
+                      new NovitaError(0, progressResult.task.reason ?? ERROR_GENERATE_VIDEO_FAILED, "", {
+                        task_id: progressResult.task.task_id,
+                        task_status: progressResult.task.status,
+                      }),
+                    );
+                  }
+                } catch (error) {
+                  clearInterval(timer);
+                  reject(error);
+                }
+              },
+              config?.interval ?? 1000,
+            );
+          } else {
+            reject(new NovitaError(-1, "Failed to start the task."));
+          }
+        })
+        .catch(reject);
+    });
+  };
+
+  upload: (p: UploadRequest, opts?: RequestOpts) => Promise<UploadResponse> = (
+    p: UploadRequest,
+    opts?: RequestOpts,
+  ) => {
+    return axios({
+      url: `${UPLOAD_URL}/${p.type}`,
+      method: "PUT",
+      data: p.data,
+      signal: opts?.signal,
+    })
+      .then((response) => {
+        if (response.status !== ResponseCodeV3.OK) {
+          throw new NovitaError(response.status, response.data.message, response.data.reason, response.data.metadata);
+        }
+        return response.data;
+      })
+      .catch((error) => {
+        if (error instanceof NovitaError) {
+          throw error;
+        }
+        const res = error.response;
+        if (res) {
+          throw new NovitaError(res.status, res.data.message, res.data.reason, res.data.metadata, error);
+        }
+        throw new NovitaError(-1, error.message, "", undefined, error);
+      });
   };
 }

@@ -109,7 +109,10 @@ export class NovitaSDK {
     })
       .then((response) => response.data)
       .catch((error) => {
-        throw new Error(error.response ? error.response.data : error.message);
+        if (error.response) {
+          throw new Error(error.response ? error.response.data : error.message);
+        }
+        throw new NovitaError(-10, error.message, error.code, undefined, error);
       });
   }
 
@@ -158,7 +161,7 @@ export class NovitaSDK {
         if (res) {
           throw new NovitaError(res.status, res.data.message, res.data.reason, res.data.metadata, error);
         }
-        throw new NovitaError(-1, error.message, "", undefined, error);
+        throw new NovitaError(-10, error.message, "", undefined, error);
       });
   }
 
@@ -267,9 +270,11 @@ export class NovitaSDK {
                       }),
                     );
                   }
-                } catch (error) {
-                  clearInterval(timer);
-                  reject(error);
+                } catch (error: any) {
+                  if (!error.reason || error.reason !== "ERR_NETWORK") {
+                    clearInterval(timer);
+                    reject(error);
+                  }
                 }
               },
               config?.interval ?? 1000,
@@ -315,9 +320,11 @@ export class NovitaSDK {
                       }),
                     );
                   }
-                } catch (error) {
-                  clearInterval(timer);
-                  reject(error);
+                } catch (error: any) {
+                  if (!error.reason || error.reason !== "ERR_NETWORK") {
+                    clearInterval(timer);
+                    reject(error);
+                  }
                 }
               },
               config?.interval ?? 1000,
@@ -385,9 +392,11 @@ export class NovitaSDK {
                       }),
                     );
                   }
-                } catch (error) {
-                  clearInterval(timer);
-                  reject(error);
+                } catch (error: any) {
+                  if (!error.reason || error.reason !== "ERR_NETWORK") {
+                    clearInterval(timer);
+                    reject(error);
+                  }
                 }
               },
               config?.interval ?? 1000,
@@ -506,9 +515,11 @@ export class NovitaSDK {
                       }),
                     );
                   }
-                } catch (error) {
-                  clearInterval(timer);
-                  reject(error);
+                } catch (error: any) {
+                  if (!error.reason || error.reason !== "ERR_NETWORK") {
+                    clearInterval(timer);
+                    reject(error);
+                  }
                 }
               },
               config?.interval ?? 1000,
@@ -599,9 +610,11 @@ export class NovitaSDK {
                       }),
                     );
                   }
-                } catch (error) {
-                  clearInterval(timer);
-                  reject(error);
+                } catch (error: any) {
+                  if (!error.reason || error.reason !== "ERR_NETWORK") {
+                    clearInterval(timer);
+                    reject(error);
+                  }
                 }
               },
               config?.interval ?? 1000,
@@ -662,9 +675,11 @@ export class NovitaSDK {
                       }),
                     );
                   }
-                } catch (error) {
-                  clearInterval(timer);
-                  reject(error);
+                } catch (error: any) {
+                  if (!error.reason || error.reason !== "ERR_NETWORK") {
+                    clearInterval(timer);
+                    reject(error);
+                  }
                 }
               },
               config?.interval ?? 1000,
@@ -701,7 +716,7 @@ export class NovitaSDK {
         if (res) {
           throw new NovitaError(res.status, res.data.message, res.data.reason, res.data.metadata, error);
         }
-        throw new NovitaError(-1, error.message, "", undefined, error);
+        throw new NovitaError(-10, error.message, "", undefined, error);
       });
   };
 }

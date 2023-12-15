@@ -4,7 +4,7 @@
  * @format
  */
 
-export const UPLOAD_URL = "https://novita-ai.lively-flower-3067.workers.dev";
+export const UPLOAD_URL = "https://assets.novitai.com";
 
 export const ERROR_BAD_REQUEST = "Bad Request";
 export const ERROR_UNAUTHORIZED = "Unauthorized";

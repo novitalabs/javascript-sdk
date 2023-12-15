@@ -107,7 +107,10 @@ function httpFetch({
   })
     .then((response) => response.data)
     .catch((error) => {
-      throw new Error(error.response ? error.response.data : error.message);
+      if (error.response) {
+        throw new Error(error.response ? error.response.data : error.message);
+      }
+      throw new NovitaError(-10, error.message, error.code, undefined, error);
     });
 }
 
@@ -156,7 +159,7 @@ export function httpFetchV3({
       if (res) {
         throw new NovitaError(res.status, res.data.message, res.data.reason, res.data.metadata, error);
       }
-      throw new NovitaError(-1, error.message, "", undefined, error);
+      throw new NovitaError(-10, error.message, "", undefined, error);
     });
 }
 
@@ -267,9 +270,11 @@ export function txt2ImgSync(params: Txt2ImgRequest, config?: SyncConfig, opts?: 
                     }),
                   );
                 }
-              } catch (error) {
-                clearInterval(timer);
-                reject(error);
+              } catch (error: any) {
+                if (!error.reason || error.reason !== "ERR_NETWORK") {
+                  clearInterval(timer);
+                  reject(error);
+                }
               }
             },
             config?.interval ?? 1000,
@@ -310,9 +315,11 @@ export function img2imgSync(params: Img2imgRequest, config?: SyncConfig, opts?: 
                     }),
                   );
                 }
-              } catch (error) {
-                clearInterval(timer);
-                reject(error);
+              } catch (error: any) {
+                if (!error.reason || error.reason !== "ERR_NETWORK") {
+                  clearInterval(timer);
+                  reject(error);
+                }
               }
             },
             config?.interval ?? 1000,
@@ -357,9 +364,11 @@ export function upscaleSync(params: UpscaleRequest, config?: SyncConfig, opts?: 
                     }),
                   );
                 }
-              } catch (error) {
-                clearInterval(timer);
-                reject(error);
+              } catch (error: any) {
+                if (!error.reason || error.reason !== "ERR_NETWORK") {
+                  clearInterval(timer);
+                  reject(error);
+                }
               }
             },
             config?.interval ?? 1000,
@@ -492,9 +501,11 @@ export const replaceObjectSync: (params: ReplaceObjectRequest, config?: SyncConf
                     }),
                   );
                 }
-              } catch (error) {
-                clearInterval(timer);
-                reject(error);
+              } catch (error: any) {
+                if (!error.reason || error.reason !== "ERR_NETWORK") {
+                  clearInterval(timer);
+                  reject(error);
+                }
               }
             },
             config?.interval ?? 1000,
@@ -583,9 +594,11 @@ export const img2VideoSync: (params: Img2VideoRequest, config?: SyncConfig, opts
                     }),
                   );
                 }
-              } catch (error) {
-                clearInterval(timer);
-                reject(error);
+              } catch (error: any) {
+                if (!error.reason || error.reason !== "ERR_NETWORK") {
+                  clearInterval(timer);
+                  reject(error);
+                }
               }
             },
             config?.interval ?? 1000,
@@ -644,9 +657,11 @@ export const img2VideoMotionSync: (p: Img2VideoMotionRequest, opts?: any) => Pro
                     }),
                   );
                 }
-              } catch (error) {
-                clearInterval(timer);
-                reject(error);
+              } catch (error: any) {
+                if (!error.reason || error.reason !== "ERR_NETWORK") {
+                  clearInterval(timer);
+                  reject(error);
+                }
               }
             },
             config?.interval ?? 1000,
@@ -683,6 +698,6 @@ export const upload: (p: UploadRequest, opts?: RequestOpts) => Promise<UploadRes
       if (res) {
         throw new NovitaError(res.status, res.data.message, res.data.reason, res.data.metadata, error);
       }
-      throw new NovitaError(-1, error.message, "", undefined, error);
+      throw new NovitaError(-10, error.message, "", undefined, error);
     });
 };

@@ -290,6 +290,9 @@ export enum V3TaskStatus {
   PROCESSING = "TASK_STATUS_PROCESSING", // 处理中
 }
 type V3Task = {
+  eta: number;
+  progress_percent: number;
+  task_type: string;
   task_id: string;
   status: V3TaskStatus;
   reason?: string;

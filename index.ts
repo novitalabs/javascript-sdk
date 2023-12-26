@@ -63,6 +63,8 @@ export {
   ReimagineResponse,
   CreateTileRequest,
   CreateTileResponse,
+  Txt2VideoRequest,
+  Txt2VideoResponse,
   Img2VideoResizeMode,
   Img2VideoModel,
   Img2VideoRequest,

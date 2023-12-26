@@ -55,6 +55,8 @@ import {
   Img2VideoMotionResponse,
   UploadRequest,
   UploadResponse,
+  Txt2VideoRequest,
+  Txt2VideoResponse,
 } from "./types";
 import { addLoraPrompt, generateLoraString, readImgtoBase64 } from "./util";
 import { ERROR_GENERATE_IMG_FAILED, ERROR_GENERATE_VIDEO_FAILED, UPLOAD_URL } from "./enum";
@@ -561,6 +563,11 @@ export class NovitaSDK {
     CreateTileRequest,
     CreateTileResponse
   >("/v3/create-tile");
+
+  txt2Video: (p: Txt2VideoRequest, opts?: any) => Promise<Txt2VideoResponse> = this._apiRequestV3<
+    Txt2VideoRequest,
+    Txt2VideoResponse
+  >("/v3/async/txt2video");
 
   img2Video: (p: Img2VideoRequest, opts?: any) => Promise<Img2VideoResponse> = this._apiRequestV3<
     Img2VideoRequest,

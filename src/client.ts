@@ -57,6 +57,8 @@ import {
   Img2VideoMotionResponse,
   UploadRequest,
   UploadResponse,
+  Txt2VideoRequest,
+  Txt2VideoResponse,
 } from "./types";
 import { addLoraPrompt, generateLoraString, readImgtoBase64 } from "./util";
 import { NovitaError } from "./error";
@@ -545,6 +547,11 @@ export const createTile: (p: CreateTileRequest, opts?: any) => Promise<CreateTil
   CreateTileRequest,
   CreateTileResponse
 >("/v3/create-tile");
+
+export const txt2Video: (p: Txt2VideoRequest, opts?: any) => Promise<Txt2VideoResponse> = apiRequestV3<
+  Txt2VideoRequest,
+  Txt2VideoResponse
+>("/v3/async/txt2video");
 
 export const img2Video: (p: Img2VideoRequest, opts?: any) => Promise<Img2VideoResponse> = apiRequestV3<
   Img2VideoRequest,

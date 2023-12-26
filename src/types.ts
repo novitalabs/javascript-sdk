@@ -477,6 +477,21 @@ export type CreateTileRequest = {
 } & GenImgTypeRequest;
 export type CreateTileResponse = GenImgResponse & FailedV3Response;
 
+export type Txt2VideoPrompt = {
+  prompt: string;
+  frames: number;
+};
+export type Txt2VideoRequest = {
+  model_name: string;
+  width: number; // 256~1024
+  height: number; // 256~1024
+  seed: number;
+  steps: number;
+  prompts: Txt2VideoPrompt[];
+  negative_prompt?: string;
+};
+export type Txt2VideoResponse = AsyncV3Response;
+
 export enum Img2VideoResizeMode {
   ORIGINAL_RESOLUTION = "ORIGINAL_RESOLUTION",
   CROP_TO_ASPECT_RATIO = "CROP_TO_ASPECT_RATIO",
@@ -495,7 +510,7 @@ export type Img2VideoRequest = {
   steps: number;
   motion_bucket_id?: number; // 1~255
   cond_aug?: number; // 0~1
-} & GenImgTypeRequest;
+};
 export type Img2VideoResponse = AsyncV3Response;
 
 export type RemoveWatermarkRequest = {

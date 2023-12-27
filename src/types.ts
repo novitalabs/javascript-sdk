@@ -489,6 +489,7 @@ export type Txt2VideoRequest = {
   steps: number;
   prompts: Txt2VideoPrompt[];
   negative_prompt?: string;
+  guidance_scale: number; // 1~30, 7.5
 };
 export type Txt2VideoResponse = AsyncV3Response;
 

@@ -390,7 +390,7 @@ export type LcmImg2ImgRequest = {
   /**
    * Info of lora, 3 loras supported at most.
    */
-  loras?: { model_name: string; strenth: string }[];
+  loras?: { model_name: string; strength: string }[];
   /**
    * The results you will get using a prompt might different for different models of Stable
    * Diffusion. You can call the https://docs.novita.ai/models-api/query-model endpoint to

@@ -205,6 +205,9 @@ export class NovitaSDK {
       return res.data;
     });
   }
+  txt2img(params: Txt2ImgRequest, opts?: any) {
+    return this.txt2Img(params, opts);
+  }
 
   img2img(params: Img2imgRequest, opts?: any) {
     const prompt = addLoraPrompt(generateLoraString(params.lora), params.prompt);
@@ -221,6 +224,10 @@ export class NovitaSDK {
       }
       return res.data;
     });
+  }
+
+  img2Img(params: Img2imgRequest, opts?: any) {
+    return this.img2img(params, opts);
   }
 
   progress(params: ProgressRequest, opts?: any) {
@@ -289,6 +296,10 @@ export class NovitaSDK {
     });
   }
 
+  txt2imgSync(params: Txt2ImgRequest, config?: SyncConfig, opts?: any): Promise<any> {
+    return this.txt2ImgSync(params, config, opts);
+  }
+
   img2imgSync(params: Img2imgRequest, config?: SyncConfig, opts?: any): Promise<any> {
     const prompt = addLoraPrompt(generateLoraString(params.lora), params.prompt);
     params.prompt = prompt;
@@ -337,6 +348,10 @@ export class NovitaSDK {
         })
         .catch(reject);
     });
+  }
+
+  img2ImgSync(params: Img2imgRequest, config?: SyncConfig, opts?: any) {
+    return this.img2imgSync(params, config, opts);
   }
 
   upscale(params: UpscaleRequest, opts?: any) {

@@ -116,7 +116,7 @@ function httpFetch({
     });
 }
 
-export function httpFetchV3({
+function httpFetchV3({
   url,
   method = "GET",
   data = undefined,
@@ -193,6 +193,10 @@ export function txt2Img(params: Txt2ImgRequest, opts?: RequestOpts) {
   });
 }
 
+export function txt2img(params: Txt2ImgRequest, opts?: RequestOpts) {
+  return txt2Img(params, opts);
+}
+
 export function img2img(params: Img2imgRequest, opts?: RequestOpts) {
   const prompt = addLoraPrompt(generateLoraString(params.lora), params.prompt);
   params.prompt = prompt;
@@ -208,6 +212,10 @@ export function img2img(params: Img2imgRequest, opts?: RequestOpts) {
     }
     return res.data;
   });
+}
+
+export function img2Img(params: Img2imgRequest, opts?: RequestOpts) {
+  return img2img(params, opts);
 }
 
 export function upscale(params: UpscaleRequest, opts?: RequestOpts) {
@@ -289,6 +297,10 @@ export function txt2ImgSync(params: Txt2ImgRequest, config?: SyncConfig, opts?: 
   });
 }
 
+export function txt2imgSync(params: Txt2ImgRequest, config?: SyncConfig, opts?: RequestOpts): Promise<any> {
+  return txt2ImgSync(params, config, opts);
+}
+
 export function img2imgSync(params: Img2imgRequest, config?: SyncConfig, opts?: RequestOpts): Promise<any> {
   const prompt = addLoraPrompt(generateLoraString(params.lora), params.prompt);
   params.prompt = prompt;
@@ -332,6 +344,10 @@ export function img2imgSync(params: Img2imgRequest, config?: SyncConfig, opts?: 
       })
       .catch(reject);
   });
+}
+
+export function img2ImgSync(params: Img2imgRequest, config?: SyncConfig, opts?: RequestOpts): Promise<any> {
+  return img2imgSync(params, config, opts);
 }
 
 export function upscaleSync(params: UpscaleRequest, config?: SyncConfig, opts?: RequestOpts) {

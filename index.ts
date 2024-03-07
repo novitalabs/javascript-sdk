@@ -1,16 +1,5 @@
 /** @format */
 
-export {
-  setNovitaKey,
-  getModels,
-  img2img,
-  txt2Img,
-  txt2ImgSync,
-  img2imgSync,
-  upscale,
-  upscaleSync,
-} from "./src/client";
-
 export { NovitaSDK } from "./src/class";
 
 export { NovitaError } from "./src/error";
@@ -74,5 +63,7 @@ export {
   Img2VideoMotionRequest,
   Img2VideoMotionResponse,
 } from "./src/types";
+
+export * from "./src/client";
 
 export { ControlNetPreprocessor, ControlNetMode, ModelType } from "./src/enum";

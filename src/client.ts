@@ -15,6 +15,8 @@ import {
   SyncConfig,
   Txt2ImgRequest,
   Txt2ImgResponse,
+  Txt2ImgV3Request,
+  Txt2ImgV3Response,
   UpscaleResponse,
   UpscaleRequest,
   OutpaintingRequest,
@@ -196,6 +198,12 @@ export function txt2Img(params: Txt2ImgRequest, opts?: RequestOpts) {
 export function txt2img(params: Txt2ImgRequest, opts?: RequestOpts) {
   return txt2Img(params, opts);
 }
+
+export const txt2ImgV3: (p: Txt2ImgV3Request, opts?: any) => Promise<Txt2ImgV3Response> = apiRequestV3<
+  Txt2ImgV3Request,
+  Txt2ImgV3Response
+>("/v3/async/txt2img");
+export const txt2imgV3 = txt2ImgV3;
 
 export function img2img(params: Img2imgRequest, opts?: RequestOpts) {
   const prompt = addLoraPrompt(generateLoraString(params.lora), params.prompt);

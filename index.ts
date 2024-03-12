@@ -13,6 +13,8 @@ export {
   APIErrReasonV3,
   Txt2ImgRequest,
   Txt2ImgResponse,
+  Txt2ImgV3Request,
+  Txt2ImgV3Response,
   ControlnetUnit,
   Img2imgRequest,
   Img2imgResponse,

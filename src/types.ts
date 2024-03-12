@@ -157,6 +157,48 @@ export type Txt2ImgRequest = {
   enable_hr?: boolean;
 };
 
+export type Txt2ImgV3Request = {
+  extra?: {
+    response_image_type?: "png" | "webp" | "jpeg";
+    enable_nsfw_detection?: boolean;
+    custom_storage?: {
+      aws_s3?: {
+        region: string;
+        bucket: string;
+        path: string;
+      };
+    };
+    enterprise_plan?: {
+      enabled: boolean;
+    };
+  };
+  request: {
+    model_name: string;
+    prompt: string;
+    negative_prompt: string;
+    sd_vae?: string;
+    loras?: { model_name: string; strength: number }[];
+    embeddings?: { model_name: string }[];
+    hires_fix?: {
+      target_width: number;
+      target_height: number;
+      strength: number;
+      upscaler?: "RealESRGAN_x4plus_anime_6B" | "RealESRNet_x4plus" | "Latent";
+    };
+    refiner?: {
+      switch_at: number;
+    };
+    width: number;
+    height: number;
+    image_num: number;
+    steps: number;
+    seed: number;
+    clip_skip?: number;
+    guidance_scale: number;
+    sampler_name: string;
+  };
+};
+
 export type Txt2ImgResponse = {
   code: ResponseCodeV2;
   msg: string;
@@ -164,6 +206,7 @@ export type Txt2ImgResponse = {
     task_id: string;
   };
 };
+export type Txt2ImgV3Response = AsyncV3Response;
 
 export type SyncConfig = {
   // wait time between each request, default 1000ms

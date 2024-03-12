@@ -12,6 +12,8 @@ import {
   SyncConfig,
   Txt2ImgRequest,
   Txt2ImgResponse,
+  Txt2ImgV3Request,
+  Txt2ImgV3Response,
   UpscaleResponse,
   UpscaleRequest,
   OutpaintingRequest,
@@ -208,6 +210,13 @@ export class NovitaSDK {
   txt2img(params: Txt2ImgRequest, opts?: any) {
     return this.txt2Img(params, opts);
   }
+
+  txt2ImgV3: (p: Txt2ImgV3Request, opts?: any) => Promise<Txt2ImgV3Response> = this._apiRequestV3<
+    Txt2ImgV3Request,
+    Txt2ImgV3Response
+  >("/v3/async/txt2img");
+
+  txt2imgV3 = this.txt2ImgV3;
 
   img2img(params: Img2imgRequest, opts?: any) {
     const prompt = addLoraPrompt(generateLoraString(params.lora), params.prompt);

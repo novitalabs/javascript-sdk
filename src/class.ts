@@ -5,6 +5,8 @@ import {
   RequestOpts,
   GetModelsResponse,
   Img2imgRequest,
+  Img2ImgV3Request,
+  Img2ImgV3Response,
   ProgressRequest,
   ProgressResponse,
   ProgressV3Response,
@@ -238,6 +240,13 @@ export class NovitaSDK {
   img2Img(params: Img2imgRequest, opts?: any) {
     return this.img2img(params, opts);
   }
+
+  img2ImgV3: (p: Img2ImgV3Request, opts?: any) => Promise<Img2ImgV3Response> = this._apiRequestV3<
+    Img2ImgV3Request,
+    Img2ImgV3Response
+  >("/v3/async/img2img");
+
+  img2imgV3 = this.img2ImgV3;
 
   progress(params: ProgressRequest, opts?: any) {
     return this.httpFetch({

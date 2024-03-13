@@ -63,6 +63,37 @@ export const ControlNetPreprocessor = {
   TILE_COLORFIX_PLUS_SHARP: "tile_colorfix+sharp",
 } as const;
 
+export const ControlNetPreprocessorV3 = {
+  SCRIBBLE_HED: "scribble_hed",
+  SOFTEDGE_HED: "softedge_hed",
+  SCRIBBLE_HEDSAFE: "scribble_hedsafe",
+  SOFTEDGE_HEDSAFE: "softedge_hedsafe",
+  DEPTH_MIDAS: "depth_midas",
+  MLSD: "mlsd",
+  OPENPOSE: "openpose",
+  OPENPOSE_FACE: "openpose_face",
+  OPENPOSE_FACEONLY: "openpose_faceonly",
+  OPENPOSE_FULL: "openpose_full",
+  OPENPOSE_HAND: "openpose_hand",
+  dwpose: "dwpose",
+  SCRIBBLE_PIDINET: "scribble_pidinet",
+  SOFTEDGE_PIDINET: "softedge_pidinet",
+  SCRIBBLE_PIDSAFE: "scribble_pidsafe",
+  SOFTEDGE_PIDSAFE: "softedge_pidsafe",
+  NORMAL_BAE: "normal_bae",
+  LINEART_COARSE: "lineart_coarse",
+  LINEART_REALISTIC: "lineart_realistic",
+  LINEART_ANIME: "lineart_anime",
+  LINEART: "lineart",
+  DEPTH_ZOE: "depth_zoe",
+  SHUFFLE: "shuffle",
+  MEDIAPIPE_FACE: "mediapipe_face",
+  CANNY: "canny",
+  DEPTH: "depth",
+  DEPTH_LERES: "depth_leres",
+  "DEPTH_LERES++": "depth_leres++",
+} as const;
+
 export const ControlNetMode = {
   BALANCED: 0,
   PROMPT_IMPORTANCE: 1,

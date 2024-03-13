@@ -6,7 +6,7 @@
  * @format
  */
 
-import { ControlNetPreprocessor } from "./enum";
+import { ControlNetPreprocessor, ControlNetPreprocessorV3 } from "./enum";
 
 export type NovitaKey = string | undefined;
 
@@ -114,6 +114,7 @@ export type Refiner = {
 };
 
 type ControlNetPreprocessorValues = (typeof ControlNetPreprocessor)[keyof typeof ControlNetPreprocessor];
+type ControlNetPreprocessorV3Values = (typeof ControlNetPreprocessorV3)[keyof typeof ControlNetPreprocessorV3];
 
 export type ControlnetUnit = {
   model: string;
@@ -157,21 +158,23 @@ export type Txt2ImgRequest = {
   enable_hr?: boolean;
 };
 
-export type Txt2ImgV3Request = {
-  extra?: {
-    response_image_type?: "png" | "webp" | "jpeg";
-    enable_nsfw_detection?: boolean;
-    custom_storage?: {
-      aws_s3?: {
-        region: string;
-        bucket: string;
-        path: string;
-      };
-    };
-    enterprise_plan?: {
-      enabled: boolean;
+type v3Extra = {
+  response_image_type?: "png" | "webp" | "jpeg";
+  enable_nsfw_detection?: boolean;
+  custom_storage?: {
+    aws_s3?: {
+      region: string;
+      bucket: string;
+      path: string;
     };
   };
+  enterprise_plan?: {
+    enabled: boolean;
+  };
+};
+
+export type Txt2ImgV3Request = {
+  extra?: v3Extra;
   request: {
     model_name: string;
     prompt: string;
@@ -245,6 +248,41 @@ export type Img2imgRequest = {
   sd_refiner?: Refiner;
   controlnet_units?: Array<ControlnetUnit>;
 };
+
+export type Img2imgV3Request = {
+  extra?: v3Extra;
+  request: {
+    model_name: string;
+    image_base64: string;
+    prompt: string;
+    negative_prompt: string;
+    sd_vae?: string;
+    controlnet?: {
+      units: {
+        model_name: string;
+        image_base64: string;
+        strength: number;
+        preprocessor?: ControlNetPreprocessorV3Values;
+        guidance_start?: number;
+        guidance_end?: number;
+      }[];
+    };
+    loras?: { model_name: string; strength: number }[];
+    embeddings?: { model_name: string }[];
+    width: number;
+    height: number;
+    image_num: number;
+    steps: number;
+    seed: number;
+    clip_skip?: number;
+    guidance_scale: number;
+    sampler_name: string;
+    strength?: number;
+  };
+};
+export type Img2ImgV3Request = Img2imgV3Request;
+export type Img2imgV3Response = AsyncV3Response;
+export type Img2ImgV3Response = Img2imgV3Response;
 
 export type Img2imgResponse = {
   code: ResponseCodeV2;

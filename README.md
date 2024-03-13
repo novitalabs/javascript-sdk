@@ -63,8 +63,10 @@ novitaClient
 
 ## API list and Sample codes
 
-- [txt2Img](https://github.com/novitalabs/javascript-sdk/blob/main/examples/txt2img.js)
-- [img2img](https://github.com/novitalabs/javascript-sdk/blob/main/examples/img2img.js)
+- [txt2Img](https://github.com/novitalabs/javascript-sdk/blob/main/examples/txt2img.js) **Deprecated**, recommend using [txt2ImgV3](https://github.com/novitalabs/javascript-sdk/blob/main/examples/txt2ImgV3.js)
+- [img2img ](https://github.com/novitalabs/javascript-sdk/blob/main/examples/img2img.js) **Deprecated**, recommend using [img2ImgV3](https://github.com/novitalabs/javascript-sdk/blob/main/examples/img2ImgV3.js)
+- [txt2ImgV3](https://github.com/novitalabs/javascript-sdk/blob/main/examples/txt2ImgV3.js)
+- [img2ImgV3](https://github.com/novitalabs/javascript-sdk/blob/main/examples/img2ImgV3.js)
 - [upscale](https://github.com/novitalabs/javascript-sdk/blob/main/examples/upscale.js)
 - [cleanup](https://github.com/novitalabs/javascript-sdk/blob/main/examples/cleanup.js)
 - [outpainting](https://github.com/novitalabs/javascript-sdk/blob/main/examples/outpainting.js)

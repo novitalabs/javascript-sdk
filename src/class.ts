@@ -5,6 +5,8 @@ import {
   RequestOpts,
   GetModelsResponse,
   Img2imgRequest,
+  Img2ImgV3Request,
+  Img2ImgV3Response,
   ProgressRequest,
   ProgressResponse,
   ProgressV3Response,
@@ -12,6 +14,8 @@ import {
   SyncConfig,
   Txt2ImgRequest,
   Txt2ImgResponse,
+  Txt2ImgV3Request,
+  Txt2ImgV3Response,
   UpscaleResponse,
   UpscaleRequest,
   OutpaintingRequest,
@@ -209,6 +213,13 @@ export class NovitaSDK {
     return this.txt2Img(params, opts);
   }
 
+  txt2ImgV3: (p: Txt2ImgV3Request, opts?: any) => Promise<Txt2ImgV3Response> = this._apiRequestV3<
+    Txt2ImgV3Request,
+    Txt2ImgV3Response
+  >("/v3/async/txt2img");
+
+  txt2imgV3 = this.txt2ImgV3;
+
   img2img(params: Img2imgRequest, opts?: any) {
     const prompt = addLoraPrompt(generateLoraString(params.lora), params.prompt);
     params.prompt = prompt;
@@ -229,6 +240,13 @@ export class NovitaSDK {
   img2Img(params: Img2imgRequest, opts?: any) {
     return this.img2img(params, opts);
   }
+
+  img2ImgV3: (p: Img2ImgV3Request, opts?: any) => Promise<Img2ImgV3Response> = this._apiRequestV3<
+    Img2ImgV3Request,
+    Img2ImgV3Response
+  >("/v3/async/img2img");
+
+  img2imgV3 = this.img2ImgV3;
 
   progress(params: ProgressRequest, opts?: any) {
     return this.httpFetch({

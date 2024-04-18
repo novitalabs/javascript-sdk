@@ -158,23 +158,29 @@ export type Txt2ImgRequest = {
   enable_hr?: boolean;
 };
 
-type v3Extra = {
+type txt2imgV3Extra = {
   response_image_type?: "png" | "webp" | "jpeg";
   enable_nsfw_detection?: boolean;
+  nsfw_detection_level?: number;
   custom_storage?: {
     aws_s3?: {
       region: string;
       bucket: string;
       path: string;
+      save_to_path_directly?: boolean;
+      [key: string]: string | number | boolean | undefined;
     };
   };
   enterprise_plan?: {
     enabled: boolean;
   };
 };
+type img2imgV3Extra = txt2imgV3Extra;
 
 export type Txt2ImgV3Request = {
-  extra?: v3Extra;
+  extra?: txt2imgV3Extra & {
+    [key: string]: string | number | boolean | txt2imgV3Extra[keyof txt2imgV3Extra];
+  };
   request: {
     model_name: string;
     prompt: string;
@@ -250,7 +256,9 @@ export type Img2imgRequest = {
 };
 
 export type Img2imgV3Request = {
-  extra?: v3Extra;
+  extra?: img2imgV3Extra & {
+    [key: string]: string | number | boolean | img2imgV3Extra[keyof img2imgV3Extra];
+  };
   request: {
     model_name: string;
     image_base64: string;

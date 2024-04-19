@@ -21,6 +21,8 @@ import {
   Txt2ImgV3Response,
   UpscaleResponse,
   UpscaleRequest,
+  UpscaleV3Request,
+  UpscaleV3Response,
   OutpaintingRequest,
   OutpaintingResponse,
   ResponseCodeV3,
@@ -251,6 +253,11 @@ export function upscale(params: UpscaleRequest, opts?: RequestOpts) {
     return res.data;
   });
 }
+
+export const upscaleV3: (p: UpscaleV3Request, opts?: any) => Promise<UpscaleV3Response> = apiRequestV3<
+  UpscaleV3Request,
+  UpscaleV3Response
+>("/v3/async/upscale");
 
 export function progress(params: ProgressRequest, opts?: RequestOpts) {
   return httpFetch({

@@ -158,23 +158,29 @@ export type Txt2ImgRequest = {
   enable_hr?: boolean;
 };
 
-type v3Extra = {
+type txt2imgV3Extra = {
   response_image_type?: "png" | "webp" | "jpeg";
   enable_nsfw_detection?: boolean;
+  nsfw_detection_level?: number;
   custom_storage?: {
     aws_s3?: {
       region: string;
       bucket: string;
       path: string;
+      save_to_path_directly?: boolean;
+      [key: string]: string | number | boolean | undefined;
     };
   };
   enterprise_plan?: {
     enabled: boolean;
   };
 };
+type img2imgV3Extra = txt2imgV3Extra;
 
 export type Txt2ImgV3Request = {
-  extra?: v3Extra;
+  extra?: txt2imgV3Extra & {
+    [key: string]: string | number | boolean | txt2imgV3Extra[keyof txt2imgV3Extra];
+  };
   request: {
     model_name: string;
     prompt: string;
@@ -250,7 +256,9 @@ export type Img2imgRequest = {
 };
 
 export type Img2imgV3Request = {
-  extra?: v3Extra;
+  extra?: img2imgV3Extra & {
+    [key: string]: string | number | boolean | img2imgV3Extra[keyof img2imgV3Extra];
+  };
   request: {
     model_name: string;
     image_base64: string;
@@ -321,6 +329,32 @@ export type UpscaleResponse = {
     task_id: string;
   };
 };
+
+export enum UpscalersV3 {
+  REALESRGAN_X4PLUS_ANIME_6B = "RealESRGAN_x4plus_anime_6B",
+  REALESRNET_X4PLUS = "RealESRNet_x4plus",
+  "4X-ULTRASHARP" = "4x-UltraSharp",
+}
+
+type upscaleV3Extra = {
+  response_image_type?: "png" | "webp" | "jpeg";
+  enterprise_plan?: {
+    enabled: boolean;
+  };
+};
+
+export type UpscaleV3Request = {
+  extra?: upscaleV3Extra & {
+    [key: string]: string | number | boolean | upscaleV3Extra[keyof upscaleV3Extra];
+  };
+  request: {
+    model_name: UpscalersV3;
+    image_base64: string;
+    scale_factor: number;
+  };
+};
+
+export type UpscaleV3Response = AsyncV3Response;
 
 export type ProgressRequest = {
   task_id: string;

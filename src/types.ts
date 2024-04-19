@@ -330,6 +330,32 @@ export type UpscaleResponse = {
   };
 };
 
+export enum UpscalersV3 {
+  REALESRGAN_X4PLUS_ANIME_6B = "RealESRGAN_x4plus_anime_6B",
+  REALESRNET_X4PLUS = "RealESRNet_x4plus",
+  "4X-ULTRASHARP" = "4x-UltraSharp",
+}
+
+type upscaleV3Extra = {
+  response_image_type?: "png" | "webp" | "jpeg";
+  enterprise_plan?: {
+    enabled: boolean;
+  };
+};
+
+export type UpscaleV3Request = {
+  extra?: upscaleV3Extra & {
+    [key: string]: string | number | boolean | upscaleV3Extra[keyof upscaleV3Extra];
+  };
+  request: {
+    model_name: UpscalersV3;
+    image_base64: string;
+    scale_factor: number;
+  };
+};
+
+export type UpscaleV3Response = AsyncV3Response;
+
 export type ProgressRequest = {
   task_id: string;
 };

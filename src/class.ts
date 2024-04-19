@@ -18,6 +18,8 @@ import {
   Txt2ImgV3Response,
   UpscaleResponse,
   UpscaleRequest,
+  UpscaleV3Request,
+  UpscaleV3Response,
   OutpaintingRequest,
   OutpaintingResponse,
   ResponseCodeV3,
@@ -389,6 +391,11 @@ export class NovitaSDK {
       return res.data;
     });
   }
+
+  upscaleV3: (p: UpscaleV3Request, opts?: any) => Promise<UpscaleV3Response> = this._apiRequestV3<
+    UpscaleV3Request,
+    UpscaleV3Response
+  >("/v3/async/upscale");
 
   upscaleSync(params: UpscaleRequest, config?: SyncConfig, opts?: any) {
     return new Promise((resolve, reject) => {

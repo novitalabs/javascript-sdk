@@ -275,6 +275,11 @@ export type Img2imgV3Request = {
         guidance_end?: number;
       }[];
     };
+    ip_adapters?: {
+      model_name: string;
+      image_base64: string;
+      strength: number;
+    }[];
     loras?: { model_name: string; strength: number }[];
     embeddings?: { model_name: string }[];
     width: number;

@@ -6,7 +6,7 @@ This SDK is based on the official [novita.ai API reference](https://docs.novita.
 
 **Join our discord server for help:**
 
-[![](https://camo.githubusercontent.com/9e84c06fb8b42a41d2b23950ca281a931934134b217fd2334bfa5eb257d96c23/68747470733a2f2f646362616467652e76657263656c2e6170702f6170692f7365727665722f4d7178376e57597a4446)](https://discord.com/invite/Fn3peMYMQf)
+[![](https://dcbadge.vercel.app/api/server/Mqx7nWYzDF)](https://discord.gg/Mqx7nWYzDF)
 
 ## Quick start
 

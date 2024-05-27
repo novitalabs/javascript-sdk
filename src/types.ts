@@ -341,23 +341,26 @@ export enum UpscalersV3 {
   "4X-ULTRASHARP" = "4x-UltraSharp",
 }
 
-type upscaleV3Extra = {
+type GenImgExtraParams = {
   response_image_type?: "png" | "webp" | "jpeg";
   enterprise_plan?: {
     enabled: boolean;
   };
 };
 
-export type UpscaleV3Request = {
-  extra?: upscaleV3Extra & {
-    [key: string]: string | number | boolean | upscaleV3Extra[keyof upscaleV3Extra];
+type GenImgExtraPayload = {
+  extra?: GenImgExtraParams & {
+    [key: string]: string | number | boolean | GenImgExtraParams[keyof GenImgExtraParams];
   };
+};
+
+export type UpscaleV3Request = {
   request: {
     model_name: UpscalersV3;
     image_base64: string;
     scale_factor: number;
   };
-};
+} & GenImgExtraPayload;
 
 export type UpscaleV3Response = AsyncV3Response;
 
@@ -384,11 +387,6 @@ type FailedV3Response = {
   reason?: string;
   message?: string;
   metadata?: { [key: string]: string };
-};
-type GenImgTypeRequest = {
-  extra?: {
-    response_image_type: "png" | "jpeg" | "webp";
-  };
 };
 type GenImgResponse = {
   image_file: string;
@@ -436,7 +434,7 @@ export type ProgressV3Response = {
 export type CleanupRequest = {
   image_file: string;
   mask_file: string;
-} & GenImgTypeRequest;
+} & GenImgExtraPayload;
 export type CleanupResponse = GenImgResponse & FailedV3Response;
 
 export type OutpaintingRequest = {
@@ -445,32 +443,32 @@ export type OutpaintingRequest = {
   height: number;
   center_x: number;
   center_y: number;
-} & GenImgTypeRequest;
+} & GenImgExtraPayload;
 
 export type OutpaintingResponse = GenImgResponse & FailedV3Response;
 
 export type RemoveBackgroundRequest = {
   image_file: string;
-} & GenImgTypeRequest;
+} & GenImgExtraPayload;
 export type RemoveBackgroundResponse = GenImgResponse & FailedV3Response;
 
 export type ReplaceBackgroundRequest = {
   image_file: string;
   prompt: string;
-} & GenImgTypeRequest;
+} & GenImgExtraPayload;
 export type ReplaceBackgroundResponse = GenImgResponse & FailedV3Response;
 
 export type MixPoseRequest = {
   image_file: string;
   pose_image_file: string;
-} & GenImgTypeRequest;
+} & GenImgExtraPayload;
 export type MixPoseResponse = GenImgResponse & FailedV3Response;
 
 export type DoodleRequest = {
   image_file: string;
   prompt: string;
   similarity: number;
-} & GenImgTypeRequest;
+} & GenImgExtraPayload;
 export type DoodleResponse = GenImgResponse & FailedV3Response;
 
 export type LcmTxt2ImgRequest = {
@@ -480,7 +478,7 @@ export type LcmTxt2ImgRequest = {
   image_num: number;
   steps: number;
   guidance_scale: number;
-};
+} & GenImgExtraPayload;
 export type LcmTxt2ImgResponse = {
   images: GenImgResponse[];
 } & FailedV3Response;
@@ -541,7 +539,7 @@ export type LcmImg2ImgRequest = {
    */
   steps: number;
   strength?: number;
-};
+} & GenImgExtraPayload;
 
 export type LcmImg2ImgResponse = {
   images: GenImgResponseUrl[];
@@ -556,7 +554,7 @@ export enum SkyType {
 export type ReplaceSkyRequest = {
   image_file: string;
   sky: SkyType;
-} & GenImgTypeRequest;
+} & GenImgExtraPayload;
 export type ReplaceSkyResponse = GenImgResponse & FailedV3Response;
 
 export type ReplaceObjectRequest = {
@@ -564,29 +562,29 @@ export type ReplaceObjectRequest = {
   prompt: string;
   negative_prompt: string;
   object_prompt: string;
-} & GenImgTypeRequest;
+} & GenImgExtraPayload;
 export type ReplaceObjectResponse = AsyncV3Response;
 
 export type MergeFaceRequest = {
   face_image_file: string;
   image_file: string;
-} & GenImgTypeRequest;
+} & GenImgExtraPayload;
 export type MergeFaceResponse = GenImgResponse & FailedV3Response;
 
 export type RemoveTextRequest = {
   image_file: string;
-} & GenImgTypeRequest;
+} & GenImgExtraPayload;
 export type RemoveTextResponse = GenImgResponse & FailedV3Response;
 
 export type RestoreFaceRequest = {
   image_file: string;
   fidelity: number;
-} & GenImgTypeRequest;
+} & GenImgExtraPayload;
 export type RestoreFaceResponse = GenImgResponse & FailedV3Response;
 
 export type ReimagineRequest = {
   image_file: string;
-} & GenImgTypeRequest;
+} & GenImgExtraPayload;
 export type ReimagineResponse = GenImgResponse & FailedV3Response;
 
 export type CreateTileRequest = {
@@ -594,8 +592,21 @@ export type CreateTileRequest = {
   negative_prompt: string;
   width: number;
   height: number;
-} & GenImgTypeRequest;
+} & GenImgExtraPayload;
 export type CreateTileResponse = GenImgResponse & FailedV3Response;
+
+type GenVideoExtraParams = {
+  response_video_type?: "mp4" | "gif";
+  enterprise_plan?: {
+    enabled: boolean;
+  };
+};
+
+type GenVideoExtraPayload = {
+  extra?: GenVideoExtraParams & {
+    [key: string]: string | number | boolean | GenVideoExtraParams[keyof GenVideoExtraParams];
+  };
+};
 
 export type Txt2VideoPrompt = {
   prompt: string;
@@ -610,7 +621,7 @@ export type Txt2VideoRequest = {
   prompts: Txt2VideoPrompt[];
   negative_prompt?: string;
   guidance_scale: number; // 1~30, 7.5
-};
+} & GenVideoExtraPayload;
 export type Txt2VideoResponse = AsyncV3Response;
 
 export enum Img2VideoResizeMode {
@@ -631,19 +642,19 @@ export type Img2VideoRequest = {
   steps: number;
   motion_bucket_id?: number; // 1~255
   cond_aug?: number; // 0~1
-};
+} & GenVideoExtraPayload;
 export type Img2VideoResponse = AsyncV3Response;
 
 export type RemoveWatermarkRequest = {
   image_file: string;
-} & GenImgTypeRequest;
+} & GenImgExtraPayload;
 export type RemoveWatermarkResponse = GenImgResponse & FailedV3Response;
 
 export type Img2VideoMotionRequest = {
   image_assets_id: string;
   motion_video_assets_id: string;
   seed: number;
-};
+} & GenVideoExtraPayload;
 export type Img2VideoMotionResponse = AsyncV3Response;
 
 export type UploadRequest = {

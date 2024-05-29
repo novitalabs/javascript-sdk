@@ -657,6 +657,16 @@ export type Img2VideoMotionRequest = {
 } & GenVideoExtraPayload;
 export type Img2VideoMotionResponse = AsyncV3Response;
 
+export type AnimateAnyoneRequest = {
+  image_assets_id: string;
+  motion_video_assets_id: string;
+  seed: number;
+  width: number;
+  height: number;
+  steps: number;
+} & GenVideoExtraPayload;
+export type AnimateAnyoneResponse = AsyncV3Response;
+
 export type UploadRequest = {
   type: "image" | "video";
   data: Blob;

@@ -71,6 +71,8 @@ export {
   RemoveWatermarkResponse,
   Img2VideoMotionRequest,
   Img2VideoMotionResponse,
+  AnimateAnyoneRequest,
+  AnimateAnyoneResponse,
 } from "./src/types";
 
 export * from "./src/client";

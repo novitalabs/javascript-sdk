@@ -61,6 +61,8 @@ import {
   RemoveWatermarkResponse,
   Img2VideoMotionRequest,
   Img2VideoMotionResponse,
+  AnimateAnyoneRequest,
+  AnimateAnyoneResponse,
   UploadRequest,
   UploadResponse,
   Txt2VideoRequest,
@@ -667,6 +669,71 @@ export const img2VideoMotionSync: (p: Img2VideoMotionRequest, opts?: any) => Pro
 ) => {
   return new Promise((resolve, reject) => {
     img2VideoMotion(params, opts)
+      .then((res) => {
+        if (res && res.task_id) {
+          const timer = setInterval(
+            async () => {
+              try {
+                const progressResult = await progressV3(
+                  {
+                    task_id: res.task_id,
+                  },
+                  opts,
+                );
+                if (progressResult.task.status === V3TaskStatus.SUCCEED && progressResult.videos) {
+                  clearInterval(timer);
+                  let videos: string[] = [];
+                  videos = progressResult.videos.map((v) => v.video_url);
+                  resolve(videos);
+                } else if (progressResult.task.status === V3TaskStatus.FAILED) {
+                  clearInterval(timer);
+                  reject(
+                    new NovitaError(0, progressResult.task.reason ?? ERROR_GENERATE_VIDEO_FAILED, "", {
+                      task_id: progressResult.task.task_id,
+                      task_status: progressResult.task.status,
+                    }),
+                  );
+                } else if (
+                  progressResult.task.status !== V3TaskStatus.QUEUED &&
+                  progressResult.task.status !== V3TaskStatus.PROCESSING
+                ) {
+                  clearInterval(timer);
+                  reject(
+                    new NovitaError(0, progressResult.task.reason ?? ERROR_GENERATE_VIDEO_FAILED, "", {
+                      task_id: progressResult.task.task_id,
+                      task_status: progressResult.task.status,
+                    }),
+                  );
+                }
+              } catch (error: any) {
+                if (!error.reason || error.reason !== "ERR_NETWORK") {
+                  clearInterval(timer);
+                  reject(error);
+                }
+              }
+            },
+            config?.interval ?? 1000,
+          );
+        } else {
+          reject(new NovitaError(-1, "Failed to start the task."));
+        }
+      })
+      .catch(reject);
+  });
+};
+
+export const animateAnyone: (p: AnimateAnyoneRequest, opts?: any) => Promise<AnimateAnyoneResponse> = apiRequestV3<
+  AnimateAnyoneRequest,
+  AnimateAnyoneResponse
+>("/v3/async/animate-anyone");
+
+export const animateAnyoneSync: (p: AnimateAnyoneRequest, opts?: any) => Promise<string[]> = (
+  params: AnimateAnyoneRequest,
+  config?: SyncConfig,
+  opts?: any,
+) => {
+  return new Promise((resolve, reject) => {
+    animateAnyone(params, opts)
       .then((res) => {
         if (res && res.task_id) {
           const timer = setInterval(

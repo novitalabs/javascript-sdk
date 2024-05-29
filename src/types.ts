@@ -659,7 +659,7 @@ export type Img2VideoMotionResponse = AsyncV3Response;
 
 export type AnimateAnyoneRequest = {
   image_assets_id: string;
-  motion_video_assets_id: string;
+  pose_video_assets_id: string;
   seed: number;
   width: number;
   height: number;

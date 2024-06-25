@@ -120,7 +120,7 @@ function httpFetch({
       if (error.response) {
         throw new Error(error.response ? error.response.data : error.message);
       }
-      throw new NovitaError(-10, error.message, error.code, undefined, error);
+      throw new NovitaError(ResponseCodeV2.NETWORK, error.message, error.code, undefined, error);
     });
 }
 
@@ -169,7 +169,7 @@ function httpFetchV3({
       if (res) {
         throw new NovitaError(res.status, res.data.message, res.data.reason, res.data.metadata, error);
       }
-      throw new NovitaError(-10, error.message, "", undefined, error);
+      throw new NovitaError(ResponseCodeV3.NETWORK, error.message, "", undefined, error);
     });
 }
 
@@ -811,6 +811,6 @@ export const upload: (p: UploadRequest, opts?: RequestOpts) => Promise<UploadRes
       if (res) {
         throw new NovitaError(res.status, res.data.message, res.data.reason, res.data.metadata, error);
       }
-      throw new NovitaError(-10, error.message, "", undefined, error);
+      throw new NovitaError(ResponseCodeV3.NETWORK, error.message, "", undefined, error);
     });
 };

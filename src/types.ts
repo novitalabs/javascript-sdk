@@ -18,6 +18,7 @@ export interface NovitaConfig {
 // Response Code Enum for V2 API
 export enum ResponseCodeV2 {
   OK = 0,
+  CANCELED = -10,
   INTERNAL_ERROR = -1,
   INVALID_JSON = 1,
   MODEL_NOT_EXIST = 2,
@@ -32,6 +33,7 @@ export enum ResponseCodeV2 {
 
 // Response Code Enum for V3 API
 export enum ResponseCodeV3 {
+  CANCELED = -10,
   OK = 200,
   TOO_MANY_REQ = 429,
   INTERNAL_ERR = 500,

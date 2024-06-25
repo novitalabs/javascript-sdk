@@ -1,6 +1,7 @@
 /** @format */
 
 import axios from "axios";
+import { ResponseCodeV3 } from "./types";
 
 export class NovitaError {
   code: number = 0;
@@ -17,6 +18,10 @@ export class NovitaError {
     this.stack = new Error().stack;
     this.metadata = metadata;
     this.error = error;
+    if (error instanceof axios.CanceledError) {
+      this.code = ResponseCodeV3.CANCELED;
+      this.msg = "Task canceled";
+    }
   }
 
   get isCanceled() {

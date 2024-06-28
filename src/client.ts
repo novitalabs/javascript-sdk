@@ -67,6 +67,8 @@ import {
   UploadResponse,
   Txt2VideoRequest,
   Txt2VideoResponse,
+  InpaintingRequest,
+  InpaintingResponse,
 } from "./types";
 import { addLoraPrompt, generateLoraString, readImgtoBase64 } from "./util";
 import { NovitaError } from "./error";
@@ -779,6 +781,79 @@ export const animateAnyoneSync: (p: AnimateAnyoneRequest, opts?: any) => Promise
             },
             config?.interval ?? 1000,
           );
+        } else {
+          reject(new NovitaError(-1, "Failed to start the task."));
+        }
+      })
+      .catch(reject);
+  });
+};
+
+export const inpainting: (p: InpaintingRequest, opts?: any) => Promise<InpaintingResponse> = apiRequestV3<
+  InpaintingRequest,
+  InpaintingResponse
+>("/v3/async/inpainting");
+
+export const inpaintingSync: (p: InpaintingRequest, opts?: any) => Promise<string[]> = (
+  params: InpaintingRequest,
+  config?: SyncConfig,
+  opts?: any,
+) => {
+  return new Promise((resolve, reject) => {
+    inpainting(params, opts)
+      .then((res) => {
+        if (res && res.task_id) {
+          let timer: NodeJS.Timeout | null = null;
+          const checker = async () => {
+            try {
+              const progressResult = await progressV3(
+                {
+                  task_id: res.task_id,
+                },
+                opts,
+              );
+
+              if (progressResult.task.status === V3TaskStatus.SUCCEED && progressResult.images) {
+                timer && clearTimeout(timer);
+                let imgsBase64: string[] = [];
+                if (config?.img_type === "base64") {
+                  imgsBase64 = await Promise.all(progressResult.images.map((img) => readImgtoBase64(img.image_url)));
+                } else {
+                  imgsBase64 = progressResult.images.map((img) => img.image_url);
+                }
+                resolve(imgsBase64);
+              } else if (progressResult.task.status === V3TaskStatus.FAILED) {
+                timer && clearTimeout(timer);
+                reject(
+                  new NovitaError(0, progressResult.task.reason ?? ERROR_GENERATE_IMG_FAILED, "", {
+                    task_id: progressResult.task.task_id,
+                    task_status: progressResult.task.status,
+                  }),
+                );
+              } else if (
+                progressResult.task.status !== V3TaskStatus.QUEUED &&
+                progressResult.task.status !== V3TaskStatus.PROCESSING
+              ) {
+                timer && clearTimeout(timer);
+                reject(
+                  new NovitaError(0, progressResult.task.reason ?? ERROR_GENERATE_IMG_FAILED, "", {
+                    task_id: progressResult.task.task_id,
+                    task_status: progressResult.task.status,
+                  }),
+                );
+              } else {
+                timer = setTimeout(checker, config?.interval ?? 1000);
+              }
+            } catch (error: any) {
+              if (!error.reason || error.reason !== "ERR_NETWORK") {
+                timer && clearTimeout(timer);
+                reject(error);
+              } else {
+                timer = setTimeout(checker, config?.interval ?? 1000);
+              }
+            }
+          };
+          timer = setTimeout(checker, config?.interval ?? 1000);
         } else {
           reject(new NovitaError(-1, "Failed to start the task."));
         }

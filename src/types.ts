@@ -164,8 +164,17 @@ export type Txt2ImgRequest = {
   enable_hr?: boolean;
 };
 
+type WebhookSettings = {
+  url: string;
+  test_mode: {
+    enabled: boolean;
+    return_task_status: "TASK_STATUS_SUCCEED" | "TASK_STATUS_FAILED";
+  };
+};
+
 type txt2imgV3Extra = {
   response_image_type?: "png" | "webp" | "jpeg";
+  webhook?: WebhookSettings;
   enable_nsfw_detection?: boolean;
   nsfw_detection_level?: number;
   custom_storage?: {
@@ -269,7 +278,7 @@ export type Img2imgV3Request = {
     model_name: string;
     image_base64: string;
     prompt: string;
-    negative_prompt: string;
+    negative_prompt?: string;
     sd_vae?: string;
     controlnet?: {
       units: {
@@ -310,6 +319,35 @@ export type Img2imgResponse = {
     task_id: string;
   };
 };
+
+export type InpaintingRequest = {
+  extra?: img2imgV3Extra & {
+    [key: string]: string | number | boolean | img2imgV3Extra[keyof img2imgV3Extra];
+  };
+  request: {
+    model_name: string;
+    image_base64: string;
+    mask_image_base64: string;
+    mask_blur?: number;
+    prompt: string;
+    negative_prompt?: string;
+    sd_vae?: string;
+    loras?: { model_name: string; strength: number }[];
+    embeddings?: { model_name: string }[];
+    image_num: number;
+    steps: number;
+    seed: number;
+    clip_skip?: number;
+    guidance_scale: number;
+    sampler_name: string;
+    strength?: number;
+    inpainting_full_res?: 0 | 1;
+    inpainting_full_res_padding?: number;
+    inpainting_mask_invert?: 0 | 1;
+    initial_noise_multiplier?: number;
+  };
+};
+export type InpaintingResponse = AsyncV3Response;
 
 export enum Upscalers {
   ESRGAN_4x = "ESRGAN_4x",

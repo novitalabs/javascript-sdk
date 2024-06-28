@@ -73,6 +73,8 @@ export {
   Img2VideoMotionResponse,
   AnimateAnyoneRequest,
   AnimateAnyoneResponse,
+  InpaintingRequest,
+  InpaintingResponse,
 } from "./src/types";
 
 export * from "./src/client";

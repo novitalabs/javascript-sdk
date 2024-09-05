@@ -67,6 +67,14 @@ import {
   AnimateAnyoneResponse,
   InpaintingRequest,
   InpaintingResponse,
+  RelightRequest,
+  RelightResponse,
+  AdetailerRequest,
+  AdetailerResponse,
+  Img2MaskRequest,
+  Img2MaskResponse,
+  Img2PromptRequest,
+  Img2PromptResponse,
 } from "./types";
 import { addLoraPrompt, generateLoraString, readImgtoBase64 } from "./util";
 import { ERROR_GENERATE_IMG_FAILED, ERROR_GENERATE_VIDEO_FAILED, UPLOAD_URL } from "./enum";
@@ -908,4 +916,24 @@ export class NovitaSDK {
         .catch(reject);
     });
   };
+
+  relight: (p: RelightRequest, opts?: any) => Promise<RelightResponse> = this._apiRequestV3<
+    RelightRequest,
+    RelightResponse
+  >("/v3/relight");
+
+  adetailer: (p: AdetailerRequest, opts?: any) => Promise<AdetailerResponse> = this._apiRequestV3<
+    AdetailerRequest,
+    AdetailerResponse
+  >("/v3/async/adetailer");
+
+  img2Mask: (p: Img2MaskRequest, opts?: any) => Promise<Img2MaskResponse> = this._apiRequestV3<
+    Img2MaskRequest,
+    Img2MaskResponse
+  >("/v3/img2mask");
+
+  img2Prompt: (p: Img2PromptRequest, opts?: any) => Promise<Img2PromptResponse> = this._apiRequestV3<
+    Img2PromptRequest,
+    Img2PromptResponse
+  >("/v3/img2prompt");
 }

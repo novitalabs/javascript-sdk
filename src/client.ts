@@ -104,6 +104,7 @@ function httpFetch({
   const headers: HeadersInit = {
     "Content-Type": "application/json",
     "X-Novita-Source": opts?.source || `js-sdk-novita/${process.env.VERSION}`,
+    "X-Api-Source": opts?.source || `js-sdk-novita/${process.env.VERSION}`,
   };
   if (Novita_Config.key) {
     headers["Authorization"] = Novita_Config.key;
@@ -143,6 +144,7 @@ function httpFetchV3({
   const headers: HeadersInit = {
     "Content-Type": "application/json",
     "X-Novita-Source": opts?.source || `js-sdk-novita/${process.env.VERSION}`,
+    "X-Api-Source": opts?.source || `js-sdk-novita/${process.env.VERSION}`,
   };
   if (Novita_Config.key) {
     headers["Authorization"] = Novita_Config.key;

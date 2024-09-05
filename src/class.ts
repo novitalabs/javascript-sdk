@@ -106,6 +106,7 @@ export class NovitaSDK {
     const headers: HeadersInit = {
       "Content-Type": "application/json",
       "X-Novita-Source": opts?.source || `js-sdk-novita/${process.env.VERSION}`,
+      "X-Api-Source": opts?.source || `js-sdk-novita/${process.env.VERSION}`,
     };
     if (this.key) {
       headers["Authorization"] = this.key;
@@ -145,6 +146,7 @@ export class NovitaSDK {
     const headers: HeadersInit = {
       "Content-Type": "application/json",
       "X-Novita-Source": opts?.source || `js-sdk-novita/${process.env.VERSION}`,
+      "X-Api-Source": opts?.source || `js-sdk-novita/${process.env.VERSION}`,
     };
     if (this.key) {
       headers["Authorization"] = this.key;

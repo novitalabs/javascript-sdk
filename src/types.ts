@@ -749,13 +749,11 @@ export type AdetailerRequest = {
     sd_vae?: string;
     loras?: { model_name: string; strength: number }[];
     embeddings?: { model_name: string }[];
-    image_assets_ids?: string[];
-    image_urls?: string[];
     clip_skip?: number;
     strength?: number;
     steps: number;
     seed: number;
-  };
+  } & ({ image_assets_ids: string[] } | { image_urls: string[] });
 } & GenImgExtraPayload;
 
 export type AdetailerResponse = AsyncV3Response;

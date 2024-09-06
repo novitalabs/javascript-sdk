@@ -2,7 +2,7 @@ import dotenv from "dotenv"
 const fs = require('fs');
 const path = require('path');
 const { NovitaSDK } = require("../src/class.ts")
-const { V3TaskStatus } = require("../src/types.ts")
+const { V3TaskStatus, V2TaskStatus } = require("../src/types.ts")
 
 dotenv.config()
 
@@ -43,16 +43,28 @@ function delay(duration: number) {
   return new Promise(resolve => setTimeout(resolve, duration));
 }
 
-export async function pollTaskStatus(taskId: string) {
+export async function pollTaskStatus(taskId: string, version: "v3" | "v2" = "v3") {
   async function poll() {
-    const progress = await novitaClient.progressV3({ task_id: taskId });
-    if (progress.task.status === V3TaskStatus.SUCCEED) {
-      return progress;
-    } else if (progress.task.status === V3TaskStatus.FAILED) {
-      return progress;
+    if (version === "v3") {
+      const progress = await novitaClient.progressV3({ task_id: taskId })
+      if (progress.task.status === V3TaskStatus.SUCCEED) {
+        return progress;
+      } else if (progress.task.status === V3TaskStatus.FAILED) {
+        return progress;
+      } else {
+        await delay(1000);
+        return poll(); // Recursively call poll after a delay
+      }
     } else {
-      await delay(1000);
-      return poll(); // Recursively call poll after a delay
+      const progress = await novitaClient.progress({ task_id: taskId })
+      if (progress.status === 2) {
+        return progress;
+      } else if (progress.status === 3 || progress.status === 4) {
+        return progress;
+      } else {
+        await delay(1000);
+        return poll();
+      }
     }
   }
 

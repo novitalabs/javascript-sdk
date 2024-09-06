@@ -69,6 +69,14 @@ import {
   Txt2VideoResponse,
   InpaintingRequest,
   InpaintingResponse,
+  RelightRequest,
+  RelightResponse,
+  AdetailerRequest,
+  AdetailerResponse,
+  Img2MaskRequest,
+  Img2MaskResponse,
+  Img2PromptRequest,
+  Img2PromptResponse,
 } from "./types";
 import { addLoraPrompt, generateLoraString, readImgtoBase64 } from "./util";
 import { NovitaError } from "./error";
@@ -891,3 +899,23 @@ export const upload: (p: UploadRequest, opts?: RequestOpts) => Promise<UploadRes
       throw new NovitaError(ResponseCodeV3.NETWORK, error.message, "", undefined, error);
     });
 };
+
+export const relight: (p: RelightRequest, opts?: any) => Promise<RelightResponse> = apiRequestV3<
+  RelightRequest,
+  RelightResponse
+>("/v3/relight");
+
+export const adetailer: (p: AdetailerRequest, opts?: any) => Promise<AdetailerResponse> = apiRequestV3<
+  AdetailerRequest,
+  AdetailerResponse
+>("/v3/async/adetailer");
+
+export const img2Mask: (p: Img2MaskRequest, opts?: any) => Promise<Img2MaskResponse> = apiRequestV3<
+  Img2MaskRequest,
+  Img2MaskResponse
+>("/v3/img2mask");
+
+export const img2Prompt: (p: Img2PromptRequest, opts?: any) => Promise<Img2PromptResponse> = apiRequestV3<
+  Img2PromptRequest,
+  Img2PromptResponse
+>("/v3/img2prompt");

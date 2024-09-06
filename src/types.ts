@@ -718,3 +718,61 @@ export type UploadRequest = {
 export type UploadResponse = {
   assets_id: string;
 };
+
+export type RelightRequest = {
+  image_file: string;
+  model_name: string;
+  lighting_preference: string;
+  prompt: string;
+  steps: number;
+  sampler_name: string;
+  seed: number;
+  guidance_scale: number;
+  strength: number;
+  background_image_file?: string;
+  negative_prompt?: string;
+  clip_skip?: number;
+} & GenImgExtraPayload;
+
+export type RelightResponse = {
+  image_file: string;
+  image_type: string;
+};
+
+export type AdetailerRequest = {
+  request: {
+    model_name: string;
+    prompt: string;
+    negative_prompt?: string;
+    guidance_scale: number;
+    sampler_name: string;
+    sd_vae?: string;
+    loras?: { model_name: string; strength: number }[];
+    embeddings?: { model_name: string }[];
+    clip_skip?: number;
+    strength?: number;
+    steps: number;
+    seed: number;
+  } & ({ image_assets_ids: string[] } | { image_urls: string[] });
+} & GenImgExtraPayload;
+
+export type AdetailerResponse = AsyncV3Response;
+
+export type Img2MaskRequest = {
+  image_file: string;
+} & GenImgExtraPayload;
+export type Img2MaskResponse = {
+  masks: {
+    image_file: string;
+    image_type: string;
+    bbox: number;
+    area: number;
+  }[];
+};
+
+export type Img2PromptRequest = {
+  image_file: string;
+} & GenImgExtraPayload;
+export type Img2PromptResponse = {
+  prompt: string;
+};

@@ -20,7 +20,7 @@ async function replaceObj(onFinish) {
       if (res && res.task_id) {
         const timer = setInterval(() => {
           novitaClient
-            .progressV3({
+            .progress({
               task_id: res.task_id,
             })
             .then((progressRes) => {

@@ -1,7 +1,7 @@
 {
   "name": "novita-sdk",
   "browser": "dist/index.js",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "author": "",
   "license": "ISC",
   "keywords": [
@@ -24,7 +24,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "prettier": "prettier --write .",
-    "test": "jest --testTimeout 100000"
+    "test": "jest"
   },
   "lint-staged": {
     "*": "npm run prettier",

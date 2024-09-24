@@ -1,6 +1,6 @@
 /** @format */
 
-const { NovitaSDK } = require("novita-sdk");
+const { NovitaSDK, TaskStatus } = require("novita-sdk");
 const path = require("path");
 const { convertImageToBase64 } = require("./utils.js");
 
@@ -9,18 +9,11 @@ const novitaClient = new NovitaSDK(process.env.NOVITA_API_KEY);
 async function upscale(onFinish) {
   const baseImg = await convertImageToBase64(path.join(__dirname, "test.png"));
   const params = {
-    image: baseImg,
-    resize_mode: 0,
-    upscaling_resize_w: 0,
-    upscaling_resize_h: 0,
-    upscaling_resize: 2,
-    upscaling_crop: true,
-    upscaler_1: "R-ESRGAN 4x+",
-    upscaler_2: "R-ESRGAN 4x+",
-    extras_upscaler_2_visibility: 0.5,
-    gfpgan_visibility: 0.5,
-    codeformer_visibility: 0.5,
-    codeformer_weight: 0.5,
+    request: {
+      model_name: "RealESRNet_x4plus",
+      image_base64: baseImg,
+      scale_factor: "2",
+    },
   };
   novitaClient
     .upscale(params)
@@ -32,17 +25,16 @@ async function upscale(onFinish) {
               task_id: res.task_id,
             })
             .then((progressRes) => {
-              if (progressRes.status === 2) {
-                console.log("finished!", progressRes.imgs);
-                clearInterval(timer);
-                onFinish(progressRes.imgs);
-              }
-              if (progressRes.status === 3 || progressRes.status === 4) {
-                console.warn("failed!", progressRes.failed_reason);
+              if (progressRes.task.status === TaskStatus.SUCCEED) {
+                console.log("finished!", progressRes.images);
                 clearInterval(timer);
               }
-              if (progressRes.status === 1) {
-                console.log("progress", progressRes.current_images);
+              if (progressRes.task.status === TaskStatus.FAILED) {
+                console.warn("failed!", progressRes.task.reason);
+                clearInterval(timer);
+              }
+              if (progressRes.task.status === TaskStatus.QUEUED) {
+                console.log("queueing");
               }
             })
             .catch((err) => {

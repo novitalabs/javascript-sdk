@@ -5,31 +5,20 @@ export { NovitaSDK } from "./src/class";
 export { NovitaError } from "./src/error";
 
 export {
-  ResponseCodeV2,
-  ResponseCodeV3,
+  ResponseCode,
   ProgressResponse,
-  ProgressV3Response,
-  V3TaskStatus as TaskStatus,
-  APIErrReasonV3,
+  TaskStatus,
+  APIErrReason,
   Txt2ImgRequest,
   Txt2ImgResponse,
-  Txt2ImgV3Request,
-  Txt2ImgV3Response,
   ControlnetUnit,
   Img2imgRequest,
   Img2imgResponse,
-  Img2imgV3Request,
-  Img2ImgV3Request,
-  Img2imgV3Response,
-  Img2ImgV3Response,
   GetModelsResponse,
   SyncConfig,
   UpscaleRequest,
   UpscaleResponse,
   Upscalers,
-  UpscaleV3Request,
-  UpscaleV3Response,
-  UpscalersV3,
   OutpaintingRequest,
   OutpaintingResponse,
   RemoveBackgroundRequest,
@@ -76,7 +65,5 @@ export {
   InpaintingRequest,
   InpaintingResponse,
 } from "./src/types";
-
-export * from "./src/client";
 
 export { ControlNetPreprocessor, ControlNetMode, ModelType } from "./src/enum";

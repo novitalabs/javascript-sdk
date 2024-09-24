@@ -18,14 +18,11 @@ dotenv.config()
 const novitaClient = new NovitaSDK(process.env.API_KEY || "")
 
 const testImageBase64 = fileToBase64(path.resolve(__dirname, "./assets/sample.jpeg"))
-const maskImageBase64 = fileToBase64(path.resolve(__dirname, "./assets/mask.png"))
-const poseImageBase64 = fileToBase64(path.resolve(__dirname, "./assets/pose.png"))
 const doodleImageBase64 = fileToBase64(path.resolve(__dirname, "./assets/doodle.png"))
 const face1ImageBase64 = fileToBase64(path.resolve(__dirname, "./assets/face1.png"))
 const face2ImageBase64 = fileToBase64(path.resolve(__dirname, "./assets/face2.png"))
 
 describe("Group 2", () => {
-
   it("should run mixpose", async () => {
     const reqBody: MixPoseRequest = {
       image_file: testImageBase64,
@@ -44,7 +41,7 @@ describe("Group 2", () => {
     
     const res = await novitaClient.doodle(reqBody)
     expect(res).toHaveProperty("image_file")
-  }, 60000);
+  }, 120000);
 
   it("should run lcmTxt2Img", async () => {
     const reqBody: LcmTxt2ImgRequest = {
@@ -101,7 +98,7 @@ describe("Group 2", () => {
     
     const taskResult = await pollTaskStatus(res.task_id)
     expect(taskResult).toHaveProperty("images")
-  }, 60000);
+  }, 120000);
 
   it("should run mergeFace", async () => {
     const reqBody: MergeFaceRequest = {

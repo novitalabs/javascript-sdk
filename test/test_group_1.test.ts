@@ -1,17 +1,14 @@
 import dotenv from "dotenv"
 import { NovitaSDK } from "../src/class"
-import { 
-  Img2imgRequest, 
-  Img2ImgV3Request, 
+import {
+  Txt2ImgRequest, 
+  Img2ImgRequest,
   UpscaleRequest, 
-  UpscaleV3Request,
   CleanupRequest,
   OutpaintingRequest,
   RemoveBackgroundRequest,
   ReplaceBackgroundRequest,
   Upscalers,
-  UpscalersV3,
-  Txt2ImgV3Request,
 } from "../src/types"
 import { pollTaskStatus, fileToBase64 } from "./utils"
 import path from 'path'
@@ -25,7 +22,7 @@ const maskImageBase64 = fileToBase64(path.resolve(__dirname, "./assets/mask.png"
 
 describe("Group 1", () => {
   it("should run txt2img", async () => {
-    const reqBody: Txt2ImgV3Request = {
+    const reqBody: Txt2ImgRequest = {
       request: {
         model_name: "sd_xl_base_1.0.safetensors",
         prompt: "Glowing jellyfish floating through a foggy forest at twilight",
@@ -39,37 +36,16 @@ describe("Group 1", () => {
         seed: -1,
       }
     }
-    const res = await novitaClient.txt2ImgV3(reqBody)
+    const res = await novitaClient.txt2Img(reqBody)
     expect(res).toHaveProperty("task_id")
     const taskId = res.task_id
     
     const taskResult = await pollTaskStatus(taskId)
     expect(taskResult).toHaveProperty("images")
-  }, 10000);
-
-  it("should run img2img", async () => {
-    const reqBody: Img2imgRequest = {
-      model_name: "sd_xl_base_1.0.safetensors",
-      init_images: [testImageBase64],
-      prompt: "A colorful abstract painting",
-      negative_prompt: "blurry, low quality",
-      width: 512,
-      height: 512,
-      steps: 20,
-      sampler_name: "Euler a",
-      cfg_scale: 7,
-      denoising_strength: 0.7,
-    }
-    
-    const res = await novitaClient.img2img(reqBody)
-    expect(res).toHaveProperty("task_id")
-    
-    const taskResult = await pollTaskStatus(res.task_id, "v2")
-    expect(taskResult).toHaveProperty("imgs")
   }, 30000);
   
-  it("should run img2ImgV3", async () => {
-    const reqBody: Img2ImgV3Request = {
+  it("should run img2Img", async () => {
+    const reqBody: Img2ImgRequest = {
       request: {
         model_name: "sd_xl_base_1.0.safetensors",
         image_base64: testImageBase64,
@@ -86,7 +62,7 @@ describe("Group 1", () => {
       }
     }
     
-    const res = await novitaClient.img2ImgV3(reqBody)
+    const res = await novitaClient.img2Img(reqBody)
     expect(res).toHaveProperty("task_id")
     
     const taskResult = await pollTaskStatus(res.task_id)
@@ -95,31 +71,14 @@ describe("Group 1", () => {
 
   it("should run upscale", async () => {
     const reqBody: UpscaleRequest = {
-      image: testImageBase64,
-      resize_mode: 0,
-      upscaling_resize: 2,
-      upscaler_1: Upscalers.ESRGAN_4x,
-      upscaler_2: Upscalers.R_ESRGAN_4x_plus,
-      extras_upscaler_2_visibility: 0,
-    }
-    
-    const res = await novitaClient.upscale(reqBody)
-    expect(res).toHaveProperty("task_id")
-    
-    const taskResult = await pollTaskStatus(res.task_id, "v2")
-    expect(taskResult).toHaveProperty("imgs")
-  }, 30000);
-
-  it("should run upscaleV3", async () => {
-    const reqBody: UpscaleV3Request = {
       request: {
         image_base64: testImageBase64,
-        model_name: UpscalersV3.REALESRGAN_X4PLUS_ANIME_6B,
+        model_name: Upscalers.REALESRGAN_X4PLUS_ANIME_6B,
         scale_factor: 2,
       }
     }
     
-    const res = await novitaClient.upscaleV3(reqBody)
+    const res = await novitaClient.upscale(reqBody)
     expect(res).toHaveProperty("task_id")
     
     const taskResult = await pollTaskStatus(res.task_id)

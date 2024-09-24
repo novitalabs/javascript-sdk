@@ -24,7 +24,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "prettier": "prettier --write .",
-    "test": "jest --testTimeout 100000"
+    "test": "jest"
   },
   "lint-staged": {
     "*": "npm run prettier",

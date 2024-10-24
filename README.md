@@ -18,15 +18,24 @@ This SDK is based on the official [novita.ai API reference](https://docs.novita.
 npm i novita-sdk
 ```
 
-## Version 2.0.0 Update Notes
+## Version 3.0.0 Update Notes
 
-We've made significant changes in version 2.0.0:
+We've made significant changes in version 3.0.0. We removed some APIs and will not serve them in the future. The APIs deprecated are:
 
-1. Removed Functional usage. Only Class-based usage is now supported.
-2. Removed all synchronous methods for asynchronous APIs (e.g., txt2ImgSync). You now need to handle task status polling yourself.
-3. Removed all V2 interface calls. All V3-related type names and method names have been renamed to their previous V2 counterparts. V2 types and methods have been removed entirely.
-
-Please note that these changes may impact your existing code. Ensure you update your implementations accordingly when upgrading to this version.
+- adetailer
+- img2mask
+- anymate-anyone
+- create-tile
+- doodle
+- lcm-img2img
+- lcm-txt2img
+- make-photo
+- mix-pose
+- relight
+- remove-watermark
+- replace-sky
+- replace-object
+- upscale
 
 ## Usage
 
@@ -87,21 +96,14 @@ novitaClient
 
 - [txt2Img](https://github.com/novitalabs/javascript-sdk/blob/main/examples/txt2Img.js)
 - [img2Img](https://github.com/novitalabs/javascript-sdk/blob/main/examples/img2Img.js)
-- [upscale](https://github.com/novitalabs/javascript-sdk/blob/main/examples/upscale.js)
 - [cleanup](https://github.com/novitalabs/javascript-sdk/blob/main/examples/cleanup.js)
 - [outpainting](https://github.com/novitalabs/javascript-sdk/blob/main/examples/outpainting.js)
 - [removeBackground](https://github.com/novitalabs/javascript-sdk/blob/main/examples/removebg.js)
 - [replaceBackground](https://github.com/novitalabs/javascript-sdk/blob/main/examples/replacebg.js)
-- [mixPose](https://github.com/novitalabs/javascript-sdk/blob/main/examples/mixpose.js)
-- [doodle](https://github.com/novitalabs/javascript-sdk/blob/main/examples/doodle.js)
-- [lcmTxt2Img](https://github.com/novitalabs/javascript-sdk/blob/main/examples/lcm_txt2img.js)
-- [replaceSky](https://github.com/novitalabs/javascript-sdk/blob/main/examples/replace_sky.js)
-- [replaceObject](https://github.com/novitalabs/javascript-sdk/blob/main/examples/replace_object.js)
 - [mergeFace](https://github.com/novitalabs/javascript-sdk/blob/main/examples/merge_face.js)
 - [removeText](https://github.com/novitalabs/javascript-sdk/blob/main/examples/removetxt.js)
 - [restoreFace](https://github.com/novitalabs/javascript-sdk/blob/main/examples/restore_face.js)
 - [reimagine](https://github.com/novitalabs/javascript-sdk/blob/main/examples/reimagine.js)
-- [createTile](https://github.com/novitalabs/javascript-sdk/blob/main/examples/createtile.js)
 - [img2video](https://github.com/novitalabs/javascript-sdk/blob/main/examples/controlnet.js)
 
 ## Type Definitions

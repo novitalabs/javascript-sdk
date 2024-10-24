@@ -1,16 +1,17 @@
 import dotenv from "dotenv"
 import { NovitaSDK } from "../src/class"
 import { 
-  MixPoseRequest,
-  DoodleRequest,
-  LcmTxt2ImgRequest,
-  LcmImg2ImgRequest,
-  ReplaceSkyRequest,
-  ReplaceObjectRequest,
   MergeFaceRequest,
-  SkyType,
+  RemoveTextRequest,
+  RestoreFaceRequest,
+  ReimagineRequest,
+  Txt2VideoRequest,
+  Img2VideoRequest,
+  Img2VideoMotionRequest,
+  Img2VideoResizeMode,
+  Img2VideoModel
 } from "../src/types"
-import { pollTaskStatus, fileToBase64 } from "./utils"
+import { fileToBase64 } from "./utils"
 import path from 'path'
 
 dotenv.config()
@@ -18,87 +19,11 @@ dotenv.config()
 const novitaClient = new NovitaSDK(process.env.API_KEY || "")
 
 const testImageBase64 = fileToBase64(path.resolve(__dirname, "./assets/sample.jpeg"))
-const doodleImageBase64 = fileToBase64(path.resolve(__dirname, "./assets/doodle.png"))
 const face1ImageBase64 = fileToBase64(path.resolve(__dirname, "./assets/face1.png"))
 const face2ImageBase64 = fileToBase64(path.resolve(__dirname, "./assets/face2.png"))
+const img2VideoImageBase64 = fileToBase64(path.resolve(__dirname, "./assets/face1.png"))
 
 describe("Group 2", () => {
-  it("should run mixpose", async () => {
-    const reqBody: MixPoseRequest = {
-      image_file: testImageBase64,
-      pose_image_file: testImageBase64,
-    }
-    const res = await novitaClient.mixpose(reqBody)
-    expect(res).toHaveProperty("image_file")
-  }, 60000);
-
-  it("should run doodle", async () => {
-    const reqBody: DoodleRequest = {
-      image_file: doodleImageBase64,
-      prompt: "1 beautiful girl",
-      similarity: 0.5,
-    }
-    
-    const res = await novitaClient.doodle(reqBody)
-    expect(res).toHaveProperty("image_file")
-  }, 120000);
-
-  it("should run lcmTxt2Img", async () => {
-    const reqBody: LcmTxt2ImgRequest = {
-      prompt: "A beautiful landscape with mountains and a lake",
-      width: 512,
-      height: 512,
-      steps: 8,
-      guidance_scale: 1,
-      image_num: 1,
-    }
-    
-    const res = await novitaClient.lcmTxt2Img(reqBody)
-    expect(res).toHaveProperty("images")
-  }, 60000);
-
-  it("should run lcmImg2Img", async () => {
-    const reqBody: LcmImg2ImgRequest = {
-      model_name: "sd_xl_base_1.0.safetensors",
-      input_image: testImageBase64,
-      prompt: "Transform the image into a watercolor painting",
-      negative_prompt: "photorealistic, sharp details",
-      steps: 8,
-      guidance_scale: 1,
-      strength: 0.5,
-      image_num: 1,
-      seed: -1,
-      sd_vae: "",
-    }
-    
-    const res = await novitaClient.lcmImg2Img(reqBody)
-    expect(res).toHaveProperty("images")
-  }, 60000);
-
-  it("should run replaceSky", async () => {
-    const reqBody: ReplaceSkyRequest = {
-      image_file: testImageBase64,
-      sky: SkyType.bluesky,
-    }
-    
-    const res = await novitaClient.replaceSky(reqBody)
-    expect(res).toHaveProperty("image_file")
-  }, 60000);
-
-  it("should run replaceObject", async () => {
-    const reqBody: ReplaceObjectRequest = {
-      image_file: testImageBase64,
-      prompt: "a cat",
-      negative_prompt: "dog, blurry",
-      object_prompt: "a girl",
-    }
-    
-    const res = await novitaClient.replaceObject(reqBody)
-    expect(res).toHaveProperty("task_id")
-    
-    const taskResult = await pollTaskStatus(res.task_id)
-    expect(taskResult).toHaveProperty("images")
-  }, 120000);
 
   it("should run mergeFace", async () => {
     const reqBody: MergeFaceRequest = {
@@ -108,5 +33,99 @@ describe("Group 2", () => {
     const res = await novitaClient.mergeFace(reqBody)
     expect(res).toHaveProperty("image_file")
   }, 60000);
+
+  it("should run removeText", async () => {
+    const reqBody: RemoveTextRequest = {
+      image_file: testImageBase64
+    }
+    
+    const res = await novitaClient.removeText(reqBody)
+    expect(res).toHaveProperty("image_file")
+  }, 60000);
+
+  it("should run restoreFace", async () => {
+    const reqBody: RestoreFaceRequest = {
+      image_file: testImageBase64,
+      fidelity: 0.9,
+    }
+    
+    const res = await novitaClient.restoreFace(reqBody)
+    expect(res).toHaveProperty("image_file")
+  }, 60000);
+
+  it("should run reimagine", async () => {
+    const reqBody: ReimagineRequest = {
+      image_file: testImageBase64,
+    }
+    
+    const res = await novitaClient.reimagine(reqBody)
+    expect(res).toHaveProperty("image_file")
+  }, 120000);
+
+  it("should run txt2Video", async () => {
+    const reqBody: Txt2VideoRequest = {
+      model_name: "darkSushiMixMix_225D_64380.safetensors",
+      width: 640,
+      height: 480,
+      seed: -1,
+      steps: 20,
+      prompts: [
+        {
+          prompt: "A girl, baby, portrait, 5 years old",
+          frames: 16,
+        },
+        {
+          prompt: "A girl, child, portrait, 10 years old",
+          frames: 16,
+        },
+        {
+          prompt: "A girl, teen, portrait, 20 years old",
+          frames: 16,
+        },
+        {
+          prompt: "A girl, woman, portrait, 30 years old",
+          frames: 16,
+        },
+        {
+          prompt: "A girl, woman, portrait, 50 years old",
+          frames: 16,
+        },
+        {
+          prompt: "A girl, old woman, portrait, 70 years old",
+          frames: 16,
+        },
+      ],
+      guidance_scale: 10,
+    }
+    
+    const res = await novitaClient.txt2Video(reqBody)
+    expect(res).toHaveProperty("task_id")
+  }, 120000);
+
+  it("should run img2Video", async () => {
+    const reqBody: Img2VideoRequest = {
+      model_name: Img2VideoModel.SVD,
+      image_file: img2VideoImageBase64,
+      frames_num: 14,
+      frames_per_second: 6,
+      seed: -1,
+      image_file_resize_mode: Img2VideoResizeMode.ORIGINAL_RESOLUTION,
+      steps: 20,
+    }
+    
+    const res = await novitaClient.img2Video(reqBody)
+    expect(res).toHaveProperty("task_id")
+  }, 120000);
+
+  it("should run img2VideoMotion", async () => {
+    const reqBody: Img2VideoMotionRequest = {
+      image_assets_id: "cjIvbm92aXRhLWFpLWFzc2V0L2ltYWdlLzREV0ZjZjh3R2U2WEpUWE1GZUg2aHNTRkRwekd5dzNF",
+      motion_video_assets_id: "cjIvbm92aXRhLWFpLWFzc2V0L3ZpZGVvL1FFcmphdGJCOFI3ODdhR0gzajVUSkJZbTNkaHIzNzRu",
+      seed: -1,
+    }
+    
+    const res = await novitaClient.img2VideoMotion(reqBody)
+    expect(res).toHaveProperty("task_id")
+  }, 120000);
 
 });

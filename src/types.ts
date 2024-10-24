@@ -360,18 +360,27 @@ export type ReplaceBackgroundRequest = {
 } & GenImgExtraPayload;
 export type ReplaceBackgroundResponse = GenImgResponse & FailedResponse;
 
-export type MixPoseRequest = {
+export type MergeFaceRequest = {
+  face_image_file: string;
   image_file: string;
-  pose_image_file: string;
 } & GenImgExtraPayload;
-export type MixPoseResponse = GenImgResponse & FailedResponse;
+export type MergeFaceResponse = GenImgResponse & FailedResponse;
 
-export type DoodleRequest = {
+export type RemoveTextRequest = {
   image_file: string;
-  prompt: string;
-  similarity: number;
 } & GenImgExtraPayload;
-export type DoodleResponse = GenImgResponse & FailedResponse;
+export type RemoveTextResponse = GenImgResponse & FailedResponse;
+
+export type RestoreFaceRequest = {
+  image_file: string;
+  fidelity: number;
+} & GenImgExtraPayload;
+export type RestoreFaceResponse = GenImgResponse & FailedResponse;
+
+export type ReimagineRequest = {
+  image_file: string;
+} & GenImgExtraPayload;
+export type ReimagineResponse = GenImgResponse & FailedResponse;
 
 export type LcmTxt2ImgRequest = {
   prompt: string;
@@ -467,36 +476,6 @@ export type ReplaceObjectRequest = {
 } & GenImgExtraPayload;
 export type ReplaceObjectResponse = AsyncResponse;
 
-export type MergeFaceRequest = {
-  face_image_file: string;
-  image_file: string;
-} & GenImgExtraPayload;
-export type MergeFaceResponse = GenImgResponse & FailedResponse;
-
-export type RemoveTextRequest = {
-  image_file: string;
-} & GenImgExtraPayload;
-export type RemoveTextResponse = GenImgResponse & FailedResponse;
-
-export type RestoreFaceRequest = {
-  image_file: string;
-  fidelity: number;
-} & GenImgExtraPayload;
-export type RestoreFaceResponse = GenImgResponse & FailedResponse;
-
-export type ReimagineRequest = {
-  image_file: string;
-} & GenImgExtraPayload;
-export type ReimagineResponse = GenImgResponse & FailedResponse;
-
-export type CreateTileRequest = {
-  prompt: string;
-  negative_prompt: string;
-  width: number;
-  height: number;
-} & GenImgExtraPayload;
-export type CreateTileResponse = GenImgResponse & FailedResponse;
-
 type GenVideoExtraParams = {
   response_video_type?: "mp4" | "gif";
   enterprise_plan?: {
@@ -547,11 +526,6 @@ export type Img2VideoRequest = {
 } & GenVideoExtraPayload;
 export type Img2VideoResponse = AsyncResponse;
 
-export type RemoveWatermarkRequest = {
-  image_file: string;
-} & GenImgExtraPayload;
-export type RemoveWatermarkResponse = GenImgResponse & FailedResponse;
-
 export type Img2VideoMotionRequest = {
   image_assets_id: string;
   motion_video_assets_id: string;
@@ -559,73 +533,12 @@ export type Img2VideoMotionRequest = {
 } & GenVideoExtraPayload;
 export type Img2VideoMotionResponse = AsyncResponse;
 
-export type AnimateAnyoneRequest = {
-  image_assets_id: string;
-  pose_video_assets_id: string;
-  seed: number;
-  width: number;
-  height: number;
-  steps: number;
-} & GenVideoExtraPayload;
-export type AnimateAnyoneResponse = AsyncResponse;
-
 export type UploadRequest = {
   type: "image" | "video";
   data: Blob;
 };
 export type UploadResponse = {
   assets_id: string;
-};
-
-export type RelightRequest = {
-  image_file: string;
-  model_name: string;
-  lighting_preference: string;
-  prompt: string;
-  steps: number;
-  sampler_name: string;
-  seed: number;
-  guidance_scale: number;
-  strength: number;
-  background_image_file?: string;
-  negative_prompt?: string;
-  clip_skip?: number;
-} & GenImgExtraPayload;
-
-export type RelightResponse = {
-  image_file: string;
-  image_type: string;
-};
-
-export type AdetailerRequest = {
-  request: {
-    model_name: string;
-    prompt: string;
-    negative_prompt?: string;
-    guidance_scale: number;
-    sampler_name: string;
-    sd_vae?: string;
-    loras?: { model_name: string; strength: number }[];
-    embeddings?: { model_name: string }[];
-    clip_skip?: number;
-    strength?: number;
-    steps: number;
-    seed: number;
-  } & ({ image_assets_ids: string[] } | { image_urls: string[] });
-} & GenImgExtraPayload;
-
-export type AdetailerResponse = AsyncResponse;
-
-export type Img2MaskRequest = {
-  image_file: string;
-} & GenImgExtraPayload;
-export type Img2MaskResponse = {
-  masks: {
-    image_file: string;
-    image_type: string;
-    bbox: number;
-    area: number;
-  }[];
 };
 
 export type Img2PromptRequest = {

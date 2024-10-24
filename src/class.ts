@@ -11,8 +11,6 @@ import {
   Txt2ImgResponse,
   Img2ImgRequest,
   Img2ImgResponse,
-  UpscaleResponse,
-  UpscaleRequest,
   OutpaintingRequest,
   OutpaintingResponse,
   ResponseCode,
@@ -22,16 +20,6 @@ import {
   ReplaceBackgroundResponse,
   CleanupRequest,
   CleanupResponse,
-  MixPoseRequest,
-  MixPoseResponse,
-  DoodleRequest,
-  DoodleResponse,
-  LcmTxt2ImgRequest,
-  LcmTxt2ImgResponse,
-  ReplaceSkyRequest,
-  ReplaceSkyResponse,
-  ReplaceObjectRequest,
-  ReplaceObjectResponse,
   MergeFaceRequest,
   MergeFaceResponse,
   RemoveTextRequest,
@@ -40,30 +28,16 @@ import {
   RestoreFaceResponse,
   ReimagineRequest,
   ReimagineResponse,
-  CreateTileRequest,
-  CreateTileResponse,
   Img2VideoRequest,
   Img2VideoResponse,
-  LcmImg2ImgRequest,
-  LcmImg2ImgResponse,
-  RemoveWatermarkRequest,
-  RemoveWatermarkResponse,
   Img2VideoMotionRequest,
   Img2VideoMotionResponse,
   UploadRequest,
   UploadResponse,
   Txt2VideoRequest,
   Txt2VideoResponse,
-  AnimateAnyoneRequest,
-  AnimateAnyoneResponse,
   InpaintingRequest,
   InpaintingResponse,
-  RelightRequest,
-  RelightResponse,
-  AdetailerRequest,
-  AdetailerResponse,
-  Img2MaskRequest,
-  Img2MaskResponse,
   Img2PromptRequest,
   Img2PromptResponse,
 } from "./types";
@@ -170,11 +144,6 @@ export class NovitaSDK {
 
   img2img = this.img2Img;
 
-  upscale: (p: UpscaleRequest, opts?: any) => Promise<UpscaleResponse> = this._apiRequest<
-    UpscaleRequest,
-    UpscaleResponse
-  >("/v3/async/upscale");
-
   progress(params: ProgressRequest, opts?: RequestOpts): Promise<ProgressResponse> {
     return this.httpFetch({
       url: "/v3/async/task-result",
@@ -207,35 +176,6 @@ export class NovitaSDK {
   replaceBackground: (params: ReplaceBackgroundRequest, opts?: any) => Promise<ReplaceBackgroundResponse> =
     this._apiRequest<ReplaceBackgroundRequest, ReplaceBackgroundResponse>("/v3/replace-background");
 
-  mixpose: (p: MixPoseRequest, opts?: any) => Promise<MixPoseResponse> = this._apiRequest<
-    MixPoseRequest,
-    MixPoseResponse
-  >("/v3/mix-pose");
-
-  doodle: (p: DoodleRequest, opts?: any) => Promise<DoodleResponse> = this._apiRequest<DoodleRequest, DoodleResponse>(
-    "/v3/doodle",
-  );
-
-  lcmTxt2Img: (p: LcmTxt2ImgRequest, opts?: any) => Promise<LcmTxt2ImgResponse> = this._apiRequest<
-    LcmTxt2ImgRequest,
-    LcmTxt2ImgResponse
-  >("/v3/lcm-txt2img");
-
-  lcmImg2Img: (p: LcmImg2ImgRequest, opts?: any) => Promise<LcmImg2ImgResponse> = this._apiRequest<
-    LcmImg2ImgRequest,
-    LcmImg2ImgResponse
-  >("/v3/lcm-img2img");
-
-  replaceSky: (p: ReplaceSkyRequest, opts?: any) => Promise<ReplaceSkyResponse> = this._apiRequest<
-    ReplaceSkyRequest,
-    ReplaceSkyResponse
-  >("/v3/replace-sky");
-
-  replaceObject: (p: ReplaceObjectRequest, opts?: any) => Promise<ReplaceObjectResponse> = this._apiRequest<
-    ReplaceObjectRequest,
-    ReplaceObjectResponse
-  >("/v3/async/replace-object");
-
   mergeFace: (p: MergeFaceRequest, opts?: any) => Promise<MergeFaceResponse> = this._apiRequest<
     MergeFaceRequest,
     MergeFaceResponse
@@ -246,11 +186,6 @@ export class NovitaSDK {
     RemoveTextResponse
   >("/v3/remove-text");
 
-  removeWatermark: (p: RemoveWatermarkRequest, opts?: any) => Promise<RemoveWatermarkResponse> = this._apiRequest<
-    RemoveWatermarkRequest,
-    RemoveWatermarkResponse
-  >("/v3/remove-watermark");
-
   restoreFace: (p: RestoreFaceRequest, opts?: any) => Promise<RestoreFaceResponse> = this._apiRequest<
     RestoreFaceRequest,
     RestoreFaceResponse
@@ -260,11 +195,6 @@ export class NovitaSDK {
     ReimagineRequest,
     ReimagineResponse
   >("/v3/reimagine");
-
-  createTile: (p: CreateTileRequest, opts?: any) => Promise<CreateTileResponse> = this._apiRequest<
-    CreateTileRequest,
-    CreateTileResponse
-  >("/v3/create-tile");
 
   txt2Video: (p: Txt2VideoRequest, opts?: any) => Promise<Txt2VideoResponse> = this._apiRequest<
     Txt2VideoRequest,
@@ -280,11 +210,6 @@ export class NovitaSDK {
     Img2VideoMotionRequest,
     Img2VideoMotionResponse
   >("/v3/async/img2video-motion");
-
-  animateAnyone: (p: AnimateAnyoneRequest, opts?: any) => Promise<AnimateAnyoneResponse> = this._apiRequest<
-    AnimateAnyoneRequest,
-    AnimateAnyoneResponse
-  >("/v3/async/animate-anyone");
 
   upload: (p: UploadRequest, opts?: RequestOpts) => Promise<UploadResponse> = (
     p: UploadRequest,
@@ -318,21 +243,6 @@ export class NovitaSDK {
     InpaintingRequest,
     InpaintingResponse
   >("/v3/async/inpainting");
-
-  relight: (p: RelightRequest, opts?: any) => Promise<RelightResponse> = this._apiRequest<
-    RelightRequest,
-    RelightResponse
-  >("/v3/relight");
-
-  adetailer: (p: AdetailerRequest, opts?: any) => Promise<AdetailerResponse> = this._apiRequest<
-    AdetailerRequest,
-    AdetailerResponse
-  >("/v3/async/adetailer");
-
-  img2Mask: (p: Img2MaskRequest, opts?: any) => Promise<Img2MaskResponse> = this._apiRequest<
-    Img2MaskRequest,
-    Img2MaskResponse
-  >("/v3/img2mask");
 
   img2Prompt: (p: Img2PromptRequest, opts?: any) => Promise<Img2PromptResponse> = this._apiRequest<
     Img2PromptRequest,

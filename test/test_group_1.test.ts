@@ -3,12 +3,10 @@ import { NovitaSDK } from "../src/class"
 import {
   Txt2ImgRequest, 
   Img2ImgRequest,
-  UpscaleRequest, 
   CleanupRequest,
   OutpaintingRequest,
   RemoveBackgroundRequest,
   ReplaceBackgroundRequest,
-  Upscalers,
 } from "../src/types"
 import { pollTaskStatus, fileToBase64 } from "./utils"
 import path from 'path'
@@ -63,22 +61,6 @@ describe("Group 1", () => {
     }
     
     const res = await novitaClient.img2Img(reqBody)
-    expect(res).toHaveProperty("task_id")
-    
-    const taskResult = await pollTaskStatus(res.task_id)
-    expect(taskResult).toHaveProperty("images")
-  }, 30000);
-
-  it("should run upscale", async () => {
-    const reqBody: UpscaleRequest = {
-      request: {
-        image_base64: testImageBase64,
-        model_name: Upscalers.REALESRGAN_X4PLUS_ANIME_6B,
-        scale_factor: 2,
-      }
-    }
-    
-    const res = await novitaClient.upscale(reqBody)
     expect(res).toHaveProperty("task_id")
     
     const taskResult = await pollTaskStatus(res.task_id)

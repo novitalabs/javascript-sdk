@@ -11,8 +11,6 @@ import {
   Txt2ImgResponse,
   Img2ImgRequest,
   Img2ImgResponse,
-  OutpaintingRequest,
-  OutpaintingResponse,
   ResponseCode,
   RemoveBackgroundRequest,
   RemoveBackgroundResponse,
@@ -24,22 +22,14 @@ import {
   MergeFaceResponse,
   RemoveTextRequest,
   RemoveTextResponse,
-  RestoreFaceRequest,
-  RestoreFaceResponse,
-  ReimagineRequest,
-  ReimagineResponse,
   Img2VideoRequest,
   Img2VideoResponse,
-  Img2VideoMotionRequest,
-  Img2VideoMotionResponse,
   UploadRequest,
   UploadResponse,
   Txt2VideoRequest,
   Txt2VideoResponse,
   InpaintingRequest,
   InpaintingResponse,
-  Img2PromptRequest,
-  Img2PromptResponse,
 } from "./types";
 import { UPLOAD_URL } from "./enum";
 import { NovitaError } from "./error";
@@ -165,11 +155,6 @@ export class NovitaSDK {
     CleanupResponse
   >("/v3/cleanup");
 
-  outpainting: (params: OutpaintingRequest, opts?: any) => Promise<OutpaintingResponse> = this._apiRequest<
-    OutpaintingRequest,
-    OutpaintingResponse
-  >("/v3/outpainting");
-
   removeBackground: (params: RemoveBackgroundRequest, opts?: any) => Promise<RemoveBackgroundResponse> =
     this._apiRequest<RemoveBackgroundRequest, RemoveBackgroundResponse>("/v3/remove-background");
 
@@ -186,16 +171,6 @@ export class NovitaSDK {
     RemoveTextResponse
   >("/v3/remove-text");
 
-  restoreFace: (p: RestoreFaceRequest, opts?: any) => Promise<RestoreFaceResponse> = this._apiRequest<
-    RestoreFaceRequest,
-    RestoreFaceResponse
-  >("/v3/restore-face");
-
-  reimagine: (p: ReimagineRequest, opts?: any) => Promise<ReimagineResponse> = this._apiRequest<
-    ReimagineRequest,
-    ReimagineResponse
-  >("/v3/reimagine");
-
   txt2Video: (p: Txt2VideoRequest, opts?: any) => Promise<Txt2VideoResponse> = this._apiRequest<
     Txt2VideoRequest,
     Txt2VideoResponse
@@ -205,11 +180,6 @@ export class NovitaSDK {
     Img2VideoRequest,
     Img2VideoResponse
   >("/v3/async/img2video");
-
-  img2VideoMotion: (p: Img2VideoMotionRequest, opts?: any) => Promise<Img2VideoMotionResponse> = this._apiRequest<
-    Img2VideoMotionRequest,
-    Img2VideoMotionResponse
-  >("/v3/async/img2video-motion");
 
   upload: (p: UploadRequest, opts?: RequestOpts) => Promise<UploadResponse> = (
     p: UploadRequest,
@@ -243,9 +213,4 @@ export class NovitaSDK {
     InpaintingRequest,
     InpaintingResponse
   >("/v3/async/inpainting");
-
-  img2Prompt: (p: Img2PromptRequest, opts?: any) => Promise<Img2PromptResponse> = this._apiRequest<
-    Img2PromptRequest,
-    Img2PromptResponse
-  >("/v3/img2prompt");
 }

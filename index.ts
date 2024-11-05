@@ -18,8 +18,6 @@ export {
   SyncConfig,
   MergeFaceRequest,
   MergeFaceResponse,
-  OutpaintingRequest,
-  OutpaintingResponse,
   RemoveBackgroundRequest,
   RemoveBackgroundResponse,
   ReplaceBackgroundRequest,
@@ -30,18 +28,12 @@ export {
   InpaintingResponse,
   RemoveTextRequest,
   RemoveTextResponse,
-  RestoreFaceRequest,
-  RestoreFaceResponse,
-  ReimagineRequest,
-  ReimagineResponse,
   Txt2VideoRequest,
   Txt2VideoResponse,
   Img2VideoResizeMode,
   Img2VideoModel,
   Img2VideoRequest,
   Img2VideoResponse,
-  Img2VideoMotionRequest,
-  Img2VideoMotionResponse,
 } from "./src/types";
 
 export { ControlNetPreprocessor, ControlNetMode, ModelType } from "./src/enum";

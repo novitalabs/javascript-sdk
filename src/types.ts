@@ -339,16 +339,6 @@ export type CleanupRequest = {
 } & GenImgExtraPayload;
 export type CleanupResponse = GenImgResponse & FailedResponse;
 
-export type OutpaintingRequest = {
-  image_file: string;
-  width: number;
-  height: number;
-  center_x: number;
-  center_y: number;
-} & GenImgExtraPayload;
-
-export type OutpaintingResponse = GenImgResponse & FailedResponse;
-
 export type RemoveBackgroundRequest = {
   image_file: string;
 } & GenImgExtraPayload;
@@ -370,17 +360,6 @@ export type RemoveTextRequest = {
   image_file: string;
 } & GenImgExtraPayload;
 export type RemoveTextResponse = GenImgResponse & FailedResponse;
-
-export type RestoreFaceRequest = {
-  image_file: string;
-  fidelity: number;
-} & GenImgExtraPayload;
-export type RestoreFaceResponse = GenImgResponse & FailedResponse;
-
-export type ReimagineRequest = {
-  image_file: string;
-} & GenImgExtraPayload;
-export type ReimagineResponse = GenImgResponse & FailedResponse;
 
 export type LcmTxt2ImgRequest = {
   prompt: string;
@@ -526,24 +505,10 @@ export type Img2VideoRequest = {
 } & GenVideoExtraPayload;
 export type Img2VideoResponse = AsyncResponse;
 
-export type Img2VideoMotionRequest = {
-  image_assets_id: string;
-  motion_video_assets_id: string;
-  seed: number;
-} & GenVideoExtraPayload;
-export type Img2VideoMotionResponse = AsyncResponse;
-
 export type UploadRequest = {
   type: "image" | "video";
   data: Blob;
 };
 export type UploadResponse = {
   assets_id: string;
-};
-
-export type Img2PromptRequest = {
-  image_file: string;
-} & GenImgExtraPayload;
-export type Img2PromptResponse = {
-  prompt: string;
 };

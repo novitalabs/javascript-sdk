@@ -4,7 +4,6 @@ import {
   Txt2ImgRequest, 
   Img2ImgRequest,
   CleanupRequest,
-  OutpaintingRequest,
   RemoveBackgroundRequest,
   ReplaceBackgroundRequest,
 } from "../src/types"
@@ -74,19 +73,6 @@ describe("Group 1", () => {
     }
     
     const res = await novitaClient.cleanup(reqBody)
-    expect(res).toHaveProperty("image_file")
-  }, 60000);
-
-  it("should run outpainting", async () => {
-    const reqBody: OutpaintingRequest = {
-      image_file: testImageBase64,
-      width: 512,
-      height: 512,
-      center_x: 0,
-      center_y: 0,
-    }
-    
-    const res = await novitaClient.outpainting(reqBody)
     expect(res).toHaveProperty("image_file")
   }, 60000);
 

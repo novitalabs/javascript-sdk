@@ -18,7 +18,7 @@ This SDK is based on the official [novita.ai API reference](https://docs.novita.
 npm i novita-sdk
 ```
 
-## Version 3.0.0 Update Notes
+## Version 3.1.0 Update Notes
 
 We've made significant changes in version 3.0.0. We removed some APIs and will not serve them in the future. The APIs deprecated are:
 
@@ -36,6 +36,11 @@ We've made significant changes in version 3.0.0. We removed some APIs and will n
 - replace-sky
 - replace-object
 - upscale
+- img2prompt
+- img2video-motion
+- outpainting
+- reimagine
+- restore-face
 
 ## Usage
 

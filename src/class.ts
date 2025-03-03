@@ -26,6 +26,10 @@ import {
   Img2VideoResponse,
   UploadRequest,
   UploadResponse,
+  HunyuanVideoFastRequest,
+  HunyuanVideoFastResponse,
+  WanT2vRequest,
+  WanT2vResponse,
   Txt2VideoRequest,
   Txt2VideoResponse,
   InpaintingRequest,
@@ -170,6 +174,15 @@ export class NovitaSDK {
     RemoveTextRequest,
     RemoveTextResponse
   >("/v3/remove-text");
+
+  hunyuanVideoFast: (p: HunyuanVideoFastRequest, opts?: any) => Promise<HunyuanVideoFastResponse> = this._apiRequest<
+    HunyuanVideoFastRequest,
+    HunyuanVideoFastResponse
+  >("/v3/async/hunyuan-video-fast");
+
+  wanT2v: (p: WanT2vRequest, opts?: any) => Promise<WanT2vResponse> = this._apiRequest<WanT2vRequest, WanT2vResponse>(
+    "/v3/async/wan-t2v",
+  );
 
   txt2Video: (p: Txt2VideoRequest, opts?: any) => Promise<Txt2VideoResponse> = this._apiRequest<
     Txt2VideoRequest,

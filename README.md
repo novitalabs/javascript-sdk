@@ -110,6 +110,8 @@ novitaClient
 - [restoreFace](https://github.com/novitalabs/javascript-sdk/blob/main/examples/restore_face.js)
 - [reimagine](https://github.com/novitalabs/javascript-sdk/blob/main/examples/reimagine.js)
 - [img2video](https://github.com/novitalabs/javascript-sdk/blob/main/examples/controlnet.js)
+- [hunyuan-video-fast](https://github.com/novitalabs/javascript-sdk/blob/main/examples/hunyuan-video-fast.js)
+- [wan-t2v](https://github.com/novitalabs/javascript-sdk/blob/main/examples/wan-t2v.js)
 
 ## Type Definitions
 
@@ -117,4 +119,4 @@ For detailed information on the parameters and return types of each method, plea
 
 ## Playground
 
-You can try all demos at [https://novita.ai/model-api/playground](https://novita.ai/model-api/playground)
+You can try all demos at [https://novita.ai/models/image](https://novita.ai/models/image)

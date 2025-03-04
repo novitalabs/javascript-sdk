@@ -468,6 +468,27 @@ type GenVideoExtraPayload = {
   };
 };
 
+export type HunyuanVideoFastRequest = {
+  model_name: string;
+  width: number;
+  height: number;
+  seed: number;
+  steps: number;
+  prompt: string;
+  frames: number;
+};
+export type HunyuanVideoFastResponse = AsyncResponse;
+
+export type WanT2vRequest = {
+  model_name: string;
+  width: number;
+  height: number;
+  seed: number;
+  prompt: string;
+  frames: number;
+};
+export type WanT2vResponse = AsyncResponse;
+
 export type Txt2VideoPrompt = {
   prompt: string;
   frames: number;
